@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
 {
     public static class Program
     {
+
         private const string DeveloperName = "Ilya Vrublevsky";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
+
+        private static readonly FileCabinetService FileCabinetService = new FileCabinetService();
 
         private static bool isRunning = true;
 
@@ -17,6 +22,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -24,9 +30,8 @@ namespace FileCabinetApp
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints the count of records", "The 'stat' command prints the count of records."},
+            new string[] { "create", "create a record", "The 'create' command create a record."},
         };
-
-        private static readonly FileCabinetService fileCabinetService = new FileCabinetService();
 
         public static void Main(string[] args)
         {
@@ -97,8 +102,22 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
+            var recordsCount = Program.FileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parameters)
+        {
+            Console.Write("First name: ");
+            string firstName = Console.ReadLine();
+            Console.Write("Last name: ");
+            string lastName = Console.ReadLine();
+            Console.Write("Date of birth: ");
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            DateTime dateTime = DateTime.Parse(Console.ReadLine(), culture);
+            Program.FileCabinetService.CreateRecord(firstName, lastName, dateTime);
+            var recordsCount = Program.FileCabinetService.GetStat();
+            Console.WriteLine($"Record #{recordsCount} created.");
         }
 
         private static void Exit(string parameters)
