@@ -113,18 +113,24 @@ namespace FileCabinetApp
             Console.Write("Sex(m/w): ");
             char sex = Convert.ToChar(Console.ReadLine(), culture);
             Console.Write("First name: ");
-            string firstName = Console.ReadLine();
+            string firstName = Console.ReadLine().Trim(' ');
             Console.Write("Last name: ");
-            string lastName = Console.ReadLine();
+            string lastName = Console.ReadLine().Trim(' ');
             Console.Write("Age: ");
             short age = Convert.ToInt16(Console.ReadLine(), culture);
             Console.Write("Salary: ");
             decimal salary = Convert.ToDecimal(Console.ReadLine(), culture);
             Console.Write("Date of birth: ");
             DateTime dateTime = DateTime.Parse(Console.ReadLine(), culture);
-            Program.FileCabinetService.CreateRecord(sex, firstName, lastName, age, salary, dateTime);
-            var recordsCount = Program.FileCabinetService.GetStat();
-            Console.WriteLine($"Record #{recordsCount} created.");
+            if (Program.FileCabinetService.CreateRecord(sex, firstName, lastName, age, salary, dateTime) == -1)
+            {
+                Console.WriteLine("An error occured creating the record.");
+            }
+            else
+            {
+                var recordsCount = Program.FileCabinetService.GetStat();
+                Console.WriteLine($"Record #{recordsCount} created.");
+            }
         }
 
         private static void List(string parameters)
