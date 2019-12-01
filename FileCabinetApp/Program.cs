@@ -23,6 +23,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -32,6 +33,7 @@ namespace FileCabinetApp
             new string[] { "stat", "prints the count of records", "The 'stat' command prints the count of records." },
             new string[] { "create", "create a record", "The 'create' command create a record." },
             new string[] { "list", "returns list of records", "The 'list' command returns list of records." },
+            new string[] { "edit", "edit a record", "The 'edit' command edit a record" },
         };
 
         public static void Main(string[] args)
@@ -110,21 +112,319 @@ namespace FileCabinetApp
         private static void Create(string parameters)
         {
             CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
-            Console.Write("Sex(m/w): ");
-            char sex = Convert.ToChar(Console.ReadLine(), culture);
-            Console.Write("First name: ");
-            string firstName = Console.ReadLine();
-            Console.Write("Last name: ");
-            string lastName = Console.ReadLine();
-            Console.Write("Age: ");
-            short age = Convert.ToInt16(Console.ReadLine(), culture);
-            Console.Write("Salary: ");
-            decimal salary = Convert.ToDecimal(Console.ReadLine(), culture);
-            Console.Write("Date of birth: ");
-            DateTime dateTime = DateTime.Parse(Console.ReadLine(), culture);
-            Program.FileCabinetService.CreateRecord(sex, firstName, lastName, age, salary, dateTime);
-            var recordsCount = Program.FileCabinetService.GetStat();
-            Console.WriteLine($"Record #{recordsCount} created.");
+
+            char sex;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Sex(m/w): ");
+                    sex = Convert.ToChar(Console.ReadLine(), culture);
+
+                    if (sex != 'w' && sex != 'm')
+                    {
+                        throw new ArgumentException("Incorrect sex format.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Write only one symbol.");
+                }
+            }
+
+            string firstName;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("First name: ");
+                    firstName = Console.ReadLine().Trim(' ');
+
+                    if (firstName.Length > 60 || firstName.Length < 2 || firstName.Contains(' ', StringComparison.Ordinal))
+                    {
+                        throw new ArgumentException("Incorrect first name format.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            string lastName;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Last name: ");
+                    lastName = Console.ReadLine().Trim(' ');
+
+                    if (lastName.Length > 60 || lastName.Length < 2 || lastName.Contains(' ', StringComparison.Ordinal))
+                    {
+                        throw new ArgumentException("Incorrect last name format.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            short age;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Age: ");
+                    age = Convert.ToInt16(Console.ReadLine(), culture);
+
+                    if (age > (DateTime.Now.Year - 1950) || age < 0)
+                    {
+                        throw new ArgumentException("Incorrect age format.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Incorrect age symbols.");
+                }
+            }
+
+            decimal salary;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Salary: ");
+                    salary = Convert.ToDecimal(Console.ReadLine(), culture);
+                    if (salary < 0)
+                    {
+                        throw new ArgumentException("Incorrect 'salary' format.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Incorrect salary symbols.");
+                }
+            }
+
+            DateTime dateTime;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Date of birth: ");
+                    dateTime = DateTime.Parse(Console.ReadLine(), culture);
+                    if (dateTime < new DateTime(1950, 1, 1) || dateTime > DateTime.Now)
+                    {
+                        throw new ArgumentException("Incorrect date.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Incorrect DateTime symbols.");
+                }
+            }
+
+            if (Program.FileCabinetService.CreateRecord(sex, firstName, lastName, age, salary, dateTime) == -1)
+            {
+                Console.WriteLine("An error occured creating the record.");
+            }
+            else
+            {
+                var recordsCount = Program.FileCabinetService.GetStat();
+                Console.WriteLine($"Record #{recordsCount} created.");
+            }
+        }
+
+        private static void Edit(string parameters)
+        {
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            int id;
+            try
+            {
+                id = Convert.ToInt32(parameters, culture);
+                if (id > Program.FileCabinetService.GetStat() || id <= 0)
+                {
+                    Console.WriteLine($"#{id} record is not found.");
+                    return;
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Incorrext formar of ID");
+                return;
+            }
+
+            char sex;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Sex(m/w): ");
+                    sex = Convert.ToChar(Console.ReadLine(), culture);
+
+                    if (sex != 'w' && sex != 'm')
+                    {
+                        throw new ArgumentException("Incorrect sex format.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Write only one symbol.");
+                }
+            }
+
+            string firstName;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("First name: ");
+                    firstName = Console.ReadLine().Trim(' ');
+
+                    if (firstName.Length > 60 || firstName.Length < 2 || firstName.Contains(' ', StringComparison.Ordinal))
+                    {
+                        throw new ArgumentException("Incorrect first name format.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            string lastName;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Last name: ");
+                    lastName = Console.ReadLine().Trim(' ');
+
+                    if (lastName.Length > 60 || lastName.Length < 2 || lastName.Contains(' ', StringComparison.Ordinal))
+                    {
+                        throw new ArgumentException("Incorrect last name format.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            short age;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Age: ");
+                    age = Convert.ToInt16(Console.ReadLine(), culture);
+
+                    if (age > (DateTime.Now.Year - 1950) || age < 0)
+                    {
+                        throw new ArgumentException("Incorrect age format.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Incorrect age symbols.");
+                }
+            }
+
+            decimal salary;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Salary: ");
+                    salary = Convert.ToDecimal(Console.ReadLine(), culture);
+                    if (salary < 0)
+                    {
+                        throw new ArgumentException("Incorrect 'salary' format.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Incorrect salary symbols.");
+                }
+            }
+
+            DateTime dateTime;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Date of birth: ");
+                    dateTime = DateTime.Parse(Console.ReadLine(), culture);
+                    if (dateTime < new DateTime(1950, 1, 1) || dateTime > DateTime.Now)
+                    {
+                        throw new ArgumentException("Incorrect date.");
+                    }
+
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Incorrect DateTime symbols.");
+                }
+            }
+
+            Program.FileCabinetService.EditRecord(id - 1, sex, firstName, lastName, age, salary, dateTime);
+            Console.WriteLine($"Record #{id} is updated.");
         }
 
         private static void List(string parameters)

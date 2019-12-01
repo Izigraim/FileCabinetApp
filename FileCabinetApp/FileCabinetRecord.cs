@@ -16,7 +16,7 @@ namespace FileCabinetApp
 
         public short Age { get; set; }
 
-        public decimal Salary { get; set; }
+        public decimal? Salary { get; set; }
 
         public DateTime DateOfBirth { get; set; }
     }
