@@ -37,7 +37,7 @@ namespace FileCabinetApp
                     throw new ArgumentException("Incorrect date.", nameof(dateOfBirth));
                 }
 
-                if (sex != 'w' || sex != 'm')
+                if (sex != 'w' && sex != 'm')
                 {
                     throw new ArgumentException("Incorrect sex format.", nameof(sex));
                 }
