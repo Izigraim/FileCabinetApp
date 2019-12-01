@@ -6,7 +6,6 @@ namespace FileCabinetApp
 {
     public static class Program
     {
-
         private const string DeveloperName = "Ilya Vrublevsky";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
         private const int CommandHelpIndex = 0;
@@ -30,8 +29,8 @@ namespace FileCabinetApp
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
-            new string[] { "stat", "prints the count of records", "The 'stat' command prints the count of records."},
-            new string[] { "create", "create a record", "The 'create' command create a record."},
+            new string[] { "stat", "prints the count of records", "The 'stat' command prints the count of records." },
+            new string[] { "create", "create a record", "The 'create' command create a record." },
             new string[] { "list", "returns list of records", "The 'list' command returns list of records." },
         };
 
@@ -110,14 +109,20 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            Console.Write("Sex(m/w): ");
+            char sex = Convert.ToChar(Console.ReadLine(), culture);
             Console.Write("First name: ");
             string firstName = Console.ReadLine();
             Console.Write("Last name: ");
             string lastName = Console.ReadLine();
+            Console.Write("Age: ");
+            short age = Convert.ToInt16(Console.ReadLine(), culture);
+            Console.Write("Salary: ");
+            decimal salary = Convert.ToDecimal(Console.ReadLine(), culture);
             Console.Write("Date of birth: ");
-            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
             DateTime dateTime = DateTime.Parse(Console.ReadLine(), culture);
-            Program.FileCabinetService.CreateRecord(firstName, lastName, dateTime);
+            Program.FileCabinetService.CreateRecord(sex, firstName, lastName, age, salary, dateTime);
             var recordsCount = Program.FileCabinetService.GetStat();
             Console.WriteLine($"Record #{recordsCount} created.");
         }
@@ -127,7 +132,7 @@ namespace FileCabinetApp
             FileCabinetRecord[] fileCabinetRecords = Program.FileCabinetService.GetRecords();
             for (int i = 0; i < fileCabinetRecords.Length; i++)
             {
-                Console.WriteLine($"#{i + 1}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
+                Console.WriteLine($"#{i + 1}, {fileCabinetRecords[i].Sex}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].Age}, {fileCabinetRecords[i].Salary}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
             }
         }
 
