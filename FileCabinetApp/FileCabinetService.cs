@@ -78,6 +78,23 @@ namespace FileCabinetApp
             return record.Id;
         }
 
+        public void EditRecord(int id, char sex, string firstName, string lastName, short age, decimal salary, DateTime dateOfBirth)
+        {
+            var record = new FileCabinetRecord
+            {
+                Id = id,
+                Sex = sex,
+                FirstName = firstName,
+                LastName = lastName,
+                Age = age,
+                Salary = salary,
+                DateOfBirth = dateOfBirth,
+            };
+
+            this.list.RemoveAt(id);
+            this.list.Insert(id, record);
+        }
+
         public FileCabinetRecord[] GetRecords()
         {
             FileCabinetRecord[] fileCabinetRecords = new FileCabinetRecord[this.GetStat()];
