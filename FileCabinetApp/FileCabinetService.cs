@@ -116,6 +116,26 @@ namespace FileCabinetApp
             return findedFirstNames;
         }
 
+        public FileCabinetRecord[] FindByLastName(string lastname)
+        {
+            FileCabinetRecord[] findedLastNames = this.list.FindAll(c => c.LastName.ToLower(CultureInfo.CreateSpecificCulture("en-US")) == lastname.ToLower(CultureInfo.CreateSpecificCulture("en-US"))).ToArray();
+
+            try
+            {
+                if (findedLastNames == Array.Empty<FileCabinetRecord>() || findedLastNames == null || findedLastNames.Length == 0)
+                {
+                    throw new ArgumentException("There are no records with this first name.", nameof(lastname));
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Array.Empty<FileCabinetRecord>();
+            }
+
+            return findedLastNames;
+        }
+
         public FileCabinetRecord[] GetRecords()
         {
             FileCabinetRecord[] fileCabinetRecords = new FileCabinetRecord[this.GetStat()];

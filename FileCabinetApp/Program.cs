@@ -463,6 +463,9 @@ namespace FileCabinetApp
                 case "firstname":
                     findedRecords = FileCabinetService.FindByFirstName(findParameters[1].Trim('"'));
                     break;
+                case "lastname":
+                    findedRecords = FileCabinetService.FindByLastName(findParameters[1].Trim('"'));
+                    break;
             }
 
             if (findedRecords == Array.Empty<FileCabinetRecord>())
