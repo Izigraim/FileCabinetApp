@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
@@ -24,6 +25,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -34,6 +36,7 @@ namespace FileCabinetApp
             new string[] { "create", "create a record", "The 'create' command create a record." },
             new string[] { "list", "returns list of records", "The 'list' command returns list of records." },
             new string[] { "edit", "edit a record", "The 'edit' command edit a record" },
+            new string[] { "find", "find a record or records by property", "The 'find' command find a record or records by property." },
         };
 
         public static void Main(string[] args)
@@ -432,7 +435,50 @@ namespace FileCabinetApp
             FileCabinetRecord[] fileCabinetRecords = Program.FileCabinetService.GetRecords();
             for (int i = 0; i < fileCabinetRecords.Length; i++)
             {
-                Console.WriteLine($"#{i + 1}, {fileCabinetRecords[i].Sex}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].Age}, {fileCabinetRecords[i].Salary}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
+                Console.WriteLine($"#{fileCabinetRecords[i].Id + 1}, {fileCabinetRecords[i].Sex}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].Age}, {fileCabinetRecords[i].Salary}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
+            }
+        }
+
+        private static void Find(string parameters)
+        {
+            try
+            {
+                if (parameters.Where(c => c == ' ').Count() > 1 || !parameters.Where(c => c == ' ').Any() || parameters[0] == ' ')
+                {
+                    throw new ArgumentException("Incorrect command format.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            string[] findParameters = parameters.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            FileCabinetRecord[] findedRecords = Array.Empty<FileCabinetRecord>();
+
+            switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
+            {
+                case "firstname":
+                    findedRecords = FileCabinetService.FindByFirstName(findParameters[1].Trim('"'));
+                    break;
+                case "lastname":
+                    findedRecords = FileCabinetService.FindByLastName(findParameters[1].Trim('"'));
+                    break;
+                case "dateofbirth":
+                    findedRecords = FileCabinetService.FindByDateOfBirth(findParameters[1].Trim('"'));
+                    break;
+            }
+
+            if (findedRecords == Array.Empty<FileCabinetRecord>())
+            {
+                return;
+            }
+
+            foreach (FileCabinetRecord record in findedRecords)
+            {
+                Console.WriteLine($"#{record.Id + 1}, {record.Sex}, {record.FirstName}, {record.LastName}, {record.Age}, {record.Salary}, {record.DateOfBirth:yyyy-MMM-dd}");
             }
         }
 

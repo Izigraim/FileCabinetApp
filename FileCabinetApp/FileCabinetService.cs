@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace FileCabinetApp
@@ -7,6 +8,9 @@ namespace FileCabinetApp
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         public int CreateRecord(char sex, string firstName, string lastName, short age, decimal salary, DateTime dateOfBirth)
         {
@@ -65,7 +69,7 @@ namespace FileCabinetApp
 
             var record = new FileCabinetRecord
             {
-                Id = this.list.Count + 1,
+                Id = this.list.Count,
                 Sex = sex,
                 FirstName = firstName,
                 LastName = lastName,
@@ -74,6 +78,33 @@ namespace FileCabinetApp
                 DateOfBirth = dateOfBirth,
             };
             this.list.Add(record);
+
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionary[firstName].Add(record);
+            }
+            else
+            {
+                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>() { record });
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.lastNameDictionary[lastName].Add(record);
+            }
+            else
+            {
+                this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>() { record });
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))))
+            {
+                this.dateOfBirthDictionary[dateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Add(record);
+            }
+            else
+            {
+                this.dateOfBirthDictionary.Add(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")), new List<FileCabinetRecord>() { record });
+            }
 
             return record.Id;
         }
@@ -91,8 +122,113 @@ namespace FileCabinetApp
                 DateOfBirth = dateOfBirth,
             };
 
+            this.firstNameDictionary[this.list[id].FirstName].Remove(this.list[id]);
+            if (this.firstNameDictionary[this.list[id].FirstName].Count == 0)
+            {
+                this.firstNameDictionary.Remove(this.list[id].FirstName);
+            }
+
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionary[firstName].Add(record);
+            }
+            else
+            {
+                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>() { record });
+            }
+
+            this.lastNameDictionary[this.list[id].LastName].Remove(this.list[id]);
+            if (this.lastNameDictionary[this.list[id].LastName].Count == 0)
+            {
+                this.lastNameDictionary.Remove(this.list[id].LastName);
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.lastNameDictionary[firstName].Add(record);
+            }
+            else
+            {
+                this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>() { record });
+            }
+
+            this.dateOfBirthDictionary[this.list[id].DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Remove(this.list[id]);
+            if (this.lastNameDictionary[this.list[id].LastName].Count == 0)
+            {
+                this.lastNameDictionary.Remove(this.list[id].LastName);
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))))
+            {
+                this.dateOfBirthDictionary[dateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Add(record);
+            }
+            else
+            {
+                this.dateOfBirthDictionary.Add(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")), new List<FileCabinetRecord>() { record });
+            }
+
             this.list.RemoveAt(id);
             this.list.Insert(id, record);
+        }
+
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            try
+            {
+                if (!this.firstNameDictionary.ContainsKey(firstName))
+                {
+                    throw new ArgumentException("There is no record(s) with this first name.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Array.Empty<FileCabinetRecord>();
+            }
+
+            FileCabinetRecord[] findedFirstNames = this.firstNameDictionary[firstName].ToArray();
+
+            return findedFirstNames;
+        }
+
+        public FileCabinetRecord[] FindByLastName(string lastname)
+        {
+            try
+            {
+                if (!this.lastNameDictionary.ContainsKey(lastname))
+                {
+                    throw new ArgumentException("There is no record(s) with this first name.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Array.Empty<FileCabinetRecord>();
+            }
+
+            FileCabinetRecord[] findedFirstNames = this.lastNameDictionary[lastname].ToArray();
+
+            return findedFirstNames;
+        }
+
+        public FileCabinetRecord[] FindByDateOfBirth(string dateOfBirth)
+        {
+            FileCabinetRecord[] findedDateOfBirth = this.list.FindAll(c => c.DateOfBirth == DateTime.Parse(dateOfBirth, CultureInfo.CurrentCulture)).ToArray();
+
+            try
+            {
+                if (findedDateOfBirth == Array.Empty<FileCabinetRecord>() || findedDateOfBirth == null || findedDateOfBirth.Length == 0)
+                {
+                    throw new ArgumentException("There are no records with this first name.", nameof(dateOfBirth));
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Array.Empty<FileCabinetRecord>();
+            }
+
+            return findedDateOfBirth;
         }
 
         public FileCabinetRecord[] GetRecords()
