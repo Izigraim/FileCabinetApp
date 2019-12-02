@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace FileCabinetApp
@@ -93,6 +94,26 @@ namespace FileCabinetApp
 
             this.list.RemoveAt(id);
             this.list.Insert(id, record);
+        }
+
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            FileCabinetRecord[] findedFirstNames = this.list.FindAll(c => c.FirstName.ToLower(CultureInfo.CreateSpecificCulture("en-US")) == firstName.ToLower(CultureInfo.CreateSpecificCulture("en-US"))).ToArray();
+
+            try
+            {
+                if (findedFirstNames == Array.Empty<FileCabinetRecord>() || findedFirstNames == null || findedFirstNames.Length == 0)
+                {
+                    throw new ArgumentException("There are no records with this first name.", nameof(firstName));
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Array.Empty<FileCabinetRecord>();
+            }
+
+            return findedFirstNames;
         }
 
         public FileCabinetRecord[] GetRecords()
