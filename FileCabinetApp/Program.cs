@@ -466,6 +466,9 @@ namespace FileCabinetApp
                 case "lastname":
                     findedRecords = FileCabinetService.FindByLastName(findParameters[1].Trim('"'));
                     break;
+                case "dateofbirth":
+                    findedRecords = FileCabinetService.FindByDateOfBirth(findParameters[1].Trim('"'));
+                    break;
             }
 
             if (findedRecords == Array.Empty<FileCabinetRecord>())

@@ -136,6 +136,26 @@ namespace FileCabinetApp
             return findedLastNames;
         }
 
+        public FileCabinetRecord[] FindByDateOfBirth(string dateOfBirth)
+        {
+            FileCabinetRecord[] findedDateOfBirth = this.list.FindAll(c => c.DateOfBirth == DateTime.Parse(dateOfBirth, CultureInfo.CurrentCulture)).ToArray();
+
+            try
+            {
+                if (findedDateOfBirth == Array.Empty<FileCabinetRecord>() || findedDateOfBirth == null || findedDateOfBirth.Length == 0)
+                {
+                    throw new ArgumentException("There are no records with this first name.", nameof(dateOfBirth));
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Array.Empty<FileCabinetRecord>();
+            }
+
+            return findedDateOfBirth;
+        }
+
         public FileCabinetRecord[] GetRecords()
         {
             FileCabinetRecord[] fileCabinetRecords = new FileCabinetRecord[this.GetStat()];
