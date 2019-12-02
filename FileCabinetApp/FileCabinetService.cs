@@ -10,6 +10,7 @@ namespace FileCabinetApp
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         public int CreateRecord(char sex, string firstName, string lastName, short age, decimal salary, DateTime dateOfBirth)
         {
@@ -96,6 +97,15 @@ namespace FileCabinetApp
                 this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>() { record });
             }
 
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))))
+            {
+                this.dateOfBirthDictionary[dateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Add(record);
+            }
+            else
+            {
+                this.dateOfBirthDictionary.Add(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")), new List<FileCabinetRecord>() { record });
+            }
+
             return record.Id;
         }
 
@@ -140,6 +150,21 @@ namespace FileCabinetApp
             else
             {
                 this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>() { record });
+            }
+
+            this.dateOfBirthDictionary[this.list[id].DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Remove(this.list[id]);
+            if (this.lastNameDictionary[this.list[id].LastName].Count == 0)
+            {
+                this.lastNameDictionary.Remove(this.list[id].LastName);
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))))
+            {
+                this.dateOfBirthDictionary[dateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Add(record);
+            }
+            else
+            {
+                this.dateOfBirthDictionary.Add(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")), new List<FileCabinetRecord>() { record });
             }
 
             this.list.RemoveAt(id);
