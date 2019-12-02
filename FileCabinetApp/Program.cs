@@ -435,7 +435,7 @@ namespace FileCabinetApp
             FileCabinetRecord[] fileCabinetRecords = Program.FileCabinetService.GetRecords();
             for (int i = 0; i < fileCabinetRecords.Length; i++)
             {
-                Console.WriteLine($"#{i + 1}, {fileCabinetRecords[i].Sex}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].Age}, {fileCabinetRecords[i].Salary}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
+                Console.WriteLine($"#{fileCabinetRecords[i].Id + 1}, {fileCabinetRecords[i].Sex}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].Age}, {fileCabinetRecords[i].Salary}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
             }
         }
 
@@ -478,7 +478,7 @@ namespace FileCabinetApp
 
             foreach (FileCabinetRecord record in findedRecords)
             {
-                Console.WriteLine($"#{record.Id}, {record.Sex}, {record.FirstName}, {record.LastName}, {record.Age}, {record.Salary}, {record.DateOfBirth:yyyy-MMM-dd}");
+                Console.WriteLine($"#{record.Id + 1}, {record.Sex}, {record.FirstName}, {record.LastName}, {record.Age}, {record.Salary}, {record.DateOfBirth:yyyy-MMM-dd}");
             }
         }
 

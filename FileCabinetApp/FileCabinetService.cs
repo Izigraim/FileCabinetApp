@@ -8,6 +8,7 @@ namespace FileCabinetApp
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         public int CreateRecord(char sex, string firstName, string lastName, short age, decimal salary, DateTime dateOfBirth)
         {
@@ -66,7 +67,7 @@ namespace FileCabinetApp
 
             var record = new FileCabinetRecord
             {
-                Id = this.list.Count + 1,
+                Id = this.list.Count,
                 Sex = sex,
                 FirstName = firstName,
                 LastName = lastName,
@@ -75,6 +76,15 @@ namespace FileCabinetApp
                 DateOfBirth = dateOfBirth,
             };
             this.list.Add(record);
+
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionary[firstName].Add(record);
+            }
+            else
+            {
+                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>() { record });
+            }
 
             return record.Id;
         }
@@ -92,19 +102,32 @@ namespace FileCabinetApp
                 DateOfBirth = dateOfBirth,
             };
 
+            this.firstNameDictionary[this.list[id].FirstName].Remove(this.list[id]);
+            if (this.firstNameDictionary[this.list[id].FirstName].Count == 0)
+            {
+                this.firstNameDictionary.Remove(this.list[id].FirstName);
+            }
+
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionary[firstName].Add(record);
+            }
+            else
+            {
+                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>() { record });
+            }
+
             this.list.RemoveAt(id);
             this.list.Insert(id, record);
         }
 
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
-            FileCabinetRecord[] findedFirstNames = this.list.FindAll(c => c.FirstName.ToLower(CultureInfo.CreateSpecificCulture("en-US")) == firstName.ToLower(CultureInfo.CreateSpecificCulture("en-US"))).ToArray();
-
             try
             {
-                if (findedFirstNames == Array.Empty<FileCabinetRecord>() || findedFirstNames == null || findedFirstNames.Length == 0)
+                if (!this.firstNameDictionary.ContainsKey(firstName))
                 {
-                    throw new ArgumentException("There are no records with this first name.", nameof(firstName));
+                    throw new ArgumentException("There is no record(s) with this first name.");
                 }
             }
             catch (ArgumentException ex)
@@ -112,6 +135,8 @@ namespace FileCabinetApp
                 Console.WriteLine(ex.Message);
                 return Array.Empty<FileCabinetRecord>();
             }
+
+            FileCabinetRecord[] findedFirstNames = this.firstNameDictionary[firstName].ToArray();
 
             return findedFirstNames;
         }
