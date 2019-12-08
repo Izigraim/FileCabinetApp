@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Class with main method.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Ilya Vrublevsky";
@@ -13,7 +16,8 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static readonly FileCabinetService FileCabinetService = new FileCabinetService();
+        private static IRecordValidator validator;
+        private static IFIleCabinetService fileCabinetService;
 
         private static bool isRunning = true;
 
@@ -39,9 +43,60 @@ namespace FileCabinetApp
             new string[] { "find", "find a record or records by property", "The 'find' command find a record or records by property." },
         };
 
+        /// <summary>
+        /// Gets or sets type of validation.
+        /// </summary>
+        /// <value>
+        /// Type of validation.
+        /// </value>
+        public static string ValidationType { get; set; } = "default";
+
+        /// <summary>
+        /// Start of execution.
+        /// </summary>
+        /// <param name="args">Arguments.</param>
         public static void Main(string[] args)
         {
+            string[] validationTypeArray;
+            if (args != null && args.Length != 0)
+            {
+                if (args.Length > 1 && args[0].Trim(' ') == "-v")
+                {
+                    ValidationType = args[1].ToLower(new CultureInfo("en-US")).Trim(' ');
+                }
+                else if (args.Length == 1)
+                {
+                    validationTypeArray = args[0].Split('=');
+
+                    if (validationTypeArray[0].Trim(' ') == "--validation-rules")
+                    {
+                        ValidationType = validationTypeArray[1].ToLower(new CultureInfo("en-US")).Trim(' ');
+                    }
+                }
+                else
+                {
+                    validationTypeArray = args;
+                }
+            }
+
+            if (ValidationType != "default" && ValidationType != "custom")
+            {
+                ValidationType = "default";
+            }
+
+            if (ValidationType == "default")
+            {
+                validator = new DefaultValidation();
+                fileCabinetService = new FileCabinetService(validator);
+            }
+            else
+            {
+                validator = new CustomValidation();
+                fileCabinetService = new FileCabinetService(validator);
+            }
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine($"Using {ValidationType} validation rules");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -108,7 +163,7 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.FileCabinetService.GetStat();
+            var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
@@ -116,153 +171,15 @@ namespace FileCabinetApp
         {
             CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
 
-            char sex;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Sex(m/w): ");
-                    sex = Convert.ToChar(Console.ReadLine(), culture);
+            FileCabinetRecord record = Program.validator.ValidateParametersProgram();
 
-                    if (sex != 'w' && sex != 'm')
-                    {
-                        throw new ArgumentException("Incorrect sex format.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Write only one symbol.");
-                }
-            }
-
-            string firstName;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("First name: ");
-                    firstName = Console.ReadLine().Trim(' ');
-
-                    if (firstName.Length > 60 || firstName.Length < 2 || firstName.Contains(' ', StringComparison.Ordinal))
-                    {
-                        throw new ArgumentException("Incorrect first name format.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            string lastName;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Last name: ");
-                    lastName = Console.ReadLine().Trim(' ');
-
-                    if (lastName.Length > 60 || lastName.Length < 2 || lastName.Contains(' ', StringComparison.Ordinal))
-                    {
-                        throw new ArgumentException("Incorrect last name format.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            short age;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Age: ");
-                    age = Convert.ToInt16(Console.ReadLine(), culture);
-
-                    if (age > (DateTime.Now.Year - 1950) || age < 0)
-                    {
-                        throw new ArgumentException("Incorrect age format.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Incorrect age symbols.");
-                }
-            }
-
-            decimal salary;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Salary: ");
-                    salary = Convert.ToDecimal(Console.ReadLine(), culture);
-                    if (salary < 0)
-                    {
-                        throw new ArgumentException("Incorrect 'salary' format.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Incorrect salary symbols.");
-                }
-            }
-
-            DateTime dateTime;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Date of birth: ");
-                    dateTime = DateTime.Parse(Console.ReadLine(), culture);
-                    if (dateTime < new DateTime(1950, 1, 1) || dateTime > DateTime.Now)
-                    {
-                        throw new ArgumentException("Incorrect date.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Incorrect DateTime symbols.");
-                }
-            }
-
-            if (Program.FileCabinetService.CreateRecord(sex, firstName, lastName, age, salary, dateTime) == -1)
+            if (Program.fileCabinetService.CreateRecord(record) == -1)
             {
                 Console.WriteLine("An error occured creating the record.");
             }
             else
             {
-                var recordsCount = Program.FileCabinetService.GetStat();
+                var recordsCount = Program.fileCabinetService.GetStat();
                 Console.WriteLine($"Record #{recordsCount} created.");
             }
         }
@@ -274,7 +191,7 @@ namespace FileCabinetApp
             try
             {
                 id = Convert.ToInt32(parameters, culture);
-                if (id > Program.FileCabinetService.GetStat() || id <= 0)
+                if (id > Program.fileCabinetService.GetStat() || id <= 0)
                 {
                     Console.WriteLine($"#{id} record is not found.");
                     return;
@@ -282,158 +199,22 @@ namespace FileCabinetApp
             }
             catch (FormatException)
             {
-                Console.WriteLine("Incorrext formar of ID");
+                Console.WriteLine("Incorrext format of ID");
                 return;
             }
 
-            char sex;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Sex(m/w): ");
-                    sex = Convert.ToChar(Console.ReadLine(), culture);
+            FileCabinetRecord record = record = Program.validator.ValidateParametersProgram();
 
-                    if (sex != 'w' && sex != 'm')
-                    {
-                        throw new ArgumentException("Incorrect sex format.");
-                    }
+            record.Id = id - 1;
 
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Write only one symbol.");
-                }
-            }
-
-            string firstName;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("First name: ");
-                    firstName = Console.ReadLine().Trim(' ');
-
-                    if (firstName.Length > 60 || firstName.Length < 2 || firstName.Contains(' ', StringComparison.Ordinal))
-                    {
-                        throw new ArgumentException("Incorrect first name format.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            string lastName;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Last name: ");
-                    lastName = Console.ReadLine().Trim(' ');
-
-                    if (lastName.Length > 60 || lastName.Length < 2 || lastName.Contains(' ', StringComparison.Ordinal))
-                    {
-                        throw new ArgumentException("Incorrect last name format.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            short age;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Age: ");
-                    age = Convert.ToInt16(Console.ReadLine(), culture);
-
-                    if (age > (DateTime.Now.Year - 1950) || age < 0)
-                    {
-                        throw new ArgumentException("Incorrect age format.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Incorrect age symbols.");
-                }
-            }
-
-            decimal salary;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Salary: ");
-                    salary = Convert.ToDecimal(Console.ReadLine(), culture);
-                    if (salary < 0)
-                    {
-                        throw new ArgumentException("Incorrect 'salary' format.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Incorrect salary symbols.");
-                }
-            }
-
-            DateTime dateTime;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Date of birth: ");
-                    dateTime = DateTime.Parse(Console.ReadLine(), culture);
-                    if (dateTime < new DateTime(1950, 1, 1) || dateTime > DateTime.Now)
-                    {
-                        throw new ArgumentException("Incorrect date.");
-                    }
-
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Incorrect DateTime symbols.");
-                }
-            }
-
-            Program.FileCabinetService.EditRecord(id - 1, sex, firstName, lastName, age, salary, dateTime);
+            Program.fileCabinetService.EditRecord(record);
             Console.WriteLine($"Record #{id} is updated.");
         }
 
         private static void List(string parameters)
         {
-            FileCabinetRecord[] fileCabinetRecords = Program.FileCabinetService.GetRecords();
-            for (int i = 0; i < fileCabinetRecords.Length; i++)
+            ReadOnlyCollection<FileCabinetRecord> fileCabinetRecords = Program.fileCabinetService.GetRecords();
+            for (int i = 0; i < fileCabinetRecords.Count; i++)
             {
                 Console.WriteLine($"#{fileCabinetRecords[i].Id + 1}, {fileCabinetRecords[i].Sex}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].Age}, {fileCabinetRecords[i].Salary}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
             }
@@ -456,22 +237,22 @@ namespace FileCabinetApp
 
             string[] findParameters = parameters.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            FileCabinetRecord[] findedRecords = Array.Empty<FileCabinetRecord>();
+            ReadOnlyCollection<FileCabinetRecord> findedRecords = null;
 
             switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
             {
                 case "firstname":
-                    findedRecords = FileCabinetService.FindByFirstName(findParameters[1].Trim('"'));
+                    findedRecords = fileCabinetService.FindByFirstName(findParameters[1].Trim('"'));
                     break;
                 case "lastname":
-                    findedRecords = FileCabinetService.FindByLastName(findParameters[1].Trim('"'));
+                    findedRecords = fileCabinetService.FindByLastName(findParameters[1].Trim('"'));
                     break;
                 case "dateofbirth":
-                    findedRecords = FileCabinetService.FindByDateOfBirth(findParameters[1].Trim('"'));
+                    findedRecords = fileCabinetService.FindByDateOfBirth(findParameters[1].Trim('"'));
                     break;
             }
 
-            if (findedRecords == Array.Empty<FileCabinetRecord>())
+            if (findedRecords == null)
             {
                 return;
             }
