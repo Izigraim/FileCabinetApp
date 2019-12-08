@@ -5,6 +5,9 @@ using System.Text;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Service class.
+    /// </summary>
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -12,6 +15,16 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
+        /// <summary>
+        /// Create new record.
+        /// </summary>
+        /// <param name="sex">Sex.</param>
+        /// <param name="firstName">First name.</param>
+        /// <param name="lastName">Last name.</param>
+        /// <param name="age">Age.</param>
+        /// <param name="salary">Salary.</param>
+        /// <param name="dateOfBirth">Date of birth.</param>
+        /// <returns>Identifier of created record or '-1'.</returns>
         public int CreateRecord(char sex, string firstName, string lastName, short age, decimal salary, DateTime dateOfBirth)
         {
             try
@@ -109,6 +122,16 @@ namespace FileCabinetApp
             return record.Id;
         }
 
+        /// <summary>
+        /// Editing a record.
+        /// </summary>
+        /// <param name="id">Identifier.</param>
+        /// <param name="sex">Sex.</param>
+        /// <param name="firstName">First name.</param>
+        /// <param name="lastName">Last name.</param>
+        /// <param name="age">Age.</param>
+        /// <param name="salary">Salary.</param>
+        /// <param name="dateOfBirth">Date of birth.</param>
         public void EditRecord(int id, char sex, string firstName, string lastName, short age, decimal salary, DateTime dateOfBirth)
         {
             var record = new FileCabinetRecord
@@ -171,6 +194,11 @@ namespace FileCabinetApp
             this.list.Insert(id, record);
         }
 
+        /// <summary>
+        /// Search for a record by first name.
+        /// </summary>
+        /// <param name="firstName">First name.</param>
+        /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
             try
@@ -191,6 +219,11 @@ namespace FileCabinetApp
             return findedFirstNames;
         }
 
+        /// <summary>
+        /// Search for a record by last name.
+        /// </summary>
+        /// <param name="lastname">Last name.</param>
+        /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
         public FileCabinetRecord[] FindByLastName(string lastname)
         {
             try
@@ -211,6 +244,11 @@ namespace FileCabinetApp
             return findedFirstNames;
         }
 
+        /// <summary>
+        /// Search for a record by last name.
+        /// </summary>
+        /// <param name="dateOfBirth">Date of birth.</param>
+        /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
         public FileCabinetRecord[] FindByDateOfBirth(string dateOfBirth)
         {
             FileCabinetRecord[] findedDateOfBirth = this.list.FindAll(c => c.DateOfBirth == DateTime.Parse(dateOfBirth, CultureInfo.CurrentCulture)).ToArray();
@@ -231,6 +269,10 @@ namespace FileCabinetApp
             return findedDateOfBirth;
         }
 
+        /// <summary>
+        /// Gets array of all records.
+        /// </summary>
+        /// <returns>Array of all records.</returns>
         public FileCabinetRecord[] GetRecords()
         {
             FileCabinetRecord[] fileCabinetRecords = new FileCabinetRecord[this.GetStat()];
@@ -243,6 +285,10 @@ namespace FileCabinetApp
             return fileCabinetRecords;
         }
 
+        /// <summary>
+        /// Gets the number of records.
+        /// </summary>
+        /// <returns>Number of records.</returns>
         public int GetStat()
         {
             return this.list.Count;

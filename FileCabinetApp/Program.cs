@@ -5,6 +5,9 @@ using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Class with main method.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Ilya Vrublevsky";
@@ -39,7 +42,10 @@ namespace FileCabinetApp
             new string[] { "find", "find a record or records by property", "The 'find' command find a record or records by property." },
         };
 
-        public static void Main(string[] args)
+        /// <summary>
+        /// Start of execution.
+        /// </summary>
+        public static void Main()
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
