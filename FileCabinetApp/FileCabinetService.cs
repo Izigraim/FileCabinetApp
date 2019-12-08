@@ -27,9 +27,29 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(record));
             }
 
-            if (FileCabinetDefaultService.ValidateParameters(record) == false)
+            switch (Program.ValidationType)
             {
-                throw new ArgumentException("Data validation is not successful.", nameof(record));
+                case "default":
+                    if (FileCabinetDefaultService.ValidateParameters(record) == false)
+                    {
+                        throw new ArgumentException("Data validation is not successful.", nameof(record));
+                    }
+
+                    break;
+                case "custom":
+                    if (FileCabinetCustomService.ValidateParameters(record) == false)
+                    {
+                        throw new ArgumentException("Data validation is not successful.", nameof(record));
+                    }
+
+                    break;
+                default:
+                    if (FileCabinetDefaultService.ValidateParameters(record) == false)
+                    {
+                        throw new ArgumentException("Data validation is not successful.", nameof(record));
+                    }
+
+                    break;
             }
 
             record.Id = this.list.Count;
@@ -79,9 +99,29 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(record));
             }
 
-            if (FileCabinetDefaultService.ValidateParameters(record) == false)
+            switch (Program.ValidationType)
             {
-                throw new ArgumentException("Data validation is not successful.", nameof(record));
+                case "default":
+                    if (FileCabinetDefaultService.ValidateParameters(record) == false)
+                    {
+                        throw new ArgumentException("Data validation is not successful.", nameof(record));
+                    }
+
+                    break;
+                case "custom":
+                    if (FileCabinetCustomService.ValidateParameters(record) == false)
+                    {
+                        throw new ArgumentException("Data validation is not successful.", nameof(record));
+                    }
+
+                    break;
+                default:
+                    if (FileCabinetDefaultService.ValidateParameters(record) == false)
+                    {
+                        throw new ArgumentException("Data validation is not successful.", nameof(record));
+                    }
+
+                    break;
             }
 
             var recordEdited = new FileCabinetRecord

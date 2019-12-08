@@ -157,10 +157,19 @@
             Class with main method.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Program.Main">
+        <member name="P:FileCabinetApp.Program.ValidationType">
+            <summary>
+            Gets or sets type of validation.
+            </summary>
+            <value>
+            Type of validation.
+            </value>
+        </member>
+        <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
             Start of execution.
             </summary>
+            <param name="args">Arguments.</param>
         </member>
     </members>
 </doc>

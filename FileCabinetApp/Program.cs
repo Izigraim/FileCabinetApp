@@ -43,11 +43,48 @@ namespace FileCabinetApp
         };
 
         /// <summary>
+        /// Gets or sets type of validation.
+        /// </summary>
+        /// <value>
+        /// Type of validation.
+        /// </value>
+        public static string ValidationType { get; set; } = "default";
+
+        /// <summary>
         /// Start of execution.
         /// </summary>
-        public static void Main()
+        /// <param name="args">Arguments.</param>
+        public static void Main(string[] args)
         {
+            string[] validationTypeArray;
+            if (args != null && args.Length != 0)
+            {
+                if (args.Length > 1 && args[0].Trim(' ') == "-v")
+                {
+                    ValidationType = args[1].ToLower(new CultureInfo("en-US")).Trim(' ');
+                }
+                else if (args.Length == 1)
+                {
+                    validationTypeArray = args[0].Split('=');
+
+                    if (validationTypeArray[0].Trim(' ') == "--validation-rules")
+                    {
+                        ValidationType = validationTypeArray[1].ToLower(new CultureInfo("en-US")).Trim(' ');
+                    }
+                }
+                else
+                {
+                    validationTypeArray = args;
+                }
+
+                if (ValidationType != "default" && ValidationType != "custom")
+                {
+                    ValidationType = "default";
+                }
+            }
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine($"Using {ValidationType} validation rules");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -122,7 +159,19 @@ namespace FileCabinetApp
         {
             CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
 
-            var record = FileCabinetDefaultService.ValidateParametersProgram();
+            FileCabinetRecord record;
+            switch (ValidationType)
+            {
+                case "default":
+                     record = FileCabinetDefaultService.ValidateParametersProgram();
+                     break;
+                case "custom":
+                     record = FileCabinetCustomService.ValidateParametersProgram();
+                     break;
+                default:
+                     record = FileCabinetDefaultService.ValidateParametersProgram();
+                     break;
+            }
 
             if (Program.FileCabinetService.CreateRecord(record) == -1)
             {
@@ -154,7 +203,20 @@ namespace FileCabinetApp
                 return;
             }
 
-            var record = FileCabinetDefaultService.ValidateParametersProgram();
+            FileCabinetRecord record;
+            switch (ValidationType)
+            {
+                case "default":
+                    record = FileCabinetDefaultService.ValidateParametersProgram();
+                    break;
+                case "custom":
+                    record = FileCabinetCustomService.ValidateParametersProgram();
+                    break;
+                default:
+                    record = FileCabinetDefaultService.ValidateParametersProgram();
+                    break;
+            }
+
             record.Id = id - 1;
 
             Program.FileCabinetService.EditRecord(record);
