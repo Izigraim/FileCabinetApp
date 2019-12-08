@@ -4,37 +4,37 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
-        <member name="T:FileCabinetApp.FileCabinetCustomService">
+        <member name="T:FileCabinetApp.CustomValidation">
             <summary>
             Class for custom validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.CustomValidation.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Custom validation for module.
             </summary>
             <param name="record">Record.</param>
             <returns>If all correct - true, otherwise - false.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParametersProgram">
+        <member name="M:FileCabinetApp.CustomValidation.ValidateParametersProgram">
             <summary>
             Custom validation for User's input.
             </summary>
             <returns>Recod.</returns>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetDefaultService">
+        <member name="T:FileCabinetApp.DefaultValidation">
             <summary>
             Class for default validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.DefaultValidation.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Default validation for module.
             </summary>
             <param name="record">Record.</param>
             <returns>If all correct - true, otherwise - false.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParametersProgram">
+        <member name="M:FileCabinetApp.DefaultValidation.ValidateParametersProgram">
             <summary>
             Validation for User's input.
             </summary>
@@ -106,6 +106,12 @@
             Service class.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
+            </summary>
+            <param name="validator">Validator.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Create new record.
@@ -151,6 +157,24 @@
             Gets the number of records.
             </summary>
             <returns>Number of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator">
+            <summary>
+            Validation interface.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validation for module.
+            </summary>
+            <param name="record">Record.</param>
+            <returns>If all correct - true, otherwise - false.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParametersProgram">
+            <summary>
+            Validation for User's input.
+            </summary>
+            <returns>Record.</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

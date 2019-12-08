@@ -16,7 +16,8 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static readonly FileCabinetService FileCabinetService = new FileCabinetService();
+        private static IRecordValidator validator;
+        private static FileCabinetService fileCabinetService;
 
         private static bool isRunning = true;
 
@@ -76,11 +77,22 @@ namespace FileCabinetApp
                 {
                     validationTypeArray = args;
                 }
+            }
 
-                if (ValidationType != "default" && ValidationType != "custom")
-                {
-                    ValidationType = "default";
-                }
+            if (ValidationType != "default" && ValidationType != "custom")
+            {
+                ValidationType = "default";
+            }
+
+            if (ValidationType == "default")
+            {
+                validator = new DefaultValidation();
+                fileCabinetService = new FileCabinetService(validator);
+            }
+            else
+            {
+                validator = new CustomValidation();
+                fileCabinetService = new FileCabinetService(validator);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -151,7 +163,7 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.FileCabinetService.GetStat();
+            var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
@@ -159,27 +171,15 @@ namespace FileCabinetApp
         {
             CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
 
-            FileCabinetRecord record;
-            switch (ValidationType)
-            {
-                case "default":
-                     record = FileCabinetDefaultService.ValidateParametersProgram();
-                     break;
-                case "custom":
-                     record = FileCabinetCustomService.ValidateParametersProgram();
-                     break;
-                default:
-                     record = FileCabinetDefaultService.ValidateParametersProgram();
-                     break;
-            }
+            FileCabinetRecord record = Program.validator.ValidateParametersProgram();
 
-            if (Program.FileCabinetService.CreateRecord(record) == -1)
+            if (Program.fileCabinetService.CreateRecord(record) == -1)
             {
                 Console.WriteLine("An error occured creating the record.");
             }
             else
             {
-                var recordsCount = Program.FileCabinetService.GetStat();
+                var recordsCount = Program.fileCabinetService.GetStat();
                 Console.WriteLine($"Record #{recordsCount} created.");
             }
         }
@@ -191,7 +191,7 @@ namespace FileCabinetApp
             try
             {
                 id = Convert.ToInt32(parameters, culture);
-                if (id > Program.FileCabinetService.GetStat() || id <= 0)
+                if (id > Program.fileCabinetService.GetStat() || id <= 0)
                 {
                     Console.WriteLine($"#{id} record is not found.");
                     return;
@@ -203,29 +203,17 @@ namespace FileCabinetApp
                 return;
             }
 
-            FileCabinetRecord record;
-            switch (ValidationType)
-            {
-                case "default":
-                    record = FileCabinetDefaultService.ValidateParametersProgram();
-                    break;
-                case "custom":
-                    record = FileCabinetCustomService.ValidateParametersProgram();
-                    break;
-                default:
-                    record = FileCabinetDefaultService.ValidateParametersProgram();
-                    break;
-            }
+            FileCabinetRecord record = record = Program.validator.ValidateParametersProgram();
 
             record.Id = id - 1;
 
-            Program.FileCabinetService.EditRecord(record);
+            Program.fileCabinetService.EditRecord(record);
             Console.WriteLine($"Record #{id} is updated.");
         }
 
         private static void List(string parameters)
         {
-            FileCabinetRecord[] fileCabinetRecords = Program.FileCabinetService.GetRecords();
+            FileCabinetRecord[] fileCabinetRecords = Program.fileCabinetService.GetRecords();
             for (int i = 0; i < fileCabinetRecords.Length; i++)
             {
                 Console.WriteLine($"#{fileCabinetRecords[i].Id + 1}, {fileCabinetRecords[i].Sex}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].Age}, {fileCabinetRecords[i].Salary}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
@@ -254,13 +242,13 @@ namespace FileCabinetApp
             switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
             {
                 case "firstname":
-                    findedRecords = FileCabinetService.FindByFirstName(findParameters[1].Trim('"'));
+                    findedRecords = fileCabinetService.FindByFirstName(findParameters[1].Trim('"'));
                     break;
                 case "lastname":
-                    findedRecords = FileCabinetService.FindByLastName(findParameters[1].Trim('"'));
+                    findedRecords = fileCabinetService.FindByLastName(findParameters[1].Trim('"'));
                     break;
                 case "dateofbirth":
-                    findedRecords = FileCabinetService.FindByDateOfBirth(findParameters[1].Trim('"'));
+                    findedRecords = fileCabinetService.FindByDateOfBirth(findParameters[1].Trim('"'));
                     break;
             }
 
