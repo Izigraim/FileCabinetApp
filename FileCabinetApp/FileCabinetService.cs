@@ -18,53 +18,53 @@ namespace FileCabinetApp
         /// <summary>
         /// Create new record.
         /// </summary>
-        /// <param name="sex">Sex.</param>
-        /// <param name="firstName">First name.</param>
-        /// <param name="lastName">Last name.</param>
-        /// <param name="age">Age.</param>
-        /// <param name="salary">Salary.</param>
-        /// <param name="dateOfBirth">Date of birth.</param>
+        /// <param name="record">Record.</param>
         /// <returns>Identifier of created record or '-1'.</returns>
-        public int CreateRecord(char sex, string firstName, string lastName, short age, decimal salary, DateTime dateOfBirth)
+        public int CreateRecord(FileCabinetRecord record)
         {
+            if (record == null)
+            {
+                throw new ArgumentNullException(nameof(record));
+            }
+
             try
             {
-                if (firstName == null)
+                if (record.FirstName == null)
                 {
-                    throw new ArgumentNullException(nameof(firstName));
+                    throw new ArgumentNullException(nameof(record));
                 }
 
-                if (firstName.Length > 60 || firstName.Length < 2 || firstName.Contains(' ', StringComparison.Ordinal))
+                if (record.FirstName.Length > 60 || record.FirstName.Length < 2 || record.FirstName.Contains(' ', StringComparison.Ordinal))
                 {
-                    throw new ArgumentException("Incorrect first name format.", nameof(firstName));
+                    throw new ArgumentException("Incorrect first name format.", nameof(record));
                 }
 
-                if (lastName == null)
+                if (record.LastName == null)
                 {
-                    throw new ArgumentNullException(nameof(lastName));
+                    throw new ArgumentNullException(nameof(record));
                 }
 
-                if (lastName.Length > 60 || lastName.Length < 2 || lastName.Contains(' ', StringComparison.Ordinal))
+                if (record.LastName.Length > 60 || record.LastName.Length < 2 || record.LastName.Contains(' ', StringComparison.Ordinal))
                 {
-                    throw new ArgumentException("Incorrect last name format.", nameof(lastName));
+                    throw new ArgumentException("Incorrect last name format.", nameof(record));
                 }
 
-                if (dateOfBirth < new DateTime(1950, 1, 1) || dateOfBirth > DateTime.Now)
+                if (record.DateOfBirth < new DateTime(1950, 1, 1) || record.DateOfBirth > DateTime.Now)
                 {
-                    throw new ArgumentException("Incorrect date.", nameof(dateOfBirth));
+                    throw new ArgumentException("Incorrect date.", nameof(record));
                 }
 
-                if (sex != 'w' && sex != 'm')
+                if (record.Sex != 'w' && record.Sex != 'm')
                 {
-                    throw new ArgumentException("Incorrect sex format.", nameof(sex));
+                    throw new ArgumentException("Incorrect sex format.", nameof(record));
                 }
 
-                if (age > (DateTime.Now.Year - 1950) || age < 0)
+                if (record.Age > (DateTime.Now.Year - 1950) || record.Age < 0)
                 {
-                    throw new ArgumentException("Incorrect age format.", nameof(age));
+                    throw new ArgumentException("Incorrect age format.", nameof(record));
                 }
 
-                if (salary < 0)
+                if (record.Salary < 0)
                 {
                     throw new ArgumentException("Incorrect 'salary' format.");
                 }
@@ -80,118 +80,111 @@ namespace FileCabinetApp
                 return -1;
             }
 
-            var record = new FileCabinetRecord
-            {
-                Id = this.list.Count,
-                Sex = sex,
-                FirstName = firstName,
-                LastName = lastName,
-                Age = age,
-                Salary = salary,
-                DateOfBirth = dateOfBirth,
-            };
-            this.list.Add(record);
+            record.Id = this.list.Count;
 
-            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            var recordToAdd = record;
+
+            this.list.Add(recordToAdd);
+
+            if (this.firstNameDictionary.ContainsKey(recordToAdd.FirstName))
             {
-                this.firstNameDictionary[firstName].Add(record);
+                this.firstNameDictionary[record.FirstName].Add(recordToAdd);
             }
             else
             {
-                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>() { record });
+                this.firstNameDictionary.Add(recordToAdd.FirstName, new List<FileCabinetRecord>() { recordToAdd });
             }
 
-            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            if (this.lastNameDictionary.ContainsKey(recordToAdd.LastName))
             {
-                this.lastNameDictionary[lastName].Add(record);
+                this.lastNameDictionary[record.LastName].Add(recordToAdd);
             }
             else
             {
-                this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>() { record });
+                this.lastNameDictionary.Add(recordToAdd.LastName, new List<FileCabinetRecord>() { recordToAdd });
             }
 
-            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))))
+            if (this.dateOfBirthDictionary.ContainsKey(recordToAdd.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))))
             {
-                this.dateOfBirthDictionary[dateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Add(record);
+                this.dateOfBirthDictionary[record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Add(recordToAdd);
             }
             else
             {
-                this.dateOfBirthDictionary.Add(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")), new List<FileCabinetRecord>() { record });
+                this.dateOfBirthDictionary.Add(recordToAdd.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")), new List<FileCabinetRecord>() { recordToAdd });
             }
 
-            return record.Id;
+            return recordToAdd.Id;
         }
 
         /// <summary>
         /// Editing a record.
         /// </summary>
-        /// <param name="id">Identifier.</param>
-        /// <param name="sex">Sex.</param>
-        /// <param name="firstName">First name.</param>
-        /// <param name="lastName">Last name.</param>
-        /// <param name="age">Age.</param>
-        /// <param name="salary">Salary.</param>
-        /// <param name="dateOfBirth">Date of birth.</param>
-        public void EditRecord(int id, char sex, string firstName, string lastName, short age, decimal salary, DateTime dateOfBirth)
+        /// <param name="record">Record.</param>
+        public void EditRecord(FileCabinetRecord record)
         {
-            var record = new FileCabinetRecord
+            if (record == null)
             {
-                Id = id,
-                Sex = sex,
-                FirstName = firstName,
-                LastName = lastName,
-                Age = age,
-                Salary = salary,
-                DateOfBirth = dateOfBirth,
+                throw new ArgumentNullException(nameof(record));
+            }
+
+            var recordEdited = new FileCabinetRecord
+            {
+                Id = record.Id,
+                Sex = record.Sex,
+                FirstName = record.FirstName,
+                LastName = record.LastName,
+                Age = record.Age,
+                Salary = record.Salary,
+                DateOfBirth = record.DateOfBirth,
             };
 
-            this.firstNameDictionary[this.list[id].FirstName].Remove(this.list[id]);
-            if (this.firstNameDictionary[this.list[id].FirstName].Count == 0)
+            this.firstNameDictionary[this.list[record.Id].FirstName].Remove(this.list[record.Id]);
+            if (this.firstNameDictionary[this.list[record.Id].FirstName].Count == 0)
             {
-                this.firstNameDictionary.Remove(this.list[id].FirstName);
+                this.firstNameDictionary.Remove(this.list[record.Id].FirstName);
             }
 
-            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            if (this.firstNameDictionary.ContainsKey(recordEdited.FirstName))
             {
-                this.firstNameDictionary[firstName].Add(record);
+                this.firstNameDictionary[record.FirstName].Add(recordEdited);
             }
             else
             {
-                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>() { record });
+                this.firstNameDictionary.Add(recordEdited.FirstName, new List<FileCabinetRecord>() { recordEdited });
             }
 
-            this.lastNameDictionary[this.list[id].LastName].Remove(this.list[id]);
-            if (this.lastNameDictionary[this.list[id].LastName].Count == 0)
+            this.lastNameDictionary[this.list[record.Id].LastName].Remove(this.list[record.Id]);
+            if (this.lastNameDictionary[this.list[record.Id].LastName].Count == 0)
             {
-                this.lastNameDictionary.Remove(this.list[id].LastName);
+                this.lastNameDictionary.Remove(this.list[record.Id].LastName);
             }
 
-            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            if (this.lastNameDictionary.ContainsKey(recordEdited.LastName))
             {
-                this.lastNameDictionary[firstName].Add(record);
+                this.lastNameDictionary[record.LastName].Add(recordEdited);
             }
             else
             {
-                this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>() { record });
+                this.lastNameDictionary.Add(recordEdited.LastName, new List<FileCabinetRecord>() { recordEdited });
             }
 
-            this.dateOfBirthDictionary[this.list[id].DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Remove(this.list[id]);
-            if (this.lastNameDictionary[this.list[id].LastName].Count == 0)
+            this.dateOfBirthDictionary[this.list[record.Id].DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Remove(this.list[record.Id]);
+            if (this.dateOfBirthDictionary[this.list[record.Id].DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Count == 0)
             {
-                this.lastNameDictionary.Remove(this.list[id].LastName);
+                this.dateOfBirthDictionary.Remove(this.list[record.Id].DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")));
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))))
             {
-                this.dateOfBirthDictionary[dateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Add(record);
+                this.dateOfBirthDictionary[record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Add(recordEdited);
             }
             else
             {
-                this.dateOfBirthDictionary.Add(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")), new List<FileCabinetRecord>() { record });
+                this.dateOfBirthDictionary.Add(recordEdited.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")), new List<FileCabinetRecord>() { recordEdited });
             }
 
-            this.list.RemoveAt(id);
-            this.list.Insert(id, record);
+            this.list.RemoveAt(record.Id);
+            this.list.Insert(record.Id, recordEdited);
         }
 
         /// <summary>

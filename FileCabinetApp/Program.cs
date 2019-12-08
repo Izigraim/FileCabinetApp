@@ -262,7 +262,17 @@ namespace FileCabinetApp
                 }
             }
 
-            if (Program.FileCabinetService.CreateRecord(sex, firstName, lastName, age, salary, dateTime) == -1)
+            var record = new FileCabinetRecord
+            {
+                Sex = sex,
+                FirstName = firstName,
+                LastName = lastName,
+                Age = age,
+                Salary = salary,
+                DateOfBirth = dateTime,
+            };
+
+            if (Program.FileCabinetService.CreateRecord(record) == -1)
             {
                 Console.WriteLine("An error occured creating the record.");
             }
@@ -432,7 +442,18 @@ namespace FileCabinetApp
                 }
             }
 
-            Program.FileCabinetService.EditRecord(id - 1, sex, firstName, lastName, age, salary, dateTime);
+            var record = new FileCabinetRecord
+            {
+                Id = id - 1,
+                Sex = sex,
+                FirstName = firstName,
+                LastName = lastName,
+                Age = age,
+                Salary = salary,
+                DateOfBirth = dateTime,
+            };
+
+            Program.FileCabinetService.EditRecord(record);
             Console.WriteLine($"Record #{id} is updated.");
         }
 
