@@ -56,111 +56,23 @@ namespace FileCabinetApp
         {
             CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
 
-            char sex;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Sex(m/w): ");
-                    sex = Convert.ToChar(Console.ReadLine(), culture);
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Write only one symbol.");
-                }
-            }
+            Console.Write("Sex(m/w): ");
+            char sex = this.ReadInput<char>(this.CharConverter, this.SexValidator);
 
-            string firstName;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("First name: ");
-                    firstName = Console.ReadLine().Trim(' ');
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+            Console.Write("First name: ");
+            string firstName = this.ReadInput<string>(this.StringConverter, this.FirstNameValidator);
 
-            string lastName;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Last name: ");
-                    lastName = Console.ReadLine().Trim(' ');
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+            Console.Write("Last name: ");
+            string lastName = this.ReadInput<string>(this.StringConverter, this.LastNameValidator);
 
-            short age;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Age: ");
-                    age = Convert.ToInt16(Console.ReadLine(), culture);
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Incorrect age symbols.");
-                }
-            }
+            Console.Write("Age: ");
+            short age = Convert.ToInt16(this.ReadInput<string>(this.ShortConverter, this.AgeValidation), new CultureInfo("en-US"));
 
-            decimal salary;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Salary: ");
-                    salary = Convert.ToDecimal(Console.ReadLine(), culture);
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Incorrect salary symbols.");
-                }
-            }
+            Console.Write("Salary: ");
+            decimal salary = Convert.ToDecimal(this.ReadInput<string>(this.DecimalConverter, this.SalaryValidation), new CultureInfo("en-US"));
 
-            DateTime dateTime;
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Date of birth: ");
-                    dateTime = DateTime.Parse(Console.ReadLine(), culture);
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Incorrect DateTime symbols.");
-                }
-            }
+            Console.Write("Date of Birth: ");
+            DateTime dateOfBirth = Convert.ToDateTime(this.ReadInput<string>(this.DateTimeConverter, this.DateOfBirthValidator), new CultureInfo("en-US"));
 
             var record = new FileCabinetRecord
             {
@@ -169,10 +81,201 @@ namespace FileCabinetApp
                 LastName = lastName,
                 Age = age,
                 Salary = salary,
-                DateOfBirth = dateTime,
+                DateOfBirth = dateOfBirth,
             };
 
             return record;
+        }
+
+        private Tuple<bool, string, string> DateTimeConverter(string valueString)
+        {
+            DateTime value;
+
+            try
+            {
+                value = Convert.ToDateTime(valueString, new CultureInfo("en-US"));
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return (false, " ", valueString).ToTuple();
+            }
+
+            return (true, " ", valueString).ToTuple();
+        }
+
+        private Tuple<bool, string> DateOfBirthValidator(string dateOfBirthString)
+        {
+            DateTime dateTime = Convert.ToDateTime(dateOfBirthString, new CultureInfo("en-US"));
+
+            try
+            {
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return (false, dateOfBirthString).ToTuple();
+            }
+
+            return (true, dateOfBirthString).ToTuple();
+        }
+
+        private Tuple<bool, string, string> DecimalConverter(string valueString)
+        {
+            decimal value;
+
+            try
+            {
+                value = Convert.ToDecimal(valueString, new CultureInfo("en-US"));
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return (false, " ", valueString).ToTuple();
+            }
+
+            return (true, " ", valueString).ToTuple();
+        }
+
+        private Tuple<bool, string> SalaryValidation(string salaryString)
+        {
+            decimal salary = Convert.ToDecimal(salaryString, new CultureInfo("en-US"));
+            try
+            {
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return (false, salaryString).ToTuple();
+            }
+
+            return (true, salaryString).ToTuple();
+        }
+
+        private Tuple<bool, string, string> ShortConverter(string valueString)
+        {
+            short value;
+            try
+            {
+                value = Convert.ToInt16(valueString, new CultureInfo("en-US"));
+
+                if (value > 32767 || value < -32768)
+                {
+                    throw new FormatException(nameof(value));
+                }
+            }
+            catch (FormatException)
+            {
+                return (false, " ", valueString).ToTuple();
+            }
+
+            return (true, " ", valueString).ToTuple();
+        }
+
+        private Tuple<bool, string> AgeValidation(string ageString)
+        {
+            short age = Convert.ToInt16(ageString, new CultureInfo("en-US"));
+            try
+            {
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return (false, age.ToString(new CultureInfo("en-US"))).ToTuple();
+            }
+
+            return (true, age.ToString(new CultureInfo("en-US"))).ToTuple();
+        }
+
+        private Tuple<bool, string, string> StringConverter(string value)
+        {
+            return (true, " ", value).ToTuple();
+        }
+
+        private Tuple<bool, string> FirstNameValidator(string firstName)
+        {
+            try
+            {
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return (false, firstName).ToTuple();
+            }
+
+            return (true, firstName).ToTuple();
+        }
+
+        private Tuple<bool, string> LastNameValidator(string lastName)
+        {
+            try
+            {
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return (false, lastName).ToTuple();
+            }
+
+            return (true, lastName).ToTuple();
+        }
+
+        private Tuple<bool, string, char> CharConverter(string value)
+        {
+            char[] valueChar;
+            try
+            {
+                valueChar = value.ToCharArray();
+            }
+            catch (FormatException)
+            {
+                return (false, " ", ' ').ToTuple();
+            }
+
+            return (true, " ", valueChar[0]).ToTuple();
+        }
+
+        private Tuple<bool, string> SexValidator(char sex)
+        {
+            try
+            {
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return (false, " ").ToTuple();
+            }
+
+            return (true, sex.ToString(new CultureInfo("en-US"))).ToTuple();
+        }
+
+        private T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
         }
     }
 }
