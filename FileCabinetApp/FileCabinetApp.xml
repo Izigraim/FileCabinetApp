@@ -4,6 +4,42 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetCustomService">
+            <summary>
+            Class for custom validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Custom validation for module.
+            </summary>
+            <param name="record">Record.</param>
+            <returns>If all correct - true, otherwise - false.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParametersProgram">
+            <summary>
+            Custom validation for User's input.
+            </summary>
+            <returns>Recod.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetDefaultService">
+            <summary>
+            Class for default validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Default validation for module.
+            </summary>
+            <param name="record">Record.</param>
+            <returns>If all correct - true, otherwise - false.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParametersProgram">
+            <summary>
+            Validation for User's input.
+            </summary>
+            <returns>Record.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Record.

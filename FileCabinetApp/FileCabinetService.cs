@@ -27,57 +27,9 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(record));
             }
 
-            try
+            if (FileCabinetDefaultService.ValidateParameters(record) == false)
             {
-                if (record.FirstName == null)
-                {
-                    throw new ArgumentNullException(nameof(record));
-                }
-
-                if (record.FirstName.Length > 60 || record.FirstName.Length < 2 || record.FirstName.Contains(' ', StringComparison.Ordinal))
-                {
-                    throw new ArgumentException("Incorrect first name format.", nameof(record));
-                }
-
-                if (record.LastName == null)
-                {
-                    throw new ArgumentNullException(nameof(record));
-                }
-
-                if (record.LastName.Length > 60 || record.LastName.Length < 2 || record.LastName.Contains(' ', StringComparison.Ordinal))
-                {
-                    throw new ArgumentException("Incorrect last name format.", nameof(record));
-                }
-
-                if (record.DateOfBirth < new DateTime(1950, 1, 1) || record.DateOfBirth > DateTime.Now)
-                {
-                    throw new ArgumentException("Incorrect date.", nameof(record));
-                }
-
-                if (record.Sex != 'w' && record.Sex != 'm')
-                {
-                    throw new ArgumentException("Incorrect sex format.", nameof(record));
-                }
-
-                if (record.Age > (DateTime.Now.Year - 1950) || record.Age < 0)
-                {
-                    throw new ArgumentException("Incorrect age format.", nameof(record));
-                }
-
-                if (record.Salary < 0)
-                {
-                    throw new ArgumentException("Incorrect 'salary' format.");
-                }
-            }
-            catch (ArgumentNullException ex)
-            {
-                Console.WriteLine(ex.Message);
-                return -1;
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine(ex.Message);
-                return -1;
+                throw new ArgumentException("Data validation is not successful.", nameof(record));
             }
 
             record.Id = this.list.Count;
@@ -125,6 +77,11 @@ namespace FileCabinetApp
             if (record == null)
             {
                 throw new ArgumentNullException(nameof(record));
+            }
+
+            if (FileCabinetDefaultService.ValidateParameters(record) == false)
+            {
+                throw new ArgumentException("Data validation is not successful.", nameof(record));
             }
 
             var recordEdited = new FileCabinetRecord
