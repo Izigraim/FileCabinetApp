@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 
@@ -159,7 +160,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">First name.</param>
         /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public FileCabinetRecord[] FindByFirstName(string firstName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             try
             {
@@ -171,12 +172,12 @@ namespace FileCabinetApp
             catch (ArgumentException ex)
             {
                 Console.WriteLine(ex.Message);
-                return Array.Empty<FileCabinetRecord>();
+                return null;
             }
 
-            FileCabinetRecord[] findedFirstNames = this.firstNameDictionary[firstName].ToArray();
+            ReadOnlyCollection<FileCabinetRecord> findedFirstNameCollection = new ReadOnlyCollection<FileCabinetRecord>(this.firstNameDictionary[firstName]);
 
-            return findedFirstNames;
+            return findedFirstNameCollection;
         }
 
         /// <summary>
@@ -184,7 +185,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastname">Last name.</param>
         /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public FileCabinetRecord[] FindByLastName(string lastname)
+        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastname)
         {
             try
             {
@@ -196,12 +197,12 @@ namespace FileCabinetApp
             catch (ArgumentException ex)
             {
                 Console.WriteLine(ex.Message);
-                return Array.Empty<FileCabinetRecord>();
+                return null;
             }
 
-            FileCabinetRecord[] findedFirstNames = this.lastNameDictionary[lastname].ToArray();
+            ReadOnlyCollection<FileCabinetRecord> findedLastNameCollection = new ReadOnlyCollection<FileCabinetRecord>(this.lastNameDictionary[lastname]);
 
-            return findedFirstNames;
+            return findedLastNameCollection;
         }
 
         /// <summary>
@@ -209,13 +210,12 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date of birth.</param>
         /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public FileCabinetRecord[] FindByDateOfBirth(string dateOfBirth)
+        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateOfBirth)
         {
-            FileCabinetRecord[] findedDateOfBirth = this.list.FindAll(c => c.DateOfBirth == DateTime.Parse(dateOfBirth, CultureInfo.CurrentCulture)).ToArray();
-
+            ReadOnlyCollection<FileCabinetRecord> findedDateOfBirthCollection = new ReadOnlyCollection<FileCabinetRecord>(this.list.FindAll(c => c.DateOfBirth == DateTime.Parse(dateOfBirth, CultureInfo.CurrentCulture)));
             try
             {
-                if (findedDateOfBirth == Array.Empty<FileCabinetRecord>() || findedDateOfBirth == null || findedDateOfBirth.Length == 0)
+                if (findedDateOfBirthCollection == null)
                 {
                     throw new ArgumentException("There are no records with this first name.", nameof(dateOfBirth));
                 }
@@ -223,25 +223,19 @@ namespace FileCabinetApp
             catch (ArgumentException ex)
             {
                 Console.WriteLine(ex.Message);
-                return Array.Empty<FileCabinetRecord>();
+                return null;
             }
 
-            return findedDateOfBirth;
+            return findedDateOfBirthCollection;
         }
 
         /// <summary>
         /// Gets array of all records.
         /// </summary>
         /// <returns>Array of all records.</returns>
-        public FileCabinetRecord[] GetRecords()
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            FileCabinetRecord[] fileCabinetRecords = new FileCabinetRecord[this.GetStat()];
-
-            for (int i = 0; i < this.GetStat(); i++)
-            {
-                fileCabinetRecords[i] = this.list[i];
-            }
-
+            ReadOnlyCollection<FileCabinetRecord> fileCabinetRecords = new ReadOnlyCollection<FileCabinetRecord>(this.list);
             return fileCabinetRecords;
         }
 

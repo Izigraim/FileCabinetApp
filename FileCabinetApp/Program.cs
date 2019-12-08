@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
 {
@@ -213,8 +215,8 @@ namespace FileCabinetApp
 
         private static void List(string parameters)
         {
-            FileCabinetRecord[] fileCabinetRecords = Program.fileCabinetService.GetRecords();
-            for (int i = 0; i < fileCabinetRecords.Length; i++)
+            ReadOnlyCollection<FileCabinetRecord> fileCabinetRecords = Program.fileCabinetService.GetRecords();
+            for (int i = 0; i < fileCabinetRecords.Count; i++)
             {
                 Console.WriteLine($"#{fileCabinetRecords[i].Id + 1}, {fileCabinetRecords[i].Sex}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].Age}, {fileCabinetRecords[i].Salary}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
             }
@@ -237,7 +239,7 @@ namespace FileCabinetApp
 
             string[] findParameters = parameters.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            FileCabinetRecord[] findedRecords = Array.Empty<FileCabinetRecord>();
+            ReadOnlyCollection<FileCabinetRecord> findedRecords = null;
 
             switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
             {
@@ -252,7 +254,7 @@ namespace FileCabinetApp
                     break;
             }
 
-            if (findedRecords == Array.Empty<FileCabinetRecord>())
+            if (findedRecords == null)
             {
                 return;
             }
