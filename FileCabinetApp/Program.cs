@@ -1,9 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
 {
@@ -19,7 +17,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
 
         private static IRecordValidator validator;
-        private static FileCabinetService fileCabinetService;
+        private static IFIleCabinetService fileCabinetService;
 
         private static bool isRunning = true;
 

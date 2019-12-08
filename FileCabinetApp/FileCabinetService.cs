@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Service class.
     /// </summary>
-    public class FileCabinetService
+    public class FileCabinetService : IFIleCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
