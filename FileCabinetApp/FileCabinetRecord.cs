@@ -7,6 +7,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Record.
     /// </summary>
+    [Serializable]
     public class FileCabinetRecord
     {
         /// <summary>

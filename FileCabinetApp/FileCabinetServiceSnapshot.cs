@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace FileCabinetApp
 {
@@ -36,6 +37,19 @@ namespace FileCabinetApp
                 {
                     fileCabinetRecordCsvWriter.Write(this.records[i]);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Save records to .xml file.
+        /// </summary>
+        /// <param name="stream">FileStream.</param>
+        public void SaveToXml(FileStream stream)
+        {
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+                FileCabinetRecordXmlWriter fileCabinetRecordXmlWriter = new FileCabinetRecordXmlWriter(writer);
+                fileCabinetRecordXmlWriter.Write(this.records);
             }
         }
     }

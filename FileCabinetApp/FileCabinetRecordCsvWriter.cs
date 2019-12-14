@@ -19,6 +19,11 @@ namespace FileCabinetApp
         /// <param name="writer">Stream.</param>
         public FileCabinetRecordCsvWriter(StreamWriter writer)
         {
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
             this.writer = writer;
             writer.WriteLine("Id,Sex,FirstName,LastName,Age,Salary,DateOfBirth");
         }
@@ -29,7 +34,7 @@ namespace FileCabinetApp
         /// <param name="record">Record.</param>
         public void Write(FileCabinetRecord record)
         {
-            this.writer.WriteLine((record?.Id + 1) + "," + record.Sex + "," + record.FirstName + "," + record.LastName + "," + record.Age.ToString(new CultureInfo("en-US")) + "," + record.Salary.ToString() + "," + record.DateOfBirth.ToString("MM/dd/yyyy", new CultureInfo("en-US")));
+            this.writer.WriteLine(record?.Id + "," + record.Sex + "," + record.FirstName + "," + record.LastName + "," + record.Age.ToString(new CultureInfo("en-US")) + "," + record.Salary.ToString() + "," + record.DateOfBirth.ToString("MM/dd/yyyy", new CultureInfo("en-US")));
         }
     }
 }

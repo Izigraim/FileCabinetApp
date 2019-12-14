@@ -351,9 +351,75 @@ namespace FileCabinetApp
                                     fileCabinetServiceShapshot.SaveToCsv(stream);
                                 }
                             }
+                            else if (answer.Trim().ToLower(new CultureInfo("en-US")) == "n")
+                            {
+                                return;
+                            }
+                        }
+                        catch (DirectoryNotFoundException)
+                        {
+                            Console.WriteLine($"Export failed: can't open file {path}");
+                        }
+
+                        Console.WriteLine($"All records are exported to file {path}");
+                    }
+
+                    break;
+
+                case "xml":
+                    {
+                        string path = null;
+
+                        try
+                        {
+                            path = parametersArray[1];
+
+                            if (!path.Contains(".xml", StringComparison.Ordinal))
+                            {
+                                throw new ArgumentException("Incorrect file name.");
+                            }
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            return;
+                        }
+
+                        try
+                        {
+                            string answer = string.Empty;
+                            if (!File.Exists(path))
+                            {
+                                using (FileStream stream = new FileStream(path, FileMode.Create))
+                                {
+                                    fileCabinetServiceShapshot.SaveToXml(stream);
+                                }
+                            }
                             else
                             {
-                                Console.WriteLine($"Records weren't exported because you selected 'no'");
+                                while (true)
+                                {
+                                    Console.Write($"File is exist - rewrite {path}? [Y/n] ");
+                                    answer = Console.ReadLine();
+                                    if (answer.ToLower(new CultureInfo("en-US")) != "y" && answer.ToLower(new CultureInfo("en-US")) != "n")
+                                    {
+                                        Console.WriteLine("Incorrect answer.");
+                                        continue;
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            if (answer.Trim().ToLower(new CultureInfo("en-US")) == "y")
+                            {
+                                using (FileStream stream = new FileStream(path, FileMode.Create))
+                                {
+                                    fileCabinetServiceShapshot.SaveToXml(stream);
+                                }
+                            }
+                            else if (answer.Trim().ToLower(new CultureInfo("en-US")) == "n")
+                            {
                                 return;
                             }
                         }
