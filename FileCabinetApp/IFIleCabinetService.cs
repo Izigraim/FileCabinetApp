@@ -55,5 +55,11 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Number of records.</returns>
         public int GetStat();
+
+        /// <summary>
+        /// Make snapshot method.
+        /// </summary>
+        /// <returns>Instance of snapshot class.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot();
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
 {
@@ -30,6 +32,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("export", Export),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -41,6 +44,7 @@ namespace FileCabinetApp
             new string[] { "list", "returns list of records", "The 'list' command returns list of records." },
             new string[] { "edit", "edit a record", "The 'edit' command edit a record" },
             new string[] { "find", "find a record or records by property", "The 'find' command find a record or records by property." },
+            new string[] { "export", "export data to file", "The 'export' command export a records to file" },
         };
 
         /// <summary>
@@ -267,6 +271,180 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Export(string parameters)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(parameters.Trim()))
+                {
+                    throw new ArgumentException("Incorrect parameters.");
+                }
+
+                if (parameters.Trim().Where(x => x == ' ').Count() != 1)
+                {
+                    throw new ArgumentException("Incorrect parameters.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            string[] parametersArray = parameters.Trim().Split(' ');
+
+            var fileCabinetServiceShapshot = fileCabinetService.MakeSnapshot();
+
+            switch (parametersArray[0].ToLower(new CultureInfo("en-US")))
+            {
+                case "csv":
+                    {
+                        string path = null;
+
+                        try
+                        {
+                            path = parametersArray[1];
+
+                            if (!path.Contains(".csv", StringComparison.Ordinal))
+                            {
+                                throw new ArgumentException("Incorrect file name.");
+                            }
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            return;
+                        }
+
+                        try
+                        {
+                            string answer = string.Empty;
+                            if (!File.Exists(path))
+                            {
+                                using (FileStream stream = new FileStream(path, FileMode.Create))
+                                {
+                                    fileCabinetServiceShapshot.SaveToCsv(stream);
+                                }
+                            }
+                            else
+                            {
+                                while (true)
+                                {
+                                    Console.Write($"File is exist - rewrite {path}? [Y/n] ");
+                                    answer = Console.ReadLine();
+                                    if (answer.ToLower(new CultureInfo("en-US")) != "y" && answer.ToLower(new CultureInfo("en-US")) != "n")
+                                    {
+                                        Console.WriteLine("Incorrect answer.");
+                                        continue;
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            if (answer.Trim().ToLower(new CultureInfo("en-US")) == "y")
+                            {
+                                using (FileStream stream = new FileStream(path, FileMode.Create))
+                                {
+                                    fileCabinetServiceShapshot.SaveToCsv(stream);
+                                }
+                            }
+                            else if (answer.Trim().ToLower(new CultureInfo("en-US")) == "n")
+                            {
+                                return;
+                            }
+                        }
+                        catch (DirectoryNotFoundException)
+                        {
+                            Console.WriteLine($"Export failed: can't open file {path}");
+                        }
+
+                        Console.WriteLine($"All records are exported to file {path}");
+                    }
+
+                    break;
+
+                case "xml":
+                    {
+                        string path = null;
+
+                        try
+                        {
+                            path = parametersArray[1];
+
+                            if (!path.Contains(".xml", StringComparison.Ordinal))
+                            {
+                                throw new ArgumentException("Incorrect file name.");
+                            }
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            return;
+                        }
+
+                        try
+                        {
+                            string answer = string.Empty;
+                            if (!File.Exists(path))
+                            {
+                                using (FileStream stream = new FileStream(path, FileMode.Create))
+                                {
+                                    fileCabinetServiceShapshot.SaveToXml(stream);
+                                }
+                            }
+                            else
+                            {
+                                while (true)
+                                {
+                                    Console.Write($"File is exist - rewrite {path}? [Y/n] ");
+                                    answer = Console.ReadLine();
+                                    if (answer.ToLower(new CultureInfo("en-US")) != "y" && answer.ToLower(new CultureInfo("en-US")) != "n")
+                                    {
+                                        Console.WriteLine("Incorrect answer.");
+                                        continue;
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            if (answer.Trim().ToLower(new CultureInfo("en-US")) == "y")
+                            {
+                                using (FileStream stream = new FileStream(path, FileMode.Create))
+                                {
+                                    fileCabinetServiceShapshot.SaveToXml(stream);
+                                }
+                            }
+                            else if (answer.Trim().ToLower(new CultureInfo("en-US")) == "n")
+                            {
+                                return;
+                            }
+                        }
+                        catch (DirectoryNotFoundException)
+                        {
+                            Console.WriteLine($"Export failed: can't open file {path}");
+                        }
+
+                        Console.WriteLine($"All records are exported to file {path}");
+                    }
+
+                    break;
+                default:
+                    {
+                        try
+                        {
+                            throw new ArgumentException("Incorrect file format.");
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            return;
+                        }
+                    }
+            }
         }
     }
 }
