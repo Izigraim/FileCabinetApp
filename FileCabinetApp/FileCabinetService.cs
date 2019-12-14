@@ -247,5 +247,14 @@ namespace FileCabinetApp
         {
             return this.list.Count;
         }
+
+        /// <summary>
+        /// Make snapshot method.
+        /// </summary>
+        /// <returns>Instance of snapshot class.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.list.ToArray());
+        }
     }
 }

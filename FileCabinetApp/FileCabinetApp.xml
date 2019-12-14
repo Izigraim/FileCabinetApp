@@ -101,6 +101,23 @@
             DateOfBirth.
             </value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            CsvWriter class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer">Stream.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Write one record to file.
+            </summary>
+            <param name="record">Record.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Service class.
@@ -158,6 +175,29 @@
             </summary>
             <returns>Number of records.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
+            <summary>
+            Make snapshot method.
+            </summary>
+            <returns>Instance of snapshot class.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            Shapshot class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">Array of records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.FileStream)">
+            <summary>
+            Save records to .csv file.
+            </summary>
+            <param name="stream">Stream.</param>
+        </member>
         <member name="T:FileCabinetApp.IFIleCabinetService">
             <summary>
             Extract interface to FileCabinetService.
@@ -208,6 +248,12 @@
             Gets the number of records.
             </summary>
             <returns>Number of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFIleCabinetService.MakeSnapshot">
+            <summary>
+            Make snapshot method.
+            </summary>
+            <returns>Instance of snapshot class.</returns>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
