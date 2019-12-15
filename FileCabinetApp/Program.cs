@@ -55,7 +55,7 @@ namespace FileCabinetApp
         /// </value>
         public static string ValidationType { get; set; } = "default";
 
-        public static string StorageType { get; set; } = "memory";
+        public static string StorageType { get; set; } = "file";
 
         /// <summary>
         /// Start of execution.
@@ -83,7 +83,7 @@ namespace FileCabinetApp
                 {
                     parametersOfCommandLineArray = args;
                 }
- 
+
                 if (args.Length == 2 && args[0].Trim(' ') == "-s")
                 {
                     if (args[1].ToLower(new CultureInfo("en-US")).Trim(' ') == "memory" || args[1].ToLower(new CultureInfo("en-US")).Trim(' ') == "file")
@@ -125,13 +125,12 @@ namespace FileCabinetApp
             }
             else
             {
-                using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
+                using (FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate))
                 {
                     fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
                 }
 
             }
-
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine($"Using '{ValidationType}' validation rules");
@@ -218,8 +217,8 @@ namespace FileCabinetApp
             }
             else
             {
-                var recordsCount = Program.fileCabinetService.GetStat();
-                Console.WriteLine($"Record #{recordsCount} created.");
+                //var recordsCount = Program.fileCabinetService.GetStat();
+                //Console.WriteLine($"Record #{recordsCount} created.");
             }
         }
 
