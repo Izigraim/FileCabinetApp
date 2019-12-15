@@ -9,10 +9,12 @@ namespace FileCabinetApp
     public class FileCabinetFilesystemService : IFIleCabinetService
     {
         private readonly FileStream fileStream;
+        private readonly IRecordValidator validator;
 
-        public FileCabinetFilesystemService(FileStream fileStream)
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
+            this.validator = validator;
         }
 
         public int CreateRecord(FileCabinetRecord record)
