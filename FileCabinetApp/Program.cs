@@ -91,12 +91,12 @@ namespace FileCabinetApp
             if (ValidationType == "default")
             {
                 validator = new DefaultValidation();
-                fileCabinetService = new FileCabinetService(validator);
+                fileCabinetService = new FileCabinetMemoryService(validator);
             }
             else
             {
                 validator = new CustomValidation();
-                fileCabinetService = new FileCabinetService(validator);
+                fileCabinetService = new FileCabinetMemoryService(validator);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");

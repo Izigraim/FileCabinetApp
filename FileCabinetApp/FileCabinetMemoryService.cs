@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Service class.
     /// </summary>
-    public class FileCabinetService : IFIleCabinetService
+    public class FileCabinetMemoryService : IFIleCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -18,10 +18,10 @@ namespace FileCabinetApp
         private readonly IRecordValidator validator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// </summary>
         /// <param name="validator">Validator.</param>
-        public FileCabinetService(IRecordValidator validator)
+        public FileCabinetMemoryService(IRecordValidator validator)
         {
             this.validator = validator;
         }
