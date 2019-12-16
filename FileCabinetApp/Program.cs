@@ -125,10 +125,9 @@ namespace FileCabinetApp
             }
             else
             {
-                using (FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate))
-                {
-                    fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
-                }
+                using FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate);
+                fileStream.Close();
+                fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
 
             }
 
