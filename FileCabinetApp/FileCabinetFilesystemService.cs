@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// File system service class.
+    /// </summary>
     public class FileCabinetFilesystemService : IFIleCabinetService
     {
         private const int RecordSize = 276;
@@ -15,6 +19,11 @@ namespace FileCabinetApp
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
+        /// </summary>
+        /// <param name="fileStream">FileStream.</param>
+        /// <param name="validator">Validator.</param>
         public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
@@ -86,6 +95,7 @@ namespace FileCabinetApp
             }
         }
 
+        /// <inheritdoc/>
         public int CreateRecord(FileCabinetRecord record)
         {
             if (record == null)
@@ -100,10 +110,8 @@ namespace FileCabinetApp
 
             record.Id = this.list.Count;
 
-
             var recordToAdd = record;
             this.list.Add(recordToAdd);
-
 
             byte[] arrayRecord = new byte[RecordSize];
 
@@ -152,6 +160,7 @@ namespace FileCabinetApp
             return recordToAdd.Id;
         }
 
+        /// <inheritdoc/>
         public void EditRecord(FileCabinetRecord record)
         {
             if (record == null)
@@ -204,24 +213,237 @@ namespace FileCabinetApp
                 fileStream.Seek(editIndex, SeekOrigin.Begin);
                 fileStream.Write(arrayRecord, 0, arrayRecord.Length);
             }
-
         }
 
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateOfBirth)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
+            {
+                int recordsCount = (int)fileStream.Length / RecordSize;
+                fileStream.Seek(0, SeekOrigin.Begin);
+
+                UTF8Encoding temp = new UTF8Encoding(true);
+                byte[] recordByte = new byte[RecordSize];
+
+                for (int i = 0; i < recordsCount; i++)
+                {
+                    fileStream.Read(recordByte, 0, RecordSize);
+
+                    FileCabinetRecord record = new FileCabinetRecord();
+
+                    byte[] arrayId = new byte[4];
+                    Array.Copy(recordByte, 0, arrayId, 0, 4);
+                    record.Id = Convert.ToInt32(temp.GetString(arrayId), new CultureInfo("en-US"));
+
+                    byte[] arraySex = new byte[2];
+                    Array.Copy(recordByte, 4, arraySex, 0, 2);
+                    record.Sex = Convert.ToChar(temp.GetString(arraySex)[0], new CultureInfo("en-US"));
+
+                    byte[] arrayFirstName = new byte[120];
+                    Array.Copy(recordByte, 6, arrayFirstName, 0, 120);
+                    string firstNameTmp = temp.GetString(arrayFirstName).Trim(' ');
+                    for (int j = 0; j < firstNameTmp.IndexOf('\0', StringComparison.Ordinal); j++)
+                    {
+                        record.FirstName += firstNameTmp[j];
+                    }
+
+                    byte[] arrayLastName = new byte[120];
+                    Array.Copy(recordByte, 126, arrayLastName, 0, 120);
+                    string lastNameTmp = temp.GetString(arrayLastName).Trim(' ');
+                    for (int j = 0; j < firstNameTmp.IndexOf('\0', StringComparison.Ordinal); j++)
+                    {
+                        record.LastName += lastNameTmp[j];
+                    }
+
+                    byte[] arrayAge = new byte[2];
+                    Array.Copy(recordByte, 246, arrayAge, 0, 2);
+                    record.Age = Convert.ToInt16(temp.GetString(arrayAge), new CultureInfo("en-US"));
+
+                    byte[] arraySalary = new byte[16];
+                    Array.Copy(recordByte, 248, arraySalary, 0, 16);
+                    record.Salary = Convert.ToDecimal(temp.GetString(arraySalary), new CultureInfo("en-US"));
+
+                    byte[] arrayYear = new byte[4];
+                    Array.Copy(recordByte, 264, arrayYear, 0, 4);
+                    int year = Convert.ToInt32(temp.GetString(arrayYear), new CultureInfo("en-US"));
+
+                    byte[] arrayMonth = new byte[4];
+                    Array.Copy(recordByte, 268, arrayMonth, 0, 4);
+                    int month = Convert.ToInt32(temp.GetString(arrayMonth), new CultureInfo("en-US"));
+
+                    byte[] arrayDay = new byte[4];
+                    Array.Copy(recordByte, 272, arrayDay, 0, 4);
+                    int day = Convert.ToInt32(temp.GetString(arrayDay), new CultureInfo("en-US"));
+
+                    string date = month.ToString(new CultureInfo("en-US")) + "/" + day.ToString(new CultureInfo("en-US")) + "/" + year.ToString(new CultureInfo("en-US"));
+                    record.DateOfBirth = DateTime.Parse(date, new CultureInfo("en-US"));
+
+                    if (record.DateOfBirth == DateTime.Parse(dateOfBirth, new CultureInfo("en-US")))
+                    {
+                        records.Add(record);
+                    }
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
+            {
+                int recordsCount = (int)fileStream.Length / RecordSize;
+                fileStream.Seek(0, SeekOrigin.Begin);
+
+                UTF8Encoding temp = new UTF8Encoding(true);
+                byte[] recordByte = new byte[RecordSize];
+
+                for (int i = 0; i < recordsCount; i++)
+                {
+                    fileStream.Read(recordByte, 0, RecordSize);
+
+                    FileCabinetRecord record = new FileCabinetRecord();
+
+                    byte[] arrayId = new byte[4];
+                    Array.Copy(recordByte, 0, arrayId, 0, 4);
+                    record.Id = Convert.ToInt32(temp.GetString(arrayId), new CultureInfo("en-US"));
+
+                    byte[] arraySex = new byte[2];
+                    Array.Copy(recordByte, 4, arraySex, 0, 2);
+                    record.Sex = Convert.ToChar(temp.GetString(arraySex)[0], new CultureInfo("en-US"));
+
+                    byte[] arrayFirstName = new byte[120];
+                    Array.Copy(recordByte, 6, arrayFirstName, 0, 120);
+                    string firstNameTmp = temp.GetString(arrayFirstName).Trim(' ');
+                    for (int j = 0; j < firstNameTmp.IndexOf('\0', StringComparison.Ordinal); j++)
+                    {
+                        record.FirstName += firstNameTmp[j];
+                    }
+
+                    byte[] arrayLastName = new byte[120];
+                    Array.Copy(recordByte, 126, arrayLastName, 0, 120);
+                    string lastNameTmp = temp.GetString(arrayLastName).Trim(' ');
+                    for (int j = 0; j < firstNameTmp.IndexOf('\0', StringComparison.Ordinal); j++)
+                    {
+                        record.LastName += lastNameTmp[j];
+                    }
+
+                    byte[] arrayAge = new byte[2];
+                    Array.Copy(recordByte, 246, arrayAge, 0, 2);
+                    record.Age = Convert.ToInt16(temp.GetString(arrayAge), new CultureInfo("en-US"));
+
+                    byte[] arraySalary = new byte[16];
+                    Array.Copy(recordByte, 248, arraySalary, 0, 16);
+                    record.Salary = Convert.ToDecimal(temp.GetString(arraySalary), new CultureInfo("en-US"));
+
+                    byte[] arrayYear = new byte[4];
+                    Array.Copy(recordByte, 264, arrayYear, 0, 4);
+                    int year = Convert.ToInt32(temp.GetString(arrayYear), new CultureInfo("en-US"));
+
+                    byte[] arrayMonth = new byte[4];
+                    Array.Copy(recordByte, 268, arrayMonth, 0, 4);
+                    int month = Convert.ToInt32(temp.GetString(arrayMonth), new CultureInfo("en-US"));
+
+                    byte[] arrayDay = new byte[4];
+                    Array.Copy(recordByte, 272, arrayDay, 0, 4);
+                    int day = Convert.ToInt32(temp.GetString(arrayDay), new CultureInfo("en-US"));
+
+                    string date = month.ToString(new CultureInfo("en-US")) + "/" + day.ToString(new CultureInfo("en-US")) + "/" + year.ToString(new CultureInfo("en-US"));
+                    record.DateOfBirth = DateTime.Parse(date, new CultureInfo("en-US"));
+
+                    if (record.FirstName == firstName)
+                    {
+                        records.Add(record);
+                    }
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastname)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
+            {
+                int recordsCount = (int)fileStream.Length / RecordSize;
+                fileStream.Seek(0, SeekOrigin.Begin);
+
+                UTF8Encoding temp = new UTF8Encoding(true);
+                byte[] recordByte = new byte[RecordSize];
+
+                for (int i = 0; i < recordsCount; i++)
+                {
+                    fileStream.Read(recordByte, 0, RecordSize);
+
+                    FileCabinetRecord record = new FileCabinetRecord();
+
+                    byte[] arrayId = new byte[4];
+                    Array.Copy(recordByte, 0, arrayId, 0, 4);
+                    record.Id = Convert.ToInt32(temp.GetString(arrayId), new CultureInfo("en-US"));
+
+                    byte[] arraySex = new byte[2];
+                    Array.Copy(recordByte, 4, arraySex, 0, 2);
+                    record.Sex = Convert.ToChar(temp.GetString(arraySex)[0], new CultureInfo("en-US"));
+
+                    byte[] arrayFirstName = new byte[120];
+                    Array.Copy(recordByte, 6, arrayFirstName, 0, 120);
+                    string firstNameTmp = temp.GetString(arrayFirstName).Trim(' ');
+                    for (int j = 0; j < firstNameTmp.IndexOf('\0', StringComparison.Ordinal); j++)
+                    {
+                        record.FirstName += firstNameTmp[j];
+                    }
+
+                    byte[] arrayLastName = new byte[120];
+                    Array.Copy(recordByte, 126, arrayLastName, 0, 120);
+                    string lastNameTmp = temp.GetString(arrayLastName).Trim(' ');
+                    for (int j = 0; j < firstNameTmp.IndexOf('\0', StringComparison.Ordinal); j++)
+                    {
+                        record.LastName += lastNameTmp[j];
+                    }
+
+                    byte[] arrayAge = new byte[2];
+                    Array.Copy(recordByte, 246, arrayAge, 0, 2);
+                    record.Age = Convert.ToInt16(temp.GetString(arrayAge), new CultureInfo("en-US"));
+
+                    byte[] arraySalary = new byte[16];
+                    Array.Copy(recordByte, 248, arraySalary, 0, 16);
+                    record.Salary = Convert.ToDecimal(temp.GetString(arraySalary), new CultureInfo("en-US"));
+
+                    byte[] arrayYear = new byte[4];
+                    Array.Copy(recordByte, 264, arrayYear, 0, 4);
+                    int year = Convert.ToInt32(temp.GetString(arrayYear), new CultureInfo("en-US"));
+
+                    byte[] arrayMonth = new byte[4];
+                    Array.Copy(recordByte, 268, arrayMonth, 0, 4);
+                    int month = Convert.ToInt32(temp.GetString(arrayMonth), new CultureInfo("en-US"));
+
+                    byte[] arrayDay = new byte[4];
+                    Array.Copy(recordByte, 272, arrayDay, 0, 4);
+                    int day = Convert.ToInt32(temp.GetString(arrayDay), new CultureInfo("en-US"));
+
+                    string date = month.ToString(new CultureInfo("en-US")) + "/" + day.ToString(new CultureInfo("en-US")) + "/" + year.ToString(new CultureInfo("en-US"));
+                    record.DateOfBirth = DateTime.Parse(date, new CultureInfo("en-US"));
+
+                    if (record.LastName == lastname)
+                    {
+                        records.Add(record);
+                    }
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
@@ -295,6 +517,7 @@ namespace FileCabinetApp
             return fileCabinetRecordsCollection;
         }
 
+        /// <inheritdoc/>
         public int GetStat()
         {
             int size = 0;
@@ -306,6 +529,7 @@ namespace FileCabinetApp
             return size;
         }
 
+        /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());

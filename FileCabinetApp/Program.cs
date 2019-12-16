@@ -55,7 +55,13 @@ namespace FileCabinetApp
         /// </value>
         public static string ValidationType { get; set; } = "default";
 
-        public static string StorageType { get; set; } = "file";
+        /// <summary>
+        /// Gets or sets type of storage.
+        /// </summary>
+        /// <value>
+        /// Type of storage.
+        /// </value>
+        public static string StorageType { get; set; } = "memory";
 
         /// <summary>
         /// Start of execution.
@@ -128,7 +134,6 @@ namespace FileCabinetApp
                 using FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate);
                 fileStream.Close();
                 fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
-
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");

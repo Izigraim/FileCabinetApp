@@ -7,7 +7,7 @@ using System.Text;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Service class.
+    /// Memory service class.
     /// </summary>
     public class FileCabinetMemoryService : IFIleCabinetService
     {
