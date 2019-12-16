@@ -56,12 +56,20 @@ namespace FileCabinetApp
         public static string ValidationType { get; set; } = "default";
 
         /// <summary>
+        /// Gets or sets type of storage.
+        /// </summary>
+        /// <value>
+        /// Type of storage.
+        /// </value>
+        public static string StorageType { get; set; } = "memory";
+
+        /// <summary>
         /// Start of execution.
         /// </summary>
         /// <param name="args">Arguments.</param>
         public static void Main(string[] args)
         {
-            string[] validationTypeArray;
+            string[] parametersOfCommandLineArray;
             if (args != null && args.Length != 0)
             {
                 if (args.Length > 1 && args[0].Trim(' ') == "-v")
@@ -70,16 +78,36 @@ namespace FileCabinetApp
                 }
                 else if (args.Length == 1)
                 {
-                    validationTypeArray = args[0].Split('=');
+                    parametersOfCommandLineArray = args[0].Split('=');
 
-                    if (validationTypeArray[0].Trim(' ') == "--validation-rules")
+                    if (parametersOfCommandLineArray[0].ToLower(new CultureInfo("en-US")).Trim(' ') == "--validation-rules")
                     {
-                        ValidationType = validationTypeArray[1].ToLower(new CultureInfo("en-US")).Trim(' ');
+                        ValidationType = parametersOfCommandLineArray[1].ToLower(new CultureInfo("en-US")).Trim(' ');
                     }
                 }
                 else
                 {
-                    validationTypeArray = args;
+                    parametersOfCommandLineArray = args;
+                }
+
+                if (args.Length == 2 && args[0].Trim(' ') == "-s")
+                {
+                    if (args[1].ToLower(new CultureInfo("en-US")).Trim(' ') == "memory" || args[1].ToLower(new CultureInfo("en-US")).Trim(' ') == "file")
+                    {
+                        StorageType = args[1].ToLower(new CultureInfo("en-US")).Trim(' ');
+                    }
+                }
+                else if (args.Length == 1)
+                {
+                    parametersOfCommandLineArray = args[0].Split('=');
+
+                    if (parametersOfCommandLineArray[0].Trim(' ') == "--storage" && parametersOfCommandLineArray.Length > 1)
+                    {
+                        if (parametersOfCommandLineArray[1].ToLower(new CultureInfo("en-US")).Trim(' ') == "memory" || parametersOfCommandLineArray[1].ToLower(new CultureInfo("en-US")).Trim(' ') == "file")
+                        {
+                            StorageType = parametersOfCommandLineArray[1].ToLower(new CultureInfo("en-US")).Trim(' ');
+                        }
+                    }
                 }
             }
 
@@ -91,16 +119,26 @@ namespace FileCabinetApp
             if (ValidationType == "default")
             {
                 validator = new DefaultValidation();
-                fileCabinetService = new FileCabinetService(validator);
             }
             else
             {
                 validator = new CustomValidation();
-                fileCabinetService = new FileCabinetService(validator);
+            }
+
+            if (StorageType == "memory")
+            {
+                fileCabinetService = new FileCabinetMemoryService(validator);
+            }
+            else
+            {
+                using FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate);
+                fileStream.Close();
+                fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            Console.WriteLine($"Using {ValidationType} validation rules");
+            Console.WriteLine($"Using '{ValidationType}' validation rules");
+            Console.WriteLine($"Using '{StorageType}' storage type");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
