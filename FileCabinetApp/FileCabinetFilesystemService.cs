@@ -174,7 +174,7 @@ namespace FileCabinetApp
         {
             List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
 
-            using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.Open))
+            using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
             {
                 int recordsCount = (int)fileStream.Length / 276;
                 fileStream.Seek(0, SeekOrigin.Begin);
@@ -245,7 +245,13 @@ namespace FileCabinetApp
 
         public int GetStat()
         {
-            throw new NotImplementedException();
+            int size = 0;
+            using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
+            {
+                size = (int)fileStream.Length / 276;
+            }
+
+            return size;
         }
 
         public FileCabinetServiceSnapshot MakeSnapshot()

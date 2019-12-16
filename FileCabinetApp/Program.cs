@@ -216,8 +216,8 @@ namespace FileCabinetApp
             }
             else
             {
-                //var recordsCount = Program.fileCabinetService.GetStat();
-                //Console.WriteLine($"Record #{recordsCount} created.");
+                var recordsCount = Program.fileCabinetService.GetStat();
+                Console.WriteLine($"Record #{recordsCount} created.");
             }
         }
 
