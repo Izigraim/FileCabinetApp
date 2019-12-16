@@ -9,6 +9,8 @@ namespace FileCabinetApp
 {
     public class FileCabinetFilesystemService : IFIleCabinetService
     {
+        private const int RecordSize = 276;
+
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
@@ -20,15 +22,15 @@ namespace FileCabinetApp
 
             using (FileStream fs = new FileStream("cabinet-records.db", FileMode.Open))
             {
-                int recordsCount = (int)fs.Length / 276;
+                int recordsCount = (int)fs.Length / RecordSize;
                 fs.Seek(0, SeekOrigin.Begin);
 
                 UTF8Encoding temp = new UTF8Encoding(true);
-                byte[] recordByte = new byte[276];
+                byte[] recordByte = new byte[RecordSize];
 
                 for (int i = 0; i < recordsCount; i++)
                 {
-                    fs.Read(recordByte, 0, 276);
+                    fs.Read(recordByte, 0, RecordSize);
 
                     FileCabinetRecord record = new FileCabinetRecord();
 
@@ -103,7 +105,7 @@ namespace FileCabinetApp
             this.list.Add(recordToAdd);
 
 
-            byte[] arrayRecord = new byte[276];
+            byte[] arrayRecord = new byte[RecordSize];
 
             byte[] arrayId = new byte[4];
             arrayId = new UTF8Encoding(true).GetBytes(record.Id.ToString(new CultureInfo("en-US")));
@@ -152,7 +154,57 @@ namespace FileCabinetApp
 
         public void EditRecord(FileCabinetRecord record)
         {
-            throw new NotImplementedException();
+            if (record == null)
+            {
+                throw new ArgumentNullException(nameof(record));
+            }
+
+            int editIndex = record.Id * RecordSize;
+
+            using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.Open))
+            {
+                byte[] arrayRecord = new byte[RecordSize];
+
+                byte[] arrayId = new byte[4];
+                arrayId = new UTF8Encoding(true).GetBytes(record.Id.ToString(new CultureInfo("en-US")));
+                arrayId.CopyTo(arrayRecord, 0);
+
+                byte[] arraySex = new byte[2];
+                arraySex = new UTF8Encoding(true).GetBytes(record.Sex.ToString(new CultureInfo("en-US")));
+                arraySex.CopyTo(arrayRecord, 4);
+
+                byte[] arrayFirstName = new byte[120];
+                arrayFirstName = new UTF8Encoding(true).GetBytes(record.FirstName);
+                arrayFirstName.CopyTo(arrayRecord, 6);
+
+                byte[] arrayLastName = new byte[120];
+                arrayLastName = new UTF8Encoding(true).GetBytes(record.LastName);
+                arrayLastName.CopyTo(arrayRecord, 126);
+
+                byte[] arrayAge = new byte[2];
+                arrayAge = new UTF8Encoding(true).GetBytes(record.Age.ToString(new CultureInfo("en-US")));
+                arrayAge.CopyTo(arrayRecord, 246);
+
+                byte[] arraySalary = new byte[16];
+                arraySalary = new UTF8Encoding(true).GetBytes(record.Salary?.ToString(new CultureInfo("en-US")));
+                arraySalary.CopyTo(arrayRecord, 248);
+
+                byte[] arrayYear = new byte[4];
+                arrayYear = new UTF8Encoding(true).GetBytes(record.DateOfBirth.Year.ToString(new CultureInfo("en-US")));
+                arrayYear.CopyTo(arrayRecord, 264);
+
+                byte[] arrayMonth = new byte[4];
+                arrayMonth = new UTF8Encoding(true).GetBytes(record.DateOfBirth.Month.ToString(new CultureInfo("en-US")));
+                arrayMonth.CopyTo(arrayRecord, 268);
+
+                byte[] arrayDay = new byte[4];
+                arrayDay = new UTF8Encoding(true).GetBytes(record.DateOfBirth.Day.ToString(new CultureInfo("en-US")));
+                arrayDay.CopyTo(arrayRecord, 272);
+
+                fileStream.Seek(editIndex, SeekOrigin.Begin);
+                fileStream.Write(arrayRecord, 0, arrayRecord.Length);
+            }
+
         }
 
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateOfBirth)
@@ -176,15 +228,15 @@ namespace FileCabinetApp
 
             using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
             {
-                int recordsCount = (int)fileStream.Length / 276;
+                int recordsCount = (int)fileStream.Length / RecordSize;
                 fileStream.Seek(0, SeekOrigin.Begin);
 
                 UTF8Encoding temp = new UTF8Encoding(true);
-                byte[] recordByte = new byte[276];
+                byte[] recordByte = new byte[RecordSize];
 
                 for (int i = 0; i < recordsCount; i++)
                 {
-                    fileStream.Read(recordByte, 0, 276);
+                    fileStream.Read(recordByte, 0, RecordSize);
 
                     FileCabinetRecord record = new FileCabinetRecord();
 
@@ -248,7 +300,7 @@ namespace FileCabinetApp
             int size = 0;
             using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
             {
-                size = (int)fileStream.Length / 276;
+                size = (int)fileStream.Length / RecordSize;
             }
 
             return size;
