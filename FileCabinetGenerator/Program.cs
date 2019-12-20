@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 
 namespace FileCabinetGenerator
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            CommandLineParameters.GeneratorValidation(args);
         }
     }
 }
