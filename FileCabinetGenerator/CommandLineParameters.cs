@@ -7,8 +7,13 @@ namespace FileCabinetGenerator
 {
     public static class CommandLineParameters
     {
-        public static bool GeneratorValidation(string[] args)
+        public static Tuple<bool, int, int, string, string> GeneratorValidation(string[] args)
         {
+            int start = 0;
+            int amount = 0;
+            string path;
+            string fileType;
+
             if (args == null)
             {
                 throw new ArgumentNullException(nameof(args));
@@ -39,16 +44,21 @@ namespace FileCabinetGenerator
                     {
                         throw new ArgumentException("Incorrect parameter 'start-id'");
                     }
+
+                    start = Convert.ToInt32(startId[1], new CultureInfo("en-US"));
+                    amount = Convert.ToInt32(recordsAmount[1], new CultureInfo("en-US"));
+                    path = outputFile[1];
+                    fileType = outputType[1];
                 }
                 catch (ArgumentException ex)
                 {
                     Console.WriteLine(ex.Message);
-                    return false;
+                    return (false, -1, -1, string.Empty, string.Empty).ToTuple();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    return false;
+                    return (false, -1, -1, string.Empty, string.Empty).ToTuple();
                 }
             }
             else if (args.Length == 8)
@@ -71,25 +81,30 @@ namespace FileCabinetGenerator
                     {
                         throw new ArgumentException("Incorrect parameter 'start-id'");
                     }
+
+                    start = Convert.ToInt32(args[7], new CultureInfo("en-US"));
+                    amount = Convert.ToInt32(args[5], new CultureInfo("en-US"));
+                    path = args[3];
+                    fileType = args[1];
                 }
                 catch (ArgumentException ex)
                 {
                     Console.WriteLine(ex.Message);
-                    return false;
+                    return (false, -1, -1, string.Empty, string.Empty).ToTuple();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    return false;
+                    return (false, -1, -1, string.Empty, string.Empty).ToTuple();
                 }
             }
             else
             {
                 Console.WriteLine("Incorrect parameters.");
-                return false;
+                return (false, -1, -1, string.Empty, string.Empty).ToTuple();
             }
 
-            return true;
+            return (true, start, amount, path, fileType).ToTuple();
         }
     }
 }

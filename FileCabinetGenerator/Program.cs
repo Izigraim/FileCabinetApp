@@ -10,32 +10,39 @@ namespace FileCabinetGenerator
     {
         private static void Main(string[] args)
         {
-            if (CommandLineParameters.GeneratorValidation(args))
+            Tuple<bool, int, int, string, string> tuple = CommandLineParameters.GeneratorValidation(args);
+            if (tuple.Item1)
             {
                 List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-                int startId = 0;
-                int amount = 0;
-                if (args.Length == 4)
-                {
-                    string[] start = args[3].Split('=');
-                    startId = Convert.ToInt32(start[1], new CultureInfo("en-US"));
+                FileCabinetRecordGenerator fileCabinetRecordGenerator = new FileCabinetRecordGenerator(tuple.Item2);
 
-                    string[] amountString = args[2].Split('=');
-                    amount = Convert.ToInt32(amountString[1], new CultureInfo("en-US"));
-                }
-
-                if (args.Length == 8)
-                {
-                    startId = Convert.ToInt32(args[7], new CultureInfo("en-US"));
-                    amount = Convert.ToInt32(args[5], new CultureInfo("en-US"));
-                }
-
-                FileCabinetRecordGenerator fileCabinetRecordGenerator = new FileCabinetRecordGenerator(startId);
-
-                for (int i = 0; i < amount; i++)
+                for (int i = 0; i < tuple.Item3; i++)
                 {
                     list.Add(fileCabinetRecordGenerator.Generate());
+                }
+
+                if (tuple.Item5.ToLower(new CultureInfo("en-US")) == "csv")
+                {
+                    string path = tuple.Item4;
+
+                    if (!path.Contains(".csv", StringComparison.Ordinal))
+                    {
+                        path += ".csv";
+                    }
+
+                    try
+                    {
+                        using (StreamWriter writer = new StreamWriter(File.Open(path, FileMode.Create)))
+                        {
+                            RecordGeneratorCsvWriter csvWriter = new RecordGeneratorCsvWriter(writer);
+                            csvWriter.Write(list);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
             }
         }
