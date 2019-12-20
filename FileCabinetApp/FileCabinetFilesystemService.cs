@@ -534,5 +534,11 @@ namespace FileCabinetApp
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());
         }
+
+        /// <inheritdoc/>
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
