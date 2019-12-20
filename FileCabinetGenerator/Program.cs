@@ -44,6 +44,29 @@ namespace FileCabinetGenerator
                         Console.WriteLine(ex.Message);
                     }
                 }
+
+                if (tuple.Item5.ToLower(new CultureInfo("en-US")) == "xml")
+                {
+                    string path = tuple.Item4;
+
+                    if (!path.Contains(".xml", StringComparison.Ordinal))
+                    {
+                        path += ".xml";
+                    }
+
+                    try
+                    {
+                        using (StreamWriter writer = new StreamWriter(File.Open(path, FileMode.Create)))
+                        {
+                            RecordGeneratorXmlWriter csvWriter = new RecordGeneratorXmlWriter(writer);
+                            csvWriter.Write(list.ToArray());
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
             }
         }
     }
