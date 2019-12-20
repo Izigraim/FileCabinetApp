@@ -6,17 +6,28 @@ using FileCabinetApp;
 
 namespace FileCabinetGenerator
 {
+    /// <summary>
+    /// Generator class.
+    /// </summary>
     public class FileCabinetRecordGenerator
     {
         private int startId;
         private Random random;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecordGenerator"/> class.
+        /// </summary>
+        /// <param name="startId">Initial index.</param>
         public FileCabinetRecordGenerator(int startId)
         {
             this.startId = startId;
             this.random = new Random();
         }
 
+        /// <summary>
+        /// Generation a single record.
+        /// </summary>
+        /// <returns>Generated record.</returns>
         public FileCabinetRecord Generate()
         {
             FileCabinetRecord record = new FileCabinetRecord();
@@ -45,7 +56,7 @@ namespace FileCabinetGenerator
                 {
                     record.DateOfBirth = DateTime.Parse(this.random.Next(1, 13).ToString(new CultureInfo("en-US")) + "/" + this.random.Next(1, 32).ToString(new CultureInfo("en-US")) + "/" + this.random.Next(1950, 2020).ToString(new CultureInfo("en-US")), new CultureInfo("en-US"));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     continue;
                 }

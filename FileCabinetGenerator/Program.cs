@@ -6,6 +6,9 @@ using FileCabinetApp;
 
 namespace FileCabinetGenerator
 {
+    /// <summary>
+    /// Class with main method.
+    /// </summary>
     internal class Program
     {
         private static void Main(string[] args)

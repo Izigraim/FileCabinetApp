@@ -4,5 +4,73 @@
         <name>FileCabinetGenerator</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetGenerator.CommandLineParameters">
+            <summary>
+            Command parameter validation class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.CommandLineParameters.GeneratorValidation(System.String[])">
+            <summary>
+            Validation of command parameters for data generation.
+            </summary>
+            <param name="args">Command parameters.</param>
+            <returns>Tuple with result of validation, start index, amount of records, path, file type.</returns>
+        </member>
+        <member name="T:FileCabinetGenerator.FileCabinetRecordGenerator">
+            <summary>
+            Generator class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.FileCabinetRecordGenerator.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetGenerator.FileCabinetRecordGenerator"/> class.
+            </summary>
+            <param name="startId">Initial index.</param>
+        </member>
+        <member name="M:FileCabinetGenerator.FileCabinetRecordGenerator.Generate">
+            <summary>
+            Generation a single record.
+            </summary>
+            <returns>Generated record.</returns>
+        </member>
+        <member name="T:FileCabinetGenerator.Program">
+            <summary>
+            Class with main method.
+            </summary>
+        </member>
+        <member name="T:FileCabinetGenerator.RecordGeneratorCsvWriter">
+            <summary>
+            CsvWriter class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.RecordGeneratorCsvWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetGenerator.RecordGeneratorCsvWriter"/> class.
+            </summary>
+            <param name="writer">StreamWriter.</param>
+        </member>
+        <member name="M:FileCabinetGenerator.RecordGeneratorCsvWriter.Write(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Write list of generated data to CSV file.
+            </summary>
+            <param name="list">List of generated data.</param>
+        </member>
+        <member name="T:FileCabinetGenerator.RecordGeneratorXmlWriter">
+            <summary>
+            XmlWriter class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.RecordGeneratorXmlWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetGenerator.RecordGeneratorXmlWriter"/> class.
+            </summary>
+            <param name="writer">StreamWriter.</param>
+        </member>
+        <member name="M:FileCabinetGenerator.RecordGeneratorXmlWriter.Write(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Write array of generated data to XML file.
+            </summary>
+            <param name="array">Array of generated data.</param>
+        </member>
     </members>
 </doc>

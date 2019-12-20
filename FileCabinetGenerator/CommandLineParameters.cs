@@ -5,8 +5,16 @@ using System.Text;
 
 namespace FileCabinetGenerator
 {
+    /// <summary>
+    /// Command parameter validation class.
+    /// </summary>
     public static class CommandLineParameters
     {
+        /// <summary>
+        /// Validation of command parameters for data generation.
+        /// </summary>
+        /// <param name="args">Command parameters.</param>
+        /// <returns>Tuple with result of validation, start index, amount of records, path, file type.</returns>
         public static Tuple<bool, int, int, string, string> GeneratorValidation(string[] args)
         {
             int start = 0;

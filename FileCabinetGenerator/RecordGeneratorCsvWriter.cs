@@ -7,15 +7,26 @@ using FileCabinetApp;
 
 namespace FileCabinetGenerator
 {
+    /// <summary>
+    /// CsvWriter class.
+    /// </summary>
     public class RecordGeneratorCsvWriter
     {
         private StreamWriter writer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecordGeneratorCsvWriter"/> class.
+        /// </summary>
+        /// <param name="writer">StreamWriter.</param>
         public RecordGeneratorCsvWriter(StreamWriter writer)
         {
             this.writer = writer;
         }
 
+        /// <summary>
+        /// Write list of generated data to CSV file.
+        /// </summary>
+        /// <param name="list">List of generated data.</param>
         public void Write(IEnumerable<FileCabinetRecord> list)
         {
             if (list == null)
