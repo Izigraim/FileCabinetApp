@@ -34,6 +34,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -47,6 +48,7 @@ namespace FileCabinetApp
             new string[] { "find", "find a record or records by property", "The 'find' command find a record or records by property." },
             new string[] { "export", "export data to file", "The 'export' command export a records to file" },
             new string[] { "import", "import data from file", "The 'import' command import records from file" },
+            new string[] { "remove", "remove a record", "The 'remove' command remove a record with selected ID." },
         };
 
         /// <summary>
@@ -63,7 +65,7 @@ namespace FileCabinetApp
         /// <value>
         /// Type of storage.
         /// </value>
-        public static string StorageType { get; set; } = "file";
+        public static string StorageType { get; set; } = "memory";
 
         /// <summary>
         /// Start of execution.
@@ -247,7 +249,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            FileCabinetRecord record = record = Program.validator.ValidateParametersProgram();
+            FileCabinetRecord record = Program.validator.ValidateParametersProgram();
 
             record.Id = id - 1;
 
@@ -546,6 +548,38 @@ namespace FileCabinetApp
 
                     break;
             }
+        }
+
+        private static void Remove(string parameters)
+        {
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            int id;
+            try
+            {
+                id = Convert.ToInt32(parameters, culture);
+                if (id > Program.fileCabinetService.GetStat() || id <= 0)
+                {
+                    Console.WriteLine($"#{id} record is not found.");
+                    return;
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Incorrext format of ID");
+                return;
+            }
+
+            if (fileCabinetService.GetRecords().Where(c => c.Id == id - 1).Any())
+            {
+                fileCabinetService.Remove(id - 1);
+                Console.WriteLine($"Record #{id} is removed.");
+            }
+            else
+            {
+                Console.WriteLine($"Record #{id} doesn't exists.");
+            }
+
+            
         }
     }
 }

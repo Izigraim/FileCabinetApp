@@ -67,5 +67,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="snapshot">Snapshot.</param>
         public void Restore(FileCabinetServiceSnapshot snapshot);
+
+        public void Remove(int id);
     }
 }

@@ -240,6 +240,23 @@
             </summary>
             <param name="record">Record.</param>
         </member>
+        <member name="T:FileCabinetApp.FIleCabinetRecordXmlReader">
+            <summary>
+            XmlReader class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FIleCabinetRecordXmlReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FIleCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">StreamReader.</param>
+        </member>
+        <member name="M:FileCabinetApp.FIleCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Read all records from XML file.
+            </summary>
+            <returns>List of readed records.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
             <summary>
             XmlWriter class.
@@ -291,6 +308,12 @@
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
             <summary>
             Load records from CSV file.
+            </summary>
+            <param name="reader">StreamReader.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader)">
+            <summary>
+            Load records from XML file.
             </summary>
             <param name="reader">StreamReader.</param>
         </member>

@@ -279,5 +279,15 @@ namespace FileCabinetApp
                 this.CreateRecord(record);
             }
         }
+
+        public void Remove(int id)
+        {
+            FileCabinetRecord record = this.list[id];
+            this.list.RemoveAt(id);
+
+            this.firstNameDictionary[record.FirstName].Remove(record);
+            this.lastNameDictionary[record.LastName].Remove(record);
+            this.dateOfBirthDictionary[record.DateOfBirth.ToString(new CultureInfo("en-US"))].Remove(record);
+        }
     }
 }

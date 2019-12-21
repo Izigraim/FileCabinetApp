@@ -558,6 +558,11 @@ namespace FileCabinetApp
             return new FileCabinetServiceSnapshot(this.list.ToArray());
         }
 
+        public void Remove(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc/>
         public void Restore(FileCabinetServiceSnapshot snapshot)
         {
