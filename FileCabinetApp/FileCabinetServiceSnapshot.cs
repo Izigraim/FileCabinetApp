@@ -72,6 +72,10 @@ namespace FileCabinetApp
             this.Records = fileCabinetRecordCsvReader.ReadAll();
         }
 
+        /// <summary>
+        /// Load records from XML file.
+        /// </summary>
+        /// <param name="reader">StreamReader.</param>
         public void LoadFromXml(StreamReader reader)
         {
             FIleCabinetRecordXmlReader fileCabinetRecordXmlReader = new FIleCabinetRecordXmlReader(reader);
