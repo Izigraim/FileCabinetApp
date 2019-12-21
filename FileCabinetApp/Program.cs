@@ -534,6 +534,14 @@ namespace FileCabinetApp
                     }
 
                     break;
+
+                case "xml":
+                    {
+                        var snapshot = fileCabinetService.MakeSnapshot();
+                        using StreamReader reader = new StreamReader(File.Open(parametersArray[1], FileMode.Open));
+                    }
+
+                    break;
             }
         }
     }
