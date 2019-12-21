@@ -290,5 +290,10 @@ namespace FileCabinetApp
             this.lastNameDictionary[record.LastName].Remove(record);
             this.dateOfBirthDictionary[record.DateOfBirth.ToString(new CultureInfo("en-US"))].Remove(record);
         }
+
+        public void Purge()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

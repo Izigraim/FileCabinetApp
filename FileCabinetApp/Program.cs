@@ -35,6 +35,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -49,6 +50,7 @@ namespace FileCabinetApp
             new string[] { "export", "export data to file", "The 'export' command export a records to file" },
             new string[] { "import", "import data from file", "The 'import' command import records from file" },
             new string[] { "remove", "remove a record", "The 'remove' command remove a record with selected ID." },
+            new string[] { "purge", "purge a file with records", "The 'purge' command remove records marked as deleted from file." },
         };
 
         /// <summary>
@@ -65,7 +67,7 @@ namespace FileCabinetApp
         /// <value>
         /// Type of storage.
         /// </value>
-        public static string StorageType { get; set; } = "memory";
+        public static string StorageType { get; set; } = "file";
 
         /// <summary>
         /// Start of execution.
@@ -585,6 +587,18 @@ namespace FileCabinetApp
             else
             {
                 Console.WriteLine($"Record #{id} doesn't exists.");
+            }
+        }
+
+        private static void Purge(string parameters)
+        {
+            if (fileCabinetService is FileCabinetFilesystemService)
+            {
+                fileCabinetService.Purge();
+            }
+            else
+            {
+                Console.WriteLine("This command cannot be executed in the current storage type.");
             }
         }
     }

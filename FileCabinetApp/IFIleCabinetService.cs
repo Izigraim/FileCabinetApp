@@ -73,5 +73,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="id">ID of removed record.</param>
         public void Remove(int id);
+
+        public void Purge();
     }
 }
