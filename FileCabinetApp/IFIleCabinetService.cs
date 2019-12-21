@@ -53,8 +53,9 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets the number of records.
         /// </summary>
+        /// <param name="deletedCount">Count of deleted records.</param>
         /// <returns>Number of records.</returns>
-        public int GetStat();
+        public int GetStat(out int deletedCount);
 
         /// <summary>
         /// Make snapshot method.
@@ -74,6 +75,11 @@ namespace FileCabinetApp
         /// <param name="id">ID of removed record.</param>
         public void Remove(int id);
 
-        public void Purge();
+        /// <summary>
+        /// Clears the file of deleted records.
+        /// </summary>
+        /// <param name="count">Count of purged records.</param>
+        /// <param name="before">Count of records before purge.</param>
+        public void Purge(out int count, out int before);
     }
 }

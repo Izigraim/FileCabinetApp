@@ -586,12 +586,33 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int GetStat()
+        public int GetStat(out int deletedCount)
         {
             int size = 0;
             using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
             {
                 size = (int)fileStream.Length / RecordSize;
+                int recordsCount = (int)fileStream.Length / RecordSize;
+                fileStream.Seek(0, SeekOrigin.Begin);
+
+                deletedCount = 0;
+
+                UTF8Encoding temp = new UTF8Encoding(true);
+                byte[] recordByte = new byte[RecordSize];
+
+                for (int i = 0; i < recordsCount; i++)
+                {
+                    fileStream.Read(recordByte, 0, RecordSize);
+
+                    byte[] arrayIsDeleted = new byte[2];
+                    Array.Copy(recordByte, 276, arrayIsDeleted, 0, 2);
+                    short isDeleted = Convert.ToInt16(temp.GetString(arrayIsDeleted), new CultureInfo("en-US"));
+
+                    if (isDeleted == 1)
+                    {
+                        deletedCount++;
+                    }
+                }
             }
 
             return size;
@@ -672,13 +693,18 @@ namespace FileCabinetApp
             }
         }
 
-        public void Purge()
+        /// <inheritdoc/>
+        public void Purge(out int count, out int before)
         {
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            int beforePurge;
+            int afterPurge;
 
             using (FileStream fs = new FileStream("cabinet-records.db", FileMode.Open))
             {
                 int recordsCount = (int)fs.Length / RecordSize;
+                beforePurge = recordsCount;
                 fs.Seek(0, SeekOrigin.Begin);
 
                 UTF8Encoding temp = new UTF8Encoding(true);
@@ -750,8 +776,10 @@ namespace FileCabinetApp
 
             using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.Create))
             {
+                int i = 0;
                 foreach (var record in records)
                 {
+                    record.Id = i;
                     byte[] arrayRecord = new byte[RecordSize];
 
                     byte[] arrayId = new byte[4];
@@ -796,9 +824,15 @@ namespace FileCabinetApp
 
                     fileStream.Seek(fileStream.Length, SeekOrigin.Begin);
                     fileStream.Write(arrayRecord, 0, arrayRecord.Length);
+
+                    i++;
                 }
+
+                afterPurge = (int)fileStream.Length / RecordSize;
             }
 
+            count = beforePurge - afterPurge;
+            before = beforePurge;
         }
     }
 }

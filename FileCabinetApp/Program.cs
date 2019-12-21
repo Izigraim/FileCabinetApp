@@ -67,7 +67,7 @@ namespace FileCabinetApp
         /// <value>
         /// Type of storage.
         /// </value>
-        public static string StorageType { get; set; } = "file";
+        public static string StorageType { get; set; } = "memory";
 
         /// <summary>
         /// Start of execution.
@@ -211,8 +211,8 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            var recordsCount = Program.fileCabinetService.GetStat(out int deletedCount);
+            Console.WriteLine($"{recordsCount} record(s).\n{deletedCount} records are deleted.");
         }
 
         private static void Create(string parameters)
@@ -227,7 +227,7 @@ namespace FileCabinetApp
             }
             else
             {
-                var recordsCount = Program.fileCabinetService.GetStat();
+                var recordsCount = Program.fileCabinetService.GetStat(out int deletedCount);
                 Console.WriteLine($"Record #{recordsCount} created.");
             }
         }
@@ -239,7 +239,7 @@ namespace FileCabinetApp
             try
             {
                 id = Convert.ToInt32(parameters, culture);
-                if (id > Program.fileCabinetService.GetStat() || id <= 0)
+                if (id > Program.fileCabinetService.GetStat(out int deletedCount) || id <= 0)
                 {
                     Console.WriteLine($"#{id} record is not found.");
                     return;
@@ -567,7 +567,7 @@ namespace FileCabinetApp
             try
             {
                 id = Convert.ToInt32(parameters, culture);
-                if (id > Program.fileCabinetService.GetStat() || id <= 0)
+                if (id > Program.fileCabinetService.GetStat(out int deletedCount) || id <= 0)
                 {
                     Console.WriteLine($"#{id} record is not found.");
                     return;
@@ -594,7 +594,8 @@ namespace FileCabinetApp
         {
             if (fileCabinetService is FileCabinetFilesystemService)
             {
-                fileCabinetService.Purge();
+                fileCabinetService.Purge(out int count, out int before);
+                Console.WriteLine($"Data file processing is complited:  {count} of {before} records were purged.");
             }
             else
             {

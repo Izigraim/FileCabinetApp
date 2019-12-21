@@ -248,12 +248,10 @@ namespace FileCabinetApp
             return fileCabinetRecords;
         }
 
-        /// <summary>
-        /// Gets the number of records.
-        /// </summary>
-        /// <returns>Number of records.</returns>
-        public int GetStat()
+        /// <inheritdoc/>
+        public int GetStat(out int deletedCount)
         {
+            deletedCount = 0;
             return this.list.Count;
         }
 
@@ -291,7 +289,8 @@ namespace FileCabinetApp
             this.dateOfBirthDictionary[record.DateOfBirth.ToString(new CultureInfo("en-US"))].Remove(record);
         }
 
-        public void Purge()
+        /// <inheritdoc/>
+        public void Purge(out int count, out int before)
         {
             throw new NotImplementedException();
         }
