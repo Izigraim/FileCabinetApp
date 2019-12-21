@@ -108,10 +108,22 @@ namespace FileCabinetApp
                 throw new ArgumentException("Data validation is not successful.", nameof(record));
             }
 
-            record.Id = this.list.Count;
+            bool rewriteFlag = false;
+            int index = 0;
+            if (this.list.Where(c => c.Id == record.Id).Count() == 1)
+            {
+                index = this.list.FindIndex(c => c.Id == record.Id);
+                this.list.RemoveAt(index);
+                this.list.Insert(index, record);
+                rewriteFlag = true;
+            }
+            else
+            {
+                record.Id = this.list.Count;
+                this.list.Add(record);
+            }
 
             var recordToAdd = record;
-            this.list.Add(recordToAdd);
 
             byte[] arrayRecord = new byte[RecordSize];
 
@@ -151,10 +163,21 @@ namespace FileCabinetApp
             arrayDay = new UTF8Encoding(true).GetBytes(record.DateOfBirth.Day.ToString(new CultureInfo("en-US")));
             arrayDay.CopyTo(arrayRecord, 272);
 
-            using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.Open))
+            if (rewriteFlag)
             {
-                fileStream.Seek(fileStream.Length, SeekOrigin.Begin);
-                fileStream.Write(arrayRecord, 0, arrayRecord.Length);
+                using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.Open))
+                {
+                    fileStream.Seek(index * RecordSize, SeekOrigin.Begin);
+                    fileStream.Write(arrayRecord, 0, arrayRecord.Length);
+                }
+            }
+            else
+            {
+                using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.Open))
+                {
+                    fileStream.Seek(fileStream.Length, SeekOrigin.Begin);
+                    fileStream.Write(arrayRecord, 0, arrayRecord.Length);
+                }
             }
 
             return recordToAdd.Id;
@@ -533,6 +556,20 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());
+        }
+
+        /// <inheritdoc/>
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                throw new ArgumentNullException(nameof(snapshot));
+            }
+
+            foreach (var record in snapshot.Records)
+            {
+                this.CreateRecord(record);
+            }
         }
     }
 }

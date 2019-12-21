@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace FileCabinetApp
@@ -43,11 +44,19 @@ namespace FileCabinetApp
                 throw new ArgumentException("Data validation is not successful.", nameof(record));
             }
 
-            record.Id = this.list.Count;
+            if (this.list.Where(c => c.Id == record.Id).Count() == 1)
+            {
+                int index = this.list.FindIndex(c => c.Id == record.Id);
+                this.list.RemoveAt(index);
+                this.list.Insert(index, record);
+            }
+            else
+            {
+                record.Id = this.list.Count;
+                this.list.Add(record);
+            }
 
             var recordToAdd = record;
-
-            this.list.Add(recordToAdd);
 
             if (this.firstNameDictionary.ContainsKey(recordToAdd.FirstName))
             {
@@ -255,6 +264,20 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());
+        }
+
+        /// <inheritdoc/>
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                throw new ArgumentNullException(nameof(snapshot));
+            }
+
+            foreach (var record in snapshot.Records)
+            {
+                this.CreateRecord(record);
+            }
         }
     }
 }

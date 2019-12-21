@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -22,6 +23,14 @@ namespace FileCabinetApp
         {
             this.records = records;
         }
+
+        /// <summary>
+        /// Gets readed records.
+        /// </summary>
+        /// <value>
+        /// Readed records.
+        /// </value>
+        public List<FileCabinetRecord> Records { get; private set; }
 
         /// <summary>
         /// Save records to .csv file.
@@ -51,6 +60,26 @@ namespace FileCabinetApp
                 FileCabinetRecordXmlWriter fileCabinetRecordXmlWriter = new FileCabinetRecordXmlWriter(writer);
                 fileCabinetRecordXmlWriter.Write(this.records);
             }
+        }
+
+        /// <summary>
+        /// Load records from CSV file.
+        /// </summary>
+        /// <param name="reader">StreamReader.</param>
+        public void LoadFromCsv(StreamReader reader)
+        {
+            FileCabinetRecordCsvReader fileCabinetRecordCsvReader = new FileCabinetRecordCsvReader(reader);
+            this.Records = fileCabinetRecordCsvReader.ReadAll();
+        }
+
+        /// <summary>
+        /// Load records from XML file.
+        /// </summary>
+        /// <param name="reader">StreamReader.</param>
+        public void LoadFromXml(StreamReader reader)
+        {
+            FIleCabinetRecordXmlReader fileCabinetRecordXmlReader = new FIleCabinetRecordXmlReader(reader);
+            this.Records = fileCabinetRecordXmlReader.ReadAll();
         }
     }
 }

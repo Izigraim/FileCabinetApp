@@ -25,7 +25,6 @@ namespace FileCabinetApp
             }
 
             this.writer = writer;
-            writer.WriteLine("Id,Sex,FirstName,LastName,Age,Salary,DateOfBirth");
         }
 
         /// <summary>

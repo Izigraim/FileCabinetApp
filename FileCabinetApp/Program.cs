@@ -33,6 +33,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -45,6 +46,7 @@ namespace FileCabinetApp
             new string[] { "edit", "edit a record", "The 'edit' command edit a record" },
             new string[] { "find", "find a record or records by property", "The 'find' command find a record or records by property." },
             new string[] { "export", "export data to file", "The 'export' command export a records to file" },
+            new string[] { "import", "import data from file", "The 'import' command import records from file" },
         };
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace FileCabinetApp
         /// <value>
         /// Type of storage.
         /// </value>
-        public static string StorageType { get; set; } = "memory";
+        public static string StorageType { get; set; } = "file";
 
         /// <summary>
         /// Start of execution.
@@ -482,6 +484,67 @@ namespace FileCabinetApp
                             return;
                         }
                     }
+            }
+        }
+
+        private static void Import(string parameters)
+        {
+            try
+            {
+                if (parameters == null || parameters.Trim(' ').Where(c => c == ' ').Count() != 1)
+                {
+                    throw new ArgumentException("Incorrect parameters.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            string[] parametersArray = parameters.Split(' ');
+
+            try
+            {
+                if (parametersArray[0].ToLower(new CultureInfo("en-US")) != "csv" && parametersArray[0].ToLower(new CultureInfo("en-US")) != "xml")
+                {
+                    throw new ArgumentException("Incorrect file format.");
+                }
+
+                if (!File.Exists(parametersArray[1]))
+                {
+                    throw new ArgumentException($"Import error: file {parametersArray[1]} is not exist.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            switch (parametersArray[0].ToLower(new CultureInfo("en-US")))
+            {
+                case "csv":
+                    {
+                        var snapshot = fileCabinetService.MakeSnapshot();
+                        using StreamReader reader = new StreamReader(File.Open(parametersArray[1], FileMode.Open));
+                        snapshot.LoadFromCsv(reader);
+                        fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{snapshot.Records.Count} records were imported from {parametersArray[1]}");
+                    }
+
+                    break;
+
+                case "xml":
+                    {
+                        var snapshot = fileCabinetService.MakeSnapshot();
+                        using StreamReader reader = new StreamReader(File.Open(parametersArray[1], FileMode.Open));
+                        snapshot.LoadFromXml(reader);
+                        fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{snapshot.Records.Count} records were imported from {parametersArray[1]}");
+                    }
+
+                    break;
             }
         }
     }
