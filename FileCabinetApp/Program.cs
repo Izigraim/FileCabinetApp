@@ -34,6 +34,8 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -47,6 +49,8 @@ namespace FileCabinetApp
             new string[] { "find", "find a record or records by property", "The 'find' command find a record or records by property." },
             new string[] { "export", "export data to file", "The 'export' command export a records to file" },
             new string[] { "import", "import data from file", "The 'import' command import records from file" },
+            new string[] { "remove", "remove a record", "The 'remove' command remove a record with selected ID." },
+            new string[] { "purge", "purge a file with records", "The 'purge' command remove records marked as deleted from file." },
         };
 
         /// <summary>
@@ -63,7 +67,7 @@ namespace FileCabinetApp
         /// <value>
         /// Type of storage.
         /// </value>
-        public static string StorageType { get; set; } = "file";
+        public static string StorageType { get; set; } = "memory";
 
         /// <summary>
         /// Start of execution.
@@ -207,8 +211,8 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            var recordsCount = Program.fileCabinetService.GetStat(out int deletedCount);
+            Console.WriteLine($"{recordsCount} record(s).\n{deletedCount} records are deleted.");
         }
 
         private static void Create(string parameters)
@@ -223,7 +227,7 @@ namespace FileCabinetApp
             }
             else
             {
-                var recordsCount = Program.fileCabinetService.GetStat();
+                var recordsCount = Program.fileCabinetService.GetStat(out int deletedCount);
                 Console.WriteLine($"Record #{recordsCount} created.");
             }
         }
@@ -235,7 +239,7 @@ namespace FileCabinetApp
             try
             {
                 id = Convert.ToInt32(parameters, culture);
-                if (id > Program.fileCabinetService.GetStat() || id <= 0)
+                if (id > Program.fileCabinetService.GetStat(out int deletedCount) || id <= 0)
                 {
                     Console.WriteLine($"#{id} record is not found.");
                     return;
@@ -247,12 +251,19 @@ namespace FileCabinetApp
                 return;
             }
 
-            FileCabinetRecord record = record = Program.validator.ValidateParametersProgram();
+            if (fileCabinetService.GetRecords().Where(c => c.Id == id - 1).Any())
+            {
+                FileCabinetRecord record = Program.validator.ValidateParametersProgram();
 
-            record.Id = id - 1;
+                record.Id = id - 1;
 
-            Program.fileCabinetService.EditRecord(record);
-            Console.WriteLine($"Record #{id} is updated.");
+                Program.fileCabinetService.EditRecord(record);
+                Console.WriteLine($"Record #{id} is updated.");
+            }
+            else
+            {
+                Console.WriteLine($"Record #{id} doesn't exists.");
+            }
         }
 
         private static void List(string parameters)
@@ -298,6 +309,7 @@ namespace FileCabinetApp
 
             if (findedRecords == null)
             {
+                Console.WriteLine("Records doesn't exist.");
                 return;
             }
 
@@ -545,6 +557,49 @@ namespace FileCabinetApp
                     }
 
                     break;
+            }
+        }
+
+        private static void Remove(string parameters)
+        {
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            int id;
+            try
+            {
+                id = Convert.ToInt32(parameters, culture);
+                if (id > Program.fileCabinetService.GetStat(out int deletedCount) || id <= 0)
+                {
+                    Console.WriteLine($"#{id} record is not found.");
+                    return;
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Incorrext format of ID");
+                return;
+            }
+
+            if (fileCabinetService.GetRecords().Where(c => c.Id == id - 1).Any())
+            {
+                fileCabinetService.Remove(id - 1);
+                Console.WriteLine($"Record #{id} is removed.");
+            }
+            else
+            {
+                Console.WriteLine($"Record #{id} doesn't exists.");
+            }
+        }
+
+        private static void Purge(string parameters)
+        {
+            if (fileCabinetService is FileCabinetFilesystemService)
+            {
+                fileCabinetService.Purge(out int count, out int before);
+                Console.WriteLine($"Data file processing is complited:  {count} of {before} records were purged.");
+            }
+            else
+            {
+                Console.WriteLine("This command cannot be executed in the current storage type.");
             }
         }
     }

@@ -248,12 +248,10 @@ namespace FileCabinetApp
             return fileCabinetRecords;
         }
 
-        /// <summary>
-        /// Gets the number of records.
-        /// </summary>
-        /// <returns>Number of records.</returns>
-        public int GetStat()
+        /// <inheritdoc/>
+        public int GetStat(out int deletedCount)
         {
+            deletedCount = 0;
             return this.list.Count;
         }
 
@@ -278,6 +276,23 @@ namespace FileCabinetApp
             {
                 this.CreateRecord(record);
             }
+        }
+
+        /// <inheritdoc/>
+        public void Remove(int id)
+        {
+            FileCabinetRecord record = this.list[id];
+            this.list.RemoveAt(id);
+
+            this.firstNameDictionary[record.FirstName].Remove(record);
+            this.lastNameDictionary[record.LastName].Remove(record);
+            this.dateOfBirthDictionary[record.DateOfBirth.ToString(new CultureInfo("en-US"))].Remove(record);
+        }
+
+        /// <inheritdoc/>
+        public void Purge(out int count, out int before)
+        {
+            throw new NotImplementedException();
         }
     }
 }

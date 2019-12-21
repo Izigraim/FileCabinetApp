@@ -70,13 +70,19 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat(System.Int32@)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Purge(System.Int32@,System.Int32@)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
@@ -130,11 +136,8 @@
             </summary>
             <returns>Array of all records.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
-            <summary>
-            Gets the number of records.
-            </summary>
-            <returns>Number of records.</returns>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat(System.Int32@)">
+            <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
             <summary>
@@ -143,6 +146,12 @@
             <returns>Instance of snapshot class.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Purge(System.Int32@,System.Int32@)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
@@ -240,6 +249,23 @@
             </summary>
             <param name="record">Record.</param>
         </member>
+        <member name="T:FileCabinetApp.FIleCabinetRecordXmlReader">
+            <summary>
+            XmlReader class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FIleCabinetRecordXmlReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FIleCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">StreamReader.</param>
+        </member>
+        <member name="M:FileCabinetApp.FIleCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Read all records from XML file.
+            </summary>
+            <returns>List of readed records.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
             <summary>
             XmlWriter class.
@@ -294,6 +320,12 @@
             </summary>
             <param name="reader">StreamReader.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader)">
+            <summary>
+            Load records from XML file.
+            </summary>
+            <param name="reader">StreamReader.</param>
+        </member>
         <member name="T:FileCabinetApp.IFIleCabinetService">
             <summary>
             Extract interface to FileCabinetService.
@@ -339,10 +371,11 @@
             </summary>
             <returns>Array of all records.</returns>
         </member>
-        <member name="M:FileCabinetApp.IFIleCabinetService.GetStat">
+        <member name="M:FileCabinetApp.IFIleCabinetService.GetStat(System.Int32@)">
             <summary>
             Gets the number of records.
             </summary>
+            <param name="deletedCount">Count of deleted records.</param>
             <returns>Number of records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFIleCabinetService.MakeSnapshot">
@@ -356,6 +389,19 @@
             Restore imported records.
             </summary>
             <param name="snapshot">Snapshot.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFIleCabinetService.Remove(System.Int32)">
+            <summary>
+            Remove record by ID.
+            </summary>
+            <param name="id">ID of removed record.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFIleCabinetService.Purge(System.Int32@,System.Int32@)">
+            <summary>
+            Clears the file of deleted records.
+            </summary>
+            <param name="count">Count of purged records.</param>
+            <param name="before">Count of records before purge.</param>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
