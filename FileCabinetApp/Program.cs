@@ -63,7 +63,7 @@ namespace FileCabinetApp
         /// <value>
         /// Type of storage.
         /// </value>
-        public static string StorageType { get; set; } = "memory";
+        public static string StorageType { get; set; } = "file";
 
         /// <summary>
         /// Start of execution.
@@ -539,6 +539,9 @@ namespace FileCabinetApp
                     {
                         var snapshot = fileCabinetService.MakeSnapshot();
                         using StreamReader reader = new StreamReader(File.Open(parametersArray[1], FileMode.Open));
+                        snapshot.LoadFromXml(reader);
+                        fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{snapshot.Records.Count} records were imported from {parametersArray[1]}");
                     }
 
                     break;
