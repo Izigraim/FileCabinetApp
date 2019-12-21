@@ -280,6 +280,7 @@ namespace FileCabinetApp
             }
         }
 
+        /// <inheritdoc/>
         public void Remove(int id)
         {
             FileCabinetRecord record = this.list[id];

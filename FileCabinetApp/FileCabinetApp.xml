@@ -76,6 +76,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
@@ -143,6 +146,9 @@
             <returns>Instance of snapshot class.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Remove(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
@@ -379,6 +385,12 @@
             Restore imported records.
             </summary>
             <param name="snapshot">Snapshot.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFIleCabinetService.Remove(System.Int32)">
+            <summary>
+            Remove record by ID.
+            </summary>
+            <param name="id">ID of removed record.</param>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

@@ -249,12 +249,19 @@ namespace FileCabinetApp
                 return;
             }
 
-            FileCabinetRecord record = Program.validator.ValidateParametersProgram();
+            if (fileCabinetService.GetRecords().Where(c => c.Id == id - 1).Any())
+            {
+                FileCabinetRecord record = Program.validator.ValidateParametersProgram();
 
-            record.Id = id - 1;
+                record.Id = id - 1;
 
-            Program.fileCabinetService.EditRecord(record);
-            Console.WriteLine($"Record #{id} is updated.");
+                Program.fileCabinetService.EditRecord(record);
+                Console.WriteLine($"Record #{id} is updated.");
+            }
+            else
+            {
+                Console.WriteLine($"Record #{id} doesn't exists.");
+            }
         }
 
         private static void List(string parameters)
@@ -300,6 +307,7 @@ namespace FileCabinetApp
 
             if (findedRecords == null)
             {
+                Console.WriteLine("Records doesn't exist.");
                 return;
             }
 
@@ -578,8 +586,6 @@ namespace FileCabinetApp
             {
                 Console.WriteLine($"Record #{id} doesn't exists.");
             }
-
-            
         }
     }
 }
