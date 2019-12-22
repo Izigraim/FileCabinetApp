@@ -5,13 +5,11 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
-    public class StatCommanHandler : CommandHandlerBase
+    public class StatCommanHandler : ServiceCommandHandlerBase
     {
-        private static IFIleCabinetService service;
-
-        public StatCommanHandler(IFIleCabinetService service1)
+        public StatCommanHandler(IFIleCabinetService service)
+            : base(service)
         {
-            service = service1;
         }
 
         public override void Handle(AppCommandRequest request)

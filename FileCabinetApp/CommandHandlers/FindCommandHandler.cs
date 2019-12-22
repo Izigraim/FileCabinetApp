@@ -7,13 +7,11 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
-    public class FindCommandHandler : CommandHandlerBase
+    public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        private static IFIleCabinetService service;
-
-        public FindCommandHandler(IFIleCabinetService service1)
+        public FindCommandHandler(IFIleCabinetService service)
+            : base(service)
         {
-            service = service1;
         }
 
         public override void Handle(AppCommandRequest request)

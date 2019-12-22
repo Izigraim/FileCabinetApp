@@ -6,14 +6,13 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
-    public class ListCommandHandler : CommandHandlerBase
+    public class ListCommandHandler : ServiceCommandHandlerBase
     {
-        private static IFIleCabinetService service;
-
-        public ListCommandHandler(IFIleCabinetService service1)
+        public ListCommandHandler(IFIleCabinetService service)
+            : base(service)
         {
-            service = service1;
         }
+
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "list")

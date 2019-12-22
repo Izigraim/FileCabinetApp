@@ -5,13 +5,11 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
-    public class CreateCommandHandler : CommandHandlerBase
+    public class CreateCommandHandler : ServiceCommandHandlerBase
     {
-        private static IFIleCabinetService service;
-
-        public CreateCommandHandler(IFIleCabinetService service1)
+        public CreateCommandHandler(IFIleCabinetService service)
+            : base(service)
         {
-            service = service1;
         }
 
         public override void Handle(AppCommandRequest request)
@@ -24,7 +22,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 base.Handle(request);
             }
-
         }
 
         private static void Create(string parameters)
