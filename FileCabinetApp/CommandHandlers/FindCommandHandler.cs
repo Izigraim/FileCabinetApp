@@ -9,9 +9,10 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        private IRecordPrinter printer;
+        // private IRecordPrinter printer;
+        private Action<IEnumerable<FileCabinetRecord>> printer;
 
-        public FindCommandHandler(IFIleCabinetService service, IRecordPrinter printer)
+        public FindCommandHandler(IFIleCabinetService service, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(service)
         {
             this.printer = printer;
@@ -61,7 +62,7 @@ namespace FileCabinetApp.CommandHandlers
                     break;
             }
 
-            this.printer.Print(findedRecords);
+            this.printer(findedRecords);
         }
     }
 }

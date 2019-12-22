@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -145,9 +146,9 @@ namespace FileCabinetApp
             var exit = new ExitCommandHandler(Exit);
             var stat = new StatCommanHandler(fileCabinetService);
             var help = new PrintHelpCommandHandler();
-            var list = new ListCommandHandler(fileCabinetService, recordPrinter);
+            var list = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
             var edit = new EditCommandHandler(fileCabinetService);
-            var find = new FindCommandHandler(fileCabinetService, recordPrinter);
+            var find = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
             var export = new ExportCommandHandler(fileCabinetService);
             var import = new ImportCommandHandler(fileCabinetService);
             var remove = new RemoveCommandHandler(fileCabinetService);
@@ -161,6 +162,14 @@ namespace FileCabinetApp
         private static void Exit(bool running)
         {
             isRunning = running;
+        }
+
+        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
+        {
+            foreach (FileCabinetRecord record in records)
+            {
+                Console.WriteLine($"#{record.Id + 1}, {record.Sex}, {record.FirstName}, {record.LastName}, {record.Age}, {record.Salary}, {record.DateOfBirth:yyyy-MMM-dd}");
+            }
         }
     }
 }

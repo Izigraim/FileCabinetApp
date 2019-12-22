@@ -8,9 +8,10 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
-        private IRecordPrinter printer;
+        // private IRecordPrinter printer;
+        private Action<IEnumerable<FileCabinetRecord>> printer;
 
-        public ListCommandHandler(IFIleCabinetService service, IRecordPrinter printer)
+        public ListCommandHandler(IFIleCabinetService service, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(service)
         {
             this.printer = printer;
@@ -37,7 +38,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            this.printer.Print(fileCabinetRecords);
+            this.printer(fileCabinetRecords);
         }
     }
 }
