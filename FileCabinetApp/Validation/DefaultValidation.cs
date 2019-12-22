@@ -8,8 +8,17 @@ namespace FileCabinetApp.Validation
     /// <summary>
     /// Class for default validation.
     /// </summary>
-    public class DefaultValidation : IRecordValidator
+    public class DefaultValidation : CompositeValidator
     {
+        public DefaultValidation()
+            : base(new List<IRecordValidator> {
+            new FirstNameValidation(2, 60),
+            new LastNameValidation(2, 60),
+            new DateOfBirthValidation(1950),
+            })
+        {
+        }
+
         /// <summary>
         /// Default validation for module.
         /// </summary>
@@ -24,12 +33,6 @@ namespace FileCabinetApp.Validation
 
             try
             {
-                new FirstNameValidation(2, 60).ValidateParameters(record);
-
-                new LastNameValidation(2, 60).ValidateParameters(record);
-
-                new DateOfBirthValidation(1950).ValidateParameters(record);
-
                 new DefaultSexValidation().ValidateParameters(record);
 
                 new DefaultAgeValidation().ValidateParameters(record);

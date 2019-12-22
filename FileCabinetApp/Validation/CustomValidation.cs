@@ -8,8 +8,17 @@ namespace FileCabinetApp.Validation
     /// <summary>
     /// Class for custom validation.
     /// </summary>
-    public class CustomValidation : IRecordValidator
+    public class CustomValidation : CompositeValidator
     {
+        public CustomValidation()
+            : base(new List<IRecordValidator> {
+            new FirstNameValidation(0, 1000),
+            new LastNameValidation(0, 1000),
+            new DateOfBirthValidation(0),
+            })
+        {
+        }
+
         /// <summary>
         /// Custom validation for module.
         /// </summary>
@@ -24,12 +33,6 @@ namespace FileCabinetApp.Validation
 
             try
             {
-                new FirstNameValidation(0, 1000).ValidateParameters(record);
-
-                new LastNameValidation(0, 1000).ValidateParameters(record);
-
-                new DateOfBirthValidation(0).ValidateParameters(record);
-
                 new CustomSexValidation().ValidateParameters(record);
 
                 new CustomAgeValidation().ValidateParameters(record);

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using FileCabinetApp.Validation;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -48,7 +49,16 @@ namespace FileCabinetApp.CommandHandlers
 
             if (service.GetRecords().Where(c => c.Id == id - 1).Any())
             {
-                FileCabinetRecord record = Program.validator.ValidateParametersProgram();
+                FileCabinetRecord record = null;
+
+                if (Program.validator is DefaultValidation)
+                {
+                    record = new DefaultValidation().ValidateParametersProgram();
+                }
+                else
+                {
+                    record = new CustomValidation().ValidateParametersProgram();
+                }
 
                 record.Id = id - 1;
 

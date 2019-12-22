@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using FileCabinetApp.Validation;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -28,7 +29,16 @@ namespace FileCabinetApp.CommandHandlers
         {
             CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
 
-            FileCabinetRecord record = Program.validator.ValidateParametersProgram();
+            FileCabinetRecord record = null;
+
+            if (Program.validator is DefaultValidation)
+            {
+                record = new DefaultValidation().ValidateParametersProgram();
+            }
+            else
+            {
+                record = new CustomValidation().ValidateParametersProgram();
+            }
 
             if (service.CreateRecord(record) == -1)
             {

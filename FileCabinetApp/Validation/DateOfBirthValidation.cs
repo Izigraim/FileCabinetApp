@@ -22,10 +22,5 @@ namespace FileCabinetApp.Validation
 
             return true;
         }
-
-        public FileCabinetRecord ValidateParametersProgram()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
