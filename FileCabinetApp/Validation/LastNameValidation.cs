@@ -4,8 +4,17 @@ using System.Text;
 
 namespace FileCabinetApp.Validation
 {
-    public class DefautLastNameValidation : IRecordValidator
+    public class LastNameValidation : IRecordValidator
     {
+        private int minLenght;
+        private int maxLenght;
+
+        public LastNameValidation(int minLenght, int maxLenght)
+        {
+            this.minLenght = minLenght;
+            this.maxLenght = maxLenght;
+        }
+
         public bool ValidateParameters(FileCabinetRecord record)
         {
             if (record.LastName == null)
@@ -13,7 +22,7 @@ namespace FileCabinetApp.Validation
                 throw new ArgumentNullException(nameof(record));
             }
 
-            if (record.LastName.Length > 60 || record.LastName.Length < 2 || record.LastName.Contains(' ', StringComparison.Ordinal))
+            if (record.LastName.Length > this.maxLenght || record.LastName.Length < this.minLenght || record.LastName.Contains(' ', StringComparison.Ordinal))
             {
                 throw new ArgumentException("Incorrect last name format.", nameof(record));
             }

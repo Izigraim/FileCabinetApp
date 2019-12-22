@@ -4,11 +4,18 @@ using System.Text;
 
 namespace FileCabinetApp.Validation
 {
-    public class DefaultDateOfBirthValidation : IRecordValidator
+    public class DateOfBirthValidation : IRecordValidator
     {
+        private int yearFrom;
+
+        public DateOfBirthValidation(int yearFrom)
+        {
+            this.yearFrom = yearFrom;
+        }
+
         public bool ValidateParameters(FileCabinetRecord record)
         {
-            if (record.DateOfBirth < new DateTime(1950, 1, 1) || record.DateOfBirth > DateTime.Now)
+            if (record.DateOfBirth.Year < this.yearFrom || record.DateOfBirth > DateTime.Now)
             {
                 throw new ArgumentException("Incorrect date.", nameof(record));
             }

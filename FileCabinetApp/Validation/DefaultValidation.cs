@@ -24,11 +24,11 @@ namespace FileCabinetApp.Validation
 
             try
             {
-                new DefaultFirstNameValidation().ValidateParameters(record);
+                new FirstNameValidation(2, 60).ValidateParameters(record);
 
-                new DefautLastNameValidation().ValidateParameters(record);
+                new LastNameValidation(2, 60).ValidateParameters(record);
 
-                new DefaultDateOfBirthValidation().ValidateParameters(record);
+                new DateOfBirthValidation(1950).ValidateParameters(record);
 
                 new DefaultSexValidation().ValidateParameters(record);
 
