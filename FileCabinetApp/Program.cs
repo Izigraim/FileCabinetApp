@@ -122,7 +122,6 @@ namespace FileCabinetApp
                 var inputs = Console.ReadLine().Split(' ', 2);
                 const int commandIndex = 0;
                 var command = inputs[commandIndex];
-                var commandHandler = CreateCommandHandlers();
 
                 if (string.IsNullOrEmpty(command))
                 {
@@ -130,18 +129,32 @@ namespace FileCabinetApp
                     continue;
                 }
 
+                var commandHandler = CreateCommandHandlers(command);
                 const int parametersIndex = 1;
                 var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
-                commandHandler.SetNext(commandHandler);
                 commandHandler.Handle(new AppCommandRequest(command, parameters));
             }
             while (isRunning);
         }
 
-        private static ICommandHandler CreateCommandHandlers()
+        private static ICommandHandler CreateCommandHandlers(string command)
         {
-            var commandHandler = new CommandHandler();
-            return commandHandler;
+
+            var create = new CreateCommandHandler();
+            var exit = new ExitCommandHandler();
+            var stat = new StatCommanHandler();
+            var help = new PrintHelpCommandHandler();
+            var list = new ListCommandHandler();
+            var edit = new EditCommandHandler();
+            var find = new FindCommandHandler();
+            var export = new ExportCommandHandler();
+            var import = new ImportCommandHandler();
+            var remove = new RemoveCommandHandler();
+            var purge = new PurgeCommandHandler();
+
+            create.SetNext(exit).SetNext(stat).SetNext(help).SetNext(list).SetNext(edit).SetNext(find).SetNext(export).SetNext(import).SetNext(remove).SetNext(purge);
+
+            return create;
         }
     }
 }

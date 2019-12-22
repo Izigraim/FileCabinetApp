@@ -6,7 +6,7 @@ namespace FileCabinetApp.CommandHandlers
 {
     public interface ICommandHandler
     {
-        public void SetNext(ICommandHandler nexHandler);
+        public ICommandHandler SetNext(ICommandHandler nexHandler);
 
         public void Handle(AppCommandRequest request);
     }
