@@ -6,15 +6,23 @@ using System.Text;
 
 namespace FileCabinetApp.Validation
 {
+    /// <summary>
+    /// CompositeValidator.
+    /// </summary>
     public class CompositeValidator : IRecordValidator
     {
         private List<IRecordValidator> validators;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompositeValidator"/> class.
+        /// </summary>
+        /// <param name="validators">List of validators.</param>
         public CompositeValidator(List<IRecordValidator> validators)
         {
             this.validators = validators;
         }
 
+        /// <inheritdoc/>
         public bool ValidateParameters(FileCabinetRecord record)
         {
             foreach (var validator in this.validators)
@@ -25,6 +33,7 @@ namespace FileCabinetApp.Validation
             return true;
         }
 
+        /// <inheritdoc/>
         public FileCabinetRecord ValidateParametersProgram()
         {
             CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
@@ -191,7 +200,7 @@ namespace FileCabinetApp.Validation
                     return (true, firstName).ToTuple();
                 }
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 Console.WriteLine(ex.Message);
             }

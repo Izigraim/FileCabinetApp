@@ -7,15 +7,28 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Import command.
+    /// </summary>
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Type of services.</param>
         public ImportCommandHandler(IFIleCabinetService service)
             : base(service)
         {
         }
 
+        /// <inheritdoc/>
         public override void Handle(AppCommandRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             if (request.Command.ToLower(new CultureInfo("en-US")) == "import")
             {
                 Import(request.Parameters);
@@ -65,10 +78,10 @@ namespace FileCabinetApp.CommandHandlers
             {
                 case "csv":
                     {
-                        var snapshot = service.MakeSnapshot();
+                        var snapshot = Service.MakeSnapshot();
                         using StreamReader reader = new StreamReader(File.Open(parametersArray[1], FileMode.Open));
                         snapshot.LoadFromCsv(reader);
-                        service.Restore(snapshot);
+                        Service.Restore(snapshot);
                         Console.WriteLine($"{snapshot.Records.Count} records were imported from {parametersArray[1]}");
                     }
 
@@ -76,10 +89,10 @@ namespace FileCabinetApp.CommandHandlers
 
                 case "xml":
                     {
-                        var snapshot = service.MakeSnapshot();
+                        var snapshot = Service.MakeSnapshot();
                         using StreamReader reader = new StreamReader(File.Open(parametersArray[1], FileMode.Open));
                         snapshot.LoadFromXml(reader);
-                        service.Restore(snapshot);
+                        Service.Restore(snapshot);
                         Console.WriteLine($"{snapshot.Records.Count} records were imported from {parametersArray[1]}");
                     }
 

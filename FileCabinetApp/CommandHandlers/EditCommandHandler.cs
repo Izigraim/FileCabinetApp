@@ -8,15 +8,28 @@ using FileCabinetApp.Validation;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Edit command.
+    /// </summary>
     public class EditCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Type of services.</param>
         public EditCommandHandler(IFIleCabinetService service)
             : base(service)
         {
         }
 
+        /// <inheritdoc/>
         public override void Handle(AppCommandRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             if (request.Command.ToLower(new CultureInfo("en-US")) == "edit")
             {
                 Edit(request.Parameters);
@@ -25,7 +38,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 base.Handle(request);
             }
-
         }
 
         private static void Edit(string parameters)
@@ -35,7 +47,7 @@ namespace FileCabinetApp.CommandHandlers
             try
             {
                 id = Convert.ToInt32(parameters, culture);
-                if (id > service.GetStat(out int deletedCount) || id <= 0)
+                if (id > Service.GetStat(out int deletedCount) || id <= 0)
                 {
                     Console.WriteLine($"#{id} record is not found.");
                     return;
@@ -47,13 +59,13 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (service.GetRecords().Where(c => c.Id == id - 1).Any())
+            if (Service.GetRecords().Where(c => c.Id == id - 1).Any())
             {
-                FileCabinetRecord record = Program.validator.ValidateParametersProgram();
+                FileCabinetRecord record = Program.Validator.ValidateParametersProgram();
 
                 record.Id = id - 1;
 
-                service.EditRecord(record);
+                Service.EditRecord(record);
                 Console.WriteLine($"Record #{id} is updated.");
             }
             else

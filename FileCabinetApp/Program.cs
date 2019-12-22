@@ -18,7 +18,7 @@ namespace FileCabinetApp
         private const string DeveloperName = "Ilya Vrublevsky";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
 
-        public static IRecordValidator validator;
+        private static IRecordValidator validator;
         private static IFIleCabinetService fileCabinetService;
 
         private static bool isRunning = true;
@@ -38,6 +38,20 @@ namespace FileCabinetApp
         /// Type of storage.
         /// </value>
         public static string StorageType { get; set; } = "memory";
+
+        /// <summary>
+        /// Gets a validator.
+        /// </summary>
+        /// <value>
+        /// A validator.
+        /// </value>
+        public static IRecordValidator Validator
+        {
+            get
+            {
+                return validator;
+            }
+        }
 
         /// <summary>
         /// Start of execution.
@@ -94,11 +108,11 @@ namespace FileCabinetApp
 
             if (ValidationType == "default")
             {
-                validator = new ValidatorBuilder().ValidateFirstName(2, 60).ValidateLastName(2, 60).ValidateDateOfBirth(1950).Create();
+                validator = new ValidatorBuilder().CreateDefault(2, 60, 2, 60, 1950);
             }
             else
             {
-                validator = new ValidatorBuilder().ValidateFirstName(0, 10000).ValidateLastName(0, 10000).ValidateDateOfBirth(0).Create();
+                validator = new ValidatorBuilder().CreateCustom(0, 1000, 0, 10000, 0);
             }
 
             if (StorageType == "memory")

@@ -7,19 +7,32 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Find command.
+    /// </summary>
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        // private IRecordPrinter printer;
         private Action<IEnumerable<FileCabinetRecord>> printer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Type of services.</param>
+        /// <param name="printer">Type of printing.</param>
         public FindCommandHandler(IFIleCabinetService service, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(service)
         {
             this.printer = printer;
         }
 
+        /// <inheritdoc/>
         public override void Handle(AppCommandRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             if (request.Command.ToLower(new CultureInfo("en-US")) == "find")
             {
                 this.Find(request.Parameters);
@@ -52,13 +65,13 @@ namespace FileCabinetApp.CommandHandlers
             switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
             {
                 case "firstname":
-                    findedRecords = service.FindByFirstName(findParameters[1].Trim('"'));
+                    findedRecords = Service.FindByFirstName(findParameters[1].Trim('"'));
                     break;
                 case "lastname":
-                    findedRecords = service.FindByLastName(findParameters[1].Trim('"'));
+                    findedRecords = Service.FindByLastName(findParameters[1].Trim('"'));
                     break;
                 case "dateofbirth":
-                    findedRecords = service.FindByDateOfBirth(findParameters[1].Trim('"'));
+                    findedRecords = Service.FindByDateOfBirth(findParameters[1].Trim('"'));
                     break;
             }
 

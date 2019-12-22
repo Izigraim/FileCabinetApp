@@ -5,10 +5,34 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Print command.
+    /// </summary>
     public class PrintHelpCommandHandler : CommandHandlerBase
     {
+        private static string[][] helpMessages = new string[][]
+        {
+            new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
+            new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
+            new string[] { "stat", "prints the count of records", "The 'stat' command prints the count of records." },
+            new string[] { "create", "create a record", "The 'create' command create a record." },
+            new string[] { "list", "returns list of records", "The 'list' command returns list of records." },
+            new string[] { "edit", "edit a record", "The 'edit' command edit a record" },
+            new string[] { "find", "find a record or records by property", "The 'find' command find a record or records by property." },
+            new string[] { "export", "export data to file", "The 'export' command export a records to file" },
+            new string[] { "import", "import data from file", "The 'import' command import records from file" },
+            new string[] { "remove", "remove a record", "The 'remove' command remove a record with selected ID." },
+            new string[] { "purge", "purge a file with records", "The 'purge' command remove records marked as deleted from file." },
+        };
+
+        /// <inheritdoc/>
         public override void Handle(AppCommandRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             if (request.Command.ToLower(new CultureInfo("en-US")) == "help")
             {
                 PrintHelp(request.Parameters);

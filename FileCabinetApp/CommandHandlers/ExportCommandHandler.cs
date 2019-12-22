@@ -7,15 +7,28 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Export command.
+    /// </summary>
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Type of services.</param>
         public ExportCommandHandler(IFIleCabinetService service)
             : base(service)
         {
         }
 
+        /// <inheritdoc/>
         public override void Handle(AppCommandRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             if (request.Command.ToLower(new CultureInfo("en-US")) == "export")
             {
                 Export(request.Parameters);
@@ -48,7 +61,7 @@ namespace FileCabinetApp.CommandHandlers
 
             string[] parametersArray = parameters.Trim().Split(' ');
 
-            var fileCabinetServiceShapshot = service.MakeSnapshot();
+            var fileCabinetServiceShapshot = Service.MakeSnapshot();
 
             switch (parametersArray[0].ToLower(new CultureInfo("en-US")))
             {

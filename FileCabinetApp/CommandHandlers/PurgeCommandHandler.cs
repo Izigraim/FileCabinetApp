@@ -1,21 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Purge command.
+    /// </summary>
     public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
+        private static string[] commands = new string[] { "help", "exit", "stat", "create", "list", "edit", "find", "export", "import", "remove", "purge" };
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PurgeCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Type of services.</param>
         public PurgeCommandHandler(IFIleCabinetService service)
             : base(service)
         {
         }
 
+        /// <inheritdoc/>
         public override void Handle(AppCommandRequest request)
         {
-            var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(request.Command, StringComparison.InvariantCultureIgnoreCase));
-            if (index < 0)
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (!commands.Contains(request.Command.ToLower(new CultureInfo("en-US"))))
             {
                 Console.WriteLine($"There is no '{request.Command}' command.");
                 Console.WriteLine();
@@ -23,7 +38,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "purge")
             {
-                Purge(request.Parameters);
+                Purge();
             }
             else
             {
@@ -31,11 +46,11 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Purge(string parameters)
+        private static void Purge()
         {
-            if (service is FileCabinetFilesystemService)
+            if (Service is FileCabinetFilesystemService)
             {
-                service.Purge(out int count, out int before);
+                Service.Purge(out int count, out int before);
                 Console.WriteLine($"Data file processing is complited:  {count} of {before} records were purged.");
             }
             else
