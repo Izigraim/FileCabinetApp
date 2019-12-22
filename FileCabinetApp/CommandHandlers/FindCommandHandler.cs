@@ -9,16 +9,19 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        public FindCommandHandler(IFIleCabinetService service)
+        private IRecordPrinter printer;
+
+        public FindCommandHandler(IFIleCabinetService service, IRecordPrinter printer)
             : base(service)
         {
+            this.printer = printer;
         }
 
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "find")
             {
-                Find(request.Parameters);
+                this.Find(request.Parameters);
             }
             else
             {
@@ -26,7 +29,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Find(string parameters)
+        private void Find(string parameters)
         {
             try
             {
@@ -58,10 +61,7 @@ namespace FileCabinetApp.CommandHandlers
                     break;
             }
 
-            foreach (FileCabinetRecord record in findedRecords)
-            {
-                Console.WriteLine($"#{record.Id + 1}, {record.Sex}, {record.FirstName}, {record.LastName}, {record.Age}, {record.Salary}, {record.DateOfBirth:yyyy-MMM-dd}");
-            }
+            this.printer.Print(findedRecords);
         }
     }
 }

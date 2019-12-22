@@ -8,16 +8,19 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
-        public ListCommandHandler(IFIleCabinetService service)
+        private IRecordPrinter printer;
+
+        public ListCommandHandler(IFIleCabinetService service, IRecordPrinter printer)
             : base(service)
         {
+            this.printer = printer;
         }
 
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "list")
             {
-                List(request.Parameters);
+                this.List(request.Parameters);
             }
             else
             {
@@ -25,7 +28,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void List(string parameters)
+        private void List(string parameters)
         {
             ReadOnlyCollection<FileCabinetRecord> fileCabinetRecords = service.GetRecords();
             if (fileCabinetRecords.Count == 0)
@@ -34,10 +37,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            for (int i = 0; i < fileCabinetRecords.Count; i++)
-            {
-                Console.WriteLine($"#{fileCabinetRecords[i].Id + 1}, {fileCabinetRecords[i].Sex}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].Age}, {fileCabinetRecords[i].Salary}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
-            }
+            this.printer.Print(fileCabinetRecords);
         }
     }
 }
