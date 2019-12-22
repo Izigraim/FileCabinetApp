@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Validation
 {
     /// <summary>
     /// Class for custom validation.
@@ -24,15 +24,17 @@ namespace FileCabinetApp
 
             try
             {
-                if (record.FirstName == null)
-                {
-                    throw new ArgumentNullException(nameof(record));
-                }
+                this.ValidateFirstName(record.FirstName);
 
-                if (record.LastName == null)
-                {
-                    throw new ArgumentNullException(nameof(record));
-                }
+                this.ValidateLastName(record.LastName);
+
+                this.ValidateDateOfBirth(record.DateOfBirth);
+
+                this.ValidateSex(record.Sex);
+
+                this.ValidateAge(record.Age);
+
+                this.ValidateSalary(record.Salary);
             }
             catch (ArgumentNullException ex)
             {
@@ -85,6 +87,38 @@ namespace FileCabinetApp
             };
 
             return record;
+        }
+
+        private void ValidateSex(char sex)
+        {
+        }
+
+        private void ValidateFirstName(string firstname)
+        {
+            if (firstname == null)
+            {
+                throw new ArgumentNullException(nameof(firstname));
+            }
+        }
+
+        private void ValidateLastName(string lastname)
+        {
+            if (lastname == null)
+            {
+                throw new ArgumentNullException(nameof(lastname));
+            }
+        }
+
+        private void ValidateAge(short age)
+        {
+        }
+
+        private void ValidateSalary(decimal? salary)
+        {
+        }
+
+        private void ValidateDateOfBirth(DateTime dateOfBirth)
+        {
         }
 
         private Tuple<bool, string, string> DateTimeConverter(string valueString)
