@@ -29,16 +29,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
 
-            FileCabinetRecord record = null;
-
-            if (Program.validator is DefaultValidation)
-            {
-                record = new DefaultValidation().ValidateParametersProgram();
-            }
-            else
-            {
-                record = new CustomValidation().ValidateParametersProgram();
-            }
+            FileCabinetRecord record = Program.validator.ValidateParametersProgram();
 
             if (service.CreateRecord(record) == -1)
             {

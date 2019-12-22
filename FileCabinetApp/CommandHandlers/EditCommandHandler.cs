@@ -49,16 +49,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (service.GetRecords().Where(c => c.Id == id - 1).Any())
             {
-                FileCabinetRecord record = null;
-
-                if (Program.validator is DefaultValidation)
-                {
-                    record = new DefaultValidation().ValidateParametersProgram();
-                }
-                else
-                {
-                    record = new CustomValidation().ValidateParametersProgram();
-                }
+                FileCabinetRecord record = Program.validator.ValidateParametersProgram();
 
                 record.Id = id - 1;
 

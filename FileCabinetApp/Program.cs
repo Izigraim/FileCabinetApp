@@ -94,11 +94,11 @@ namespace FileCabinetApp
 
             if (ValidationType == "default")
             {
-                validator = new DefaultValidation();
+                validator = new ValidatorBuilder().ValidateFirstName(2, 60).ValidateLastName(2, 60).ValidateDateOfBirth(1950).Create();
             }
             else
             {
-                validator = new CustomValidation();
+                validator = new ValidatorBuilder().ValidateFirstName(0, 10000).ValidateLastName(0, 10000).ValidateDateOfBirth(0).Create();
             }
 
             if (StorageType == "memory")

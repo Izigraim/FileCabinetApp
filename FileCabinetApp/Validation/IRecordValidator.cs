@@ -15,5 +15,11 @@ namespace FileCabinetApp.Validation
         /// <param name="record">Record.</param>
         /// <returns>If all correct - true, otherwise - false.</returns>
         public bool ValidateParameters(FileCabinetRecord record);
+
+        /// <summary>
+        /// Validation for User's input.
+        /// </summary>
+        /// <returns>Record.</returns>
+        public FileCabinetRecord ValidateParametersProgram();
     }
 }
