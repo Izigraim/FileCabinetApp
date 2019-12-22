@@ -24,17 +24,17 @@ namespace FileCabinetApp.Validation
 
             try
             {
-                this.ValidateFirstName(record.FirstName);
+                new DefaultFirstNameValidation().ValidateParameters(record);
 
-                this.ValidateLastName(record.LastName);
+                new DefautLastNameValidation().ValidateParameters(record);
 
-                this.ValidateDateOfBirth(record.DateOfBirth);
+                new DefaultDateOfBirthValidation().ValidateParameters(record);
 
-                this.ValidateSex(record.Sex);
+                new DefaultSexValidation().ValidateParameters(record);
 
-                this.ValidateAge(record.Age);
+                new DefaultAgeValidation().ValidateParameters(record);
 
-                this.ValidateSalary(record.Salary);
+                new DefaultSalaryValidation().ValidateParameters(record);
             }
             catch (ArgumentNullException ex)
             {
@@ -87,64 +87,6 @@ namespace FileCabinetApp.Validation
             };
 
             return record;
-        }
-
-        private void ValidateSex(char sex)
-        {
-            if (sex != 'w' && sex != 'm')
-            {
-                throw new ArgumentException("Incorrect sex format.", nameof(sex));
-            }
-        }
-
-        private void ValidateFirstName(string firstname)
-        {
-            if (firstname == null)
-            {
-                throw new ArgumentNullException(nameof(firstname));
-            }
-
-            if (firstname.Length > 60 || firstname.Length < 2 || firstname.Contains(' ', StringComparison.Ordinal))
-            {
-                throw new ArgumentException("Incorrect first name format.", nameof(firstname));
-            }
-        }
-
-        private void ValidateLastName(string lastname)
-        {
-            if (lastname == null)
-            {
-                throw new ArgumentNullException(nameof(lastname));
-            }
-
-            if (lastname.Length > 60 || lastname.Length < 2 || lastname.Contains(' ', StringComparison.Ordinal))
-            {
-                throw new ArgumentException("Incorrect last name format.", nameof(lastname));
-            }
-        }
-
-        private void ValidateAge(short age)
-        {
-            if (age > (DateTime.Now.Year - 1950) || age < 0)
-            {
-                throw new ArgumentException("Incorrect age format.", nameof(age));
-            }
-        }
-
-        private void ValidateSalary(decimal? salary)
-        {
-            if (salary < 0)
-            {
-                throw new ArgumentException("Incorrect 'salary' format.");
-            }
-        }
-
-        private void ValidateDateOfBirth(DateTime dateOfBirth)
-        {
-            if (dateOfBirth < new DateTime(1950, 1, 1) || dateOfBirth > DateTime.Now)
-            {
-                throw new ArgumentException("Incorrect date.", nameof(dateOfBirth));
-            }
         }
 
         private Tuple<bool, string, string> DateTimeConverter(string valueString)

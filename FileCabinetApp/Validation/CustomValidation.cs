@@ -24,17 +24,17 @@ namespace FileCabinetApp.Validation
 
             try
             {
-                this.ValidateFirstName(record.FirstName);
+                new CustomFirstNameValidation().ValidateParameters(record);
 
-                this.ValidateLastName(record.LastName);
+                new CustomLastNameValidation().ValidateParameters(record);
 
-                this.ValidateDateOfBirth(record.DateOfBirth);
+                new CustomDateOfBirthValidation().ValidateParameters(record);
 
-                this.ValidateSex(record.Sex);
+                new CustomSexValidation().ValidateParameters(record);
 
-                this.ValidateAge(record.Age);
+                new CustomAgeValidation().ValidateParameters(record);
 
-                this.ValidateSalary(record.Salary);
+                new CustomSalaryValidation().ValidateParameters(record);
             }
             catch (ArgumentNullException ex)
             {
@@ -87,38 +87,6 @@ namespace FileCabinetApp.Validation
             };
 
             return record;
-        }
-
-        private void ValidateSex(char sex)
-        {
-        }
-
-        private void ValidateFirstName(string firstname)
-        {
-            if (firstname == null)
-            {
-                throw new ArgumentNullException(nameof(firstname));
-            }
-        }
-
-        private void ValidateLastName(string lastname)
-        {
-            if (lastname == null)
-            {
-                throw new ArgumentNullException(nameof(lastname));
-            }
-        }
-
-        private void ValidateAge(short age)
-        {
-        }
-
-        private void ValidateSalary(decimal? salary)
-        {
-        }
-
-        private void ValidateDateOfBirth(DateTime dateOfBirth)
-        {
         }
 
         private Tuple<bool, string, string> DateTimeConverter(string valueString)
