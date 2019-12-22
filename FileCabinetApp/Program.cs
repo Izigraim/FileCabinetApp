@@ -19,7 +19,7 @@ namespace FileCabinetApp
         public static IRecordValidator validator;
         private static IFIleCabinetService fileCabinetService;
 
-        public static bool isRunning = true;
+        private static bool isRunning = true;
 
         /// <summary>
         /// Gets or sets type of validation.
@@ -141,7 +141,7 @@ namespace FileCabinetApp
         {
 
             var create = new CreateCommandHandler(fileCabinetService);
-            var exit = new ExitCommandHandler();
+            var exit = new ExitCommandHandler(Exit);
             var stat = new StatCommanHandler(fileCabinetService);
             var help = new PrintHelpCommandHandler();
             var list = new ListCommandHandler(fileCabinetService);
@@ -155,6 +155,11 @@ namespace FileCabinetApp
             create.SetNext(exit).SetNext(stat).SetNext(help).SetNext(list).SetNext(edit).SetNext(find).SetNext(export).SetNext(import).SetNext(remove).SetNext(purge);
 
             return create;
+        }
+
+        private static void Exit(bool running)
+        {
+            isRunning = running;
         }
     }
 }
