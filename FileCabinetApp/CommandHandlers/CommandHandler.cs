@@ -1,0 +1,488 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+
+namespace FileCabinetApp.CommandHandlers
+{
+    public class CommandHandler : CommandHandlerBase
+    {
+        private const int CommandHelpIndex = 0;
+        private const int DescriptionHelpIndex = 1;
+        private const int ExplanationHelpIndex = 2;
+
+        private static string[][] helpMessages = new string[][]
+        {
+            new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
+            new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
+            new string[] { "stat", "prints the count of records", "The 'stat' command prints the count of records." },
+            new string[] { "create", "create a record", "The 'create' command create a record." },
+            new string[] { "list", "returns list of records", "The 'list' command returns list of records." },
+            new string[] { "edit", "edit a record", "The 'edit' command edit a record" },
+            new string[] { "find", "find a record or records by property", "The 'find' command find a record or records by property." },
+            new string[] { "export", "export data to file", "The 'export' command export a records to file" },
+            new string[] { "import", "import data from file", "The 'import' command import records from file" },
+            new string[] { "remove", "remove a record", "The 'remove' command remove a record with selected ID." },
+            new string[] { "purge", "purge a file with records", "The 'purge' command remove records marked as deleted from file." },
+        };
+
+        private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
+        {
+            new Tuple<string, Action<string>>("help", PrintHelp),
+            new Tuple<string, Action<string>>("exit", Exit),
+            new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
+        };
+
+        public override void Handle(AppCommandRequest request)
+        {
+            var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(request.Command, StringComparison.InvariantCultureIgnoreCase));
+            if (index >= 0)
+            {
+                commands[index].Item2(request.Parameters);
+            }
+            else
+            {
+                PrintMissedCommandInfo(request.Command);
+            }
+        }
+
+
+        private static void PrintMissedCommandInfo(string command)
+        {
+            Console.WriteLine($"There is no '{command}' command.");
+            Console.WriteLine();
+        }
+
+        private static void PrintHelp(string parameters)
+        {
+            if (!string.IsNullOrEmpty(parameters))
+            {
+                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
+                if (index >= 0)
+                {
+                    Console.WriteLine(helpMessages[index][ExplanationHelpIndex]);
+                }
+                else
+                {
+                    Console.WriteLine($"There is no explanation for '{parameters}' command.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Available commands:");
+
+                foreach (var helpMessage in helpMessages)
+                {
+                    Console.WriteLine("\t{0}\t- {1}", helpMessage[CommandHelpIndex], helpMessage[DescriptionHelpIndex]);
+                }
+            }
+
+            Console.WriteLine();
+        }
+
+        private static void Stat(string parameters)
+        {
+            var recordsCount = Program.fileCabinetService.GetStat(out int deletedCount);
+            Console.WriteLine($"{recordsCount} record(s).\n{deletedCount} records are deleted.");
+        }
+
+        private static void Create(string parameters)
+        {
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+
+            FileCabinetRecord record = Program.validator.ValidateParametersProgram();
+
+            if (Program.fileCabinetService.CreateRecord(record) == -1)
+            {
+                Console.WriteLine("An error occured creating the record.");
+            }
+            else
+            {
+                var recordsCount = Program.fileCabinetService.GetStat(out int deletedCount);
+                Console.WriteLine($"Record #{recordsCount} created.");
+            }
+        }
+
+        private static void Edit(string parameters)
+        {
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            int id;
+            try
+            {
+                id = Convert.ToInt32(parameters, culture);
+                if (id > Program.fileCabinetService.GetStat(out int deletedCount) || id <= 0)
+                {
+                    Console.WriteLine($"#{id} record is not found.");
+                    return;
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Incorrext format of ID");
+                return;
+            }
+
+            if (Program.fileCabinetService.GetRecords().Where(c => c.Id == id - 1).Any())
+            {
+                FileCabinetRecord record = Program.validator.ValidateParametersProgram();
+
+                record.Id = id - 1;
+
+                Program.fileCabinetService.EditRecord(record);
+                Console.WriteLine($"Record #{id} is updated.");
+            }
+            else
+            {
+                Console.WriteLine($"Record #{id} doesn't exists.");
+            }
+        }
+
+        private static void List(string parameters)
+        {
+            ReadOnlyCollection<FileCabinetRecord> fileCabinetRecords = Program.fileCabinetService.GetRecords();
+            for (int i = 0; i < fileCabinetRecords.Count; i++)
+            {
+                Console.WriteLine($"#{fileCabinetRecords[i].Id + 1}, {fileCabinetRecords[i].Sex}, {fileCabinetRecords[i].FirstName}, {fileCabinetRecords[i].LastName}, {fileCabinetRecords[i].Age}, {fileCabinetRecords[i].Salary}, {fileCabinetRecords[i].DateOfBirth:yyyy-MMM-dd}");
+            }
+        }
+
+        private static void Find(string parameters)
+        {
+            try
+            {
+                if (parameters.Where(c => c == ' ').Count() > 1 || !parameters.Where(c => c == ' ').Any() || parameters[0] == ' ')
+                {
+                    throw new ArgumentException("Incorrect command format.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            string[] findParameters = parameters.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            ReadOnlyCollection<FileCabinetRecord> findedRecords = null;
+
+            switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
+            {
+                case "firstname":
+                    findedRecords = Program.fileCabinetService.FindByFirstName(findParameters[1].Trim('"'));
+                    break;
+                case "lastname":
+                    findedRecords = Program.fileCabinetService.FindByLastName(findParameters[1].Trim('"'));
+                    break;
+                case "dateofbirth":
+                    findedRecords = Program.fileCabinetService.FindByDateOfBirth(findParameters[1].Trim('"'));
+                    break;
+            }
+
+            if (findedRecords == null)
+            {
+                Console.WriteLine("Records doesn't exist.");
+                return;
+            }
+
+            foreach (FileCabinetRecord record in findedRecords)
+            {
+                Console.WriteLine($"#{record.Id + 1}, {record.Sex}, {record.FirstName}, {record.LastName}, {record.Age}, {record.Salary}, {record.DateOfBirth:yyyy-MMM-dd}");
+            }
+        }
+
+        private static void Exit(string parameters)
+        {
+            Console.WriteLine("Exiting an application...");
+            Program.isRunning = false;
+        }
+
+        private static void Export(string parameters)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(parameters.Trim()))
+                {
+                    throw new ArgumentException("Incorrect parameters.");
+                }
+
+                if (parameters.Trim().Where(x => x == ' ').Count() != 1)
+                {
+                    throw new ArgumentException("Incorrect parameters.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            string[] parametersArray = parameters.Trim().Split(' ');
+
+            var fileCabinetServiceShapshot = Program.fileCabinetService.MakeSnapshot();
+
+            switch (parametersArray[0].ToLower(new CultureInfo("en-US")))
+            {
+                case "csv":
+                    {
+                        string path = null;
+
+                        try
+                        {
+                            path = parametersArray[1];
+
+                            if (!path.Contains(".csv", StringComparison.Ordinal))
+                            {
+                                throw new ArgumentException("Incorrect file name.");
+                            }
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            return;
+                        }
+
+                        try
+                        {
+                            string answer = string.Empty;
+                            if (!File.Exists(path))
+                            {
+                                using (FileStream stream = new FileStream(path, FileMode.Create))
+                                {
+                                    fileCabinetServiceShapshot.SaveToCsv(stream);
+                                }
+                            }
+                            else
+                            {
+                                while (true)
+                                {
+                                    Console.Write($"File is exist - rewrite {path}? [Y/n] ");
+                                    answer = Console.ReadLine();
+                                    if (answer.ToLower(new CultureInfo("en-US")) != "y" && answer.ToLower(new CultureInfo("en-US")) != "n")
+                                    {
+                                        Console.WriteLine("Incorrect answer.");
+                                        continue;
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            if (answer.Trim().ToLower(new CultureInfo("en-US")) == "y")
+                            {
+                                using (FileStream stream = new FileStream(path, FileMode.Create))
+                                {
+                                    fileCabinetServiceShapshot.SaveToCsv(stream);
+                                }
+                            }
+                            else if (answer.Trim().ToLower(new CultureInfo("en-US")) == "n")
+                            {
+                                return;
+                            }
+                        }
+                        catch (DirectoryNotFoundException)
+                        {
+                            Console.WriteLine($"Export failed: can't open file {path}");
+                        }
+
+                        Console.WriteLine($"All records are exported to file {path}");
+                    }
+
+                    break;
+
+                case "xml":
+                    {
+                        string path = null;
+
+                        try
+                        {
+                            path = parametersArray[1];
+
+                            if (!path.Contains(".xml", StringComparison.Ordinal))
+                            {
+                                throw new ArgumentException("Incorrect file name.");
+                            }
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            return;
+                        }
+
+                        try
+                        {
+                            string answer = string.Empty;
+                            if (!File.Exists(path))
+                            {
+                                using (FileStream stream = new FileStream(path, FileMode.Create))
+                                {
+                                    fileCabinetServiceShapshot.SaveToXml(stream);
+                                }
+                            }
+                            else
+                            {
+                                while (true)
+                                {
+                                    Console.Write($"File is exist - rewrite {path}? [Y/n] ");
+                                    answer = Console.ReadLine();
+                                    if (answer.ToLower(new CultureInfo("en-US")) != "y" && answer.ToLower(new CultureInfo("en-US")) != "n")
+                                    {
+                                        Console.WriteLine("Incorrect answer.");
+                                        continue;
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            if (answer.Trim().ToLower(new CultureInfo("en-US")) == "y")
+                            {
+                                using (FileStream stream = new FileStream(path, FileMode.Create))
+                                {
+                                    fileCabinetServiceShapshot.SaveToXml(stream);
+                                }
+                            }
+                            else if (answer.Trim().ToLower(new CultureInfo("en-US")) == "n")
+                            {
+                                return;
+                            }
+                        }
+                        catch (DirectoryNotFoundException)
+                        {
+                            Console.WriteLine($"Export failed: can't open file {path}");
+                        }
+
+                        Console.WriteLine($"All records are exported to file {path}");
+                    }
+
+                    break;
+                default:
+                    {
+                        try
+                        {
+                            throw new ArgumentException("Incorrect file format.");
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            return;
+                        }
+                    }
+            }
+        }
+
+        private static void Import(string parameters)
+        {
+            try
+            {
+                if (parameters == null || parameters.Trim(' ').Where(c => c == ' ').Count() != 1)
+                {
+                    throw new ArgumentException("Incorrect parameters.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            string[] parametersArray = parameters.Split(' ');
+
+            try
+            {
+                if (parametersArray[0].ToLower(new CultureInfo("en-US")) != "csv" && parametersArray[0].ToLower(new CultureInfo("en-US")) != "xml")
+                {
+                    throw new ArgumentException("Incorrect file format.");
+                }
+
+                if (!File.Exists(parametersArray[1]))
+                {
+                    throw new ArgumentException($"Import error: file {parametersArray[1]} is not exist.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            switch (parametersArray[0].ToLower(new CultureInfo("en-US")))
+            {
+                case "csv":
+                    {
+                        var snapshot = Program.fileCabinetService.MakeSnapshot();
+                        using StreamReader reader = new StreamReader(File.Open(parametersArray[1], FileMode.Open));
+                        snapshot.LoadFromCsv(reader);
+                        Program.fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{snapshot.Records.Count} records were imported from {parametersArray[1]}");
+                    }
+
+                    break;
+
+                case "xml":
+                    {
+                        var snapshot = Program.fileCabinetService.MakeSnapshot();
+                        using StreamReader reader = new StreamReader(File.Open(parametersArray[1], FileMode.Open));
+                        snapshot.LoadFromXml(reader);
+                        Program.fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{snapshot.Records.Count} records were imported from {parametersArray[1]}");
+                    }
+
+                    break;
+            }
+        }
+
+        private static void Remove(string parameters)
+        {
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            int id;
+            try
+            {
+                id = Convert.ToInt32(parameters, culture);
+                if (id > Program.fileCabinetService.GetStat(out int deletedCount) || id <= 0)
+                {
+                    Console.WriteLine($"#{id} record is not found.");
+                    return;
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Incorrext format of ID");
+                return;
+            }
+
+            if (Program.fileCabinetService.GetRecords().Where(c => c.Id == id - 1).Any())
+            {
+                Program.fileCabinetService.Remove(id - 1);
+                Console.WriteLine($"Record #{id} is removed.");
+            }
+            else
+            {
+                Console.WriteLine($"Record #{id} doesn't exists.");
+            }
+        }
+
+        private static void Purge(string parameters)
+        {
+            if (Program.fileCabinetService is FileCabinetFilesystemService)
+            {
+                Program.fileCabinetService.Purge(out int count, out int before);
+                Console.WriteLine($"Data file processing is complited:  {count} of {before} records were purged.");
+            }
+            else
+            {
+                Console.WriteLine("This command cannot be executed in the current storage type.");
+            }
+        }
+    }
+}
