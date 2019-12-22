@@ -17,7 +17,7 @@ namespace FileCabinetApp
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
 
         public static IRecordValidator validator;
-        public static IFIleCabinetService fileCabinetService;
+        private static IFIleCabinetService fileCabinetService;
 
         public static bool isRunning = true;
 
@@ -129,7 +129,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                var commandHandler = CreateCommandHandlers(command);
+                var commandHandler = CreateCommandHandlers();
                 const int parametersIndex = 1;
                 var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
                 commandHandler.Handle(new AppCommandRequest(command, parameters));
@@ -137,20 +137,20 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
-        private static ICommandHandler CreateCommandHandlers(string command)
+        private static ICommandHandler CreateCommandHandlers()
         {
 
-            var create = new CreateCommandHandler();
+            var create = new CreateCommandHandler(fileCabinetService);
             var exit = new ExitCommandHandler();
-            var stat = new StatCommanHandler();
+            var stat = new StatCommanHandler(fileCabinetService);
             var help = new PrintHelpCommandHandler();
-            var list = new ListCommandHandler();
-            var edit = new EditCommandHandler();
-            var find = new FindCommandHandler();
-            var export = new ExportCommandHandler();
-            var import = new ImportCommandHandler();
-            var remove = new RemoveCommandHandler();
-            var purge = new PurgeCommandHandler();
+            var list = new ListCommandHandler(fileCabinetService);
+            var edit = new EditCommandHandler(fileCabinetService);
+            var find = new FindCommandHandler(fileCabinetService);
+            var export = new ExportCommandHandler(fileCabinetService);
+            var import = new ImportCommandHandler(fileCabinetService);
+            var remove = new RemoveCommandHandler(fileCabinetService);
+            var purge = new PurgeCommandHandler(fileCabinetService);
 
             create.SetNext(exit).SetNext(stat).SetNext(help).SetNext(list).SetNext(edit).SetNext(find).SetNext(export).SetNext(import).SetNext(remove).SetNext(purge);
 

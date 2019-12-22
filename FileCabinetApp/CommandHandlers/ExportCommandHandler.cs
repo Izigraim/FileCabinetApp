@@ -9,6 +9,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class ExportCommandHandler : CommandHandlerBase
     {
+        private static IFIleCabinetService service;
+
+        public ExportCommandHandler(IFIleCabinetService service1)
+        {
+            service = service1;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "export")
@@ -43,7 +50,7 @@ namespace FileCabinetApp.CommandHandlers
 
             string[] parametersArray = parameters.Trim().Split(' ');
 
-            var fileCabinetServiceShapshot = Program.fileCabinetService.MakeSnapshot();
+            var fileCabinetServiceShapshot = service.MakeSnapshot();
 
             switch (parametersArray[0].ToLower(new CultureInfo("en-US")))
             {

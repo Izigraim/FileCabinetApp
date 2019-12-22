@@ -9,6 +9,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class EditCommandHandler : CommandHandlerBase
     {
+        private static IFIleCabinetService service;
+
+        public EditCommandHandler(IFIleCabinetService service1)
+        {
+            service = service1;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "edit")
@@ -29,7 +36,7 @@ namespace FileCabinetApp.CommandHandlers
             try
             {
                 id = Convert.ToInt32(parameters, culture);
-                if (id > Program.fileCabinetService.GetStat(out int deletedCount) || id <= 0)
+                if (id > service.GetStat(out int deletedCount) || id <= 0)
                 {
                     Console.WriteLine($"#{id} record is not found.");
                     return;
@@ -41,13 +48,13 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (Program.fileCabinetService.GetRecords().Where(c => c.Id == id - 1).Any())
+            if (service.GetRecords().Where(c => c.Id == id - 1).Any())
             {
                 FileCabinetRecord record = Program.validator.ValidateParametersProgram();
 
                 record.Id = id - 1;
 
-                Program.fileCabinetService.EditRecord(record);
+                service.EditRecord(record);
                 Console.WriteLine($"Record #{id} is updated.");
             }
             else

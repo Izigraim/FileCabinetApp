@@ -7,6 +7,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class CreateCommandHandler : CommandHandlerBase
     {
+        private static IFIleCabinetService service;
+
+        public CreateCommandHandler(IFIleCabinetService service1)
+        {
+            service = service1;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "create")
@@ -26,13 +33,13 @@ namespace FileCabinetApp.CommandHandlers
 
             FileCabinetRecord record = Program.validator.ValidateParametersProgram();
 
-            if (Program.fileCabinetService.CreateRecord(record) == -1)
+            if (service.CreateRecord(record) == -1)
             {
                 Console.WriteLine("An error occured creating the record.");
             }
             else
             {
-                var recordsCount = Program.fileCabinetService.GetStat(out int deletedCount);
+                var recordsCount = service.GetStat(out int deletedCount);
                 Console.WriteLine($"Record #{recordsCount} created.");
             }
         }

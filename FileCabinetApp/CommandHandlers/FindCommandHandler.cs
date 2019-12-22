@@ -9,6 +9,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class FindCommandHandler : CommandHandlerBase
     {
+        private static IFIleCabinetService service;
+
+        public FindCommandHandler(IFIleCabinetService service1)
+        {
+            service = service1;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "find")
@@ -43,13 +50,13 @@ namespace FileCabinetApp.CommandHandlers
             switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
             {
                 case "firstname":
-                    findedRecords = Program.fileCabinetService.FindByFirstName(findParameters[1].Trim('"'));
+                    findedRecords = service.FindByFirstName(findParameters[1].Trim('"'));
                     break;
                 case "lastname":
-                    findedRecords = Program.fileCabinetService.FindByLastName(findParameters[1].Trim('"'));
+                    findedRecords = service.FindByLastName(findParameters[1].Trim('"'));
                     break;
                 case "dateofbirth":
-                    findedRecords = Program.fileCabinetService.FindByDateOfBirth(findParameters[1].Trim('"'));
+                    findedRecords = service.FindByDateOfBirth(findParameters[1].Trim('"'));
                     break;
             }
 

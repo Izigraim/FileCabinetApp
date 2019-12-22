@@ -9,6 +9,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class ImportCommandHandler : CommandHandlerBase
     {
+        private static IFIleCabinetService service;
+
+        public ImportCommandHandler(IFIleCabinetService service1)
+        {
+            service = service1;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "import")
@@ -60,10 +67,10 @@ namespace FileCabinetApp.CommandHandlers
             {
                 case "csv":
                     {
-                        var snapshot = Program.fileCabinetService.MakeSnapshot();
+                        var snapshot = service.MakeSnapshot();
                         using StreamReader reader = new StreamReader(File.Open(parametersArray[1], FileMode.Open));
                         snapshot.LoadFromCsv(reader);
-                        Program.fileCabinetService.Restore(snapshot);
+                        service.Restore(snapshot);
                         Console.WriteLine($"{snapshot.Records.Count} records were imported from {parametersArray[1]}");
                     }
 
@@ -71,10 +78,10 @@ namespace FileCabinetApp.CommandHandlers
 
                 case "xml":
                     {
-                        var snapshot = Program.fileCabinetService.MakeSnapshot();
+                        var snapshot = service.MakeSnapshot();
                         using StreamReader reader = new StreamReader(File.Open(parametersArray[1], FileMode.Open));
                         snapshot.LoadFromXml(reader);
-                        Program.fileCabinetService.Restore(snapshot);
+                        service.Restore(snapshot);
                         Console.WriteLine($"{snapshot.Records.Count} records were imported from {parametersArray[1]}");
                     }
 

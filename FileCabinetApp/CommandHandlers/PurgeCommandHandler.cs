@@ -7,6 +7,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class PurgeCommandHandler : CommandHandlerBase
     {
+        private static IFIleCabinetService service;
+
+        public PurgeCommandHandler(IFIleCabinetService service1)
+        {
+            service = service1;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(request.Command, StringComparison.InvariantCultureIgnoreCase));
@@ -28,9 +35,9 @@ namespace FileCabinetApp.CommandHandlers
 
         private static void Purge(string parameters)
         {
-            if (Program.fileCabinetService is FileCabinetFilesystemService)
+            if (service is FileCabinetFilesystemService)
             {
-                Program.fileCabinetService.Purge(out int count, out int before);
+                service.Purge(out int count, out int before);
                 Console.WriteLine($"Data file processing is complited:  {count} of {before} records were purged.");
             }
             else

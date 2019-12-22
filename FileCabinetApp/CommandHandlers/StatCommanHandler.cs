@@ -7,6 +7,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class StatCommanHandler : CommandHandlerBase
     {
+        private static IFIleCabinetService service;
+
+        public StatCommanHandler(IFIleCabinetService service1)
+        {
+            service = service1;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "stat")
@@ -21,7 +28,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat(out int deletedCount);
+            var recordsCount = service.GetStat(out int deletedCount);
             Console.WriteLine($"{recordsCount} record(s).\n{deletedCount} records are deleted.");
         }
     }

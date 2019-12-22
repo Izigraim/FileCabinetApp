@@ -8,6 +8,12 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class ListCommandHandler : CommandHandlerBase
     {
+        private static IFIleCabinetService service;
+
+        public ListCommandHandler(IFIleCabinetService service1)
+        {
+            service = service1;
+        }
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "list")
@@ -22,7 +28,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private static void List(string parameters)
         {
-            ReadOnlyCollection<FileCabinetRecord> fileCabinetRecords = Program.fileCabinetService.GetRecords();
+            ReadOnlyCollection<FileCabinetRecord> fileCabinetRecords = service.GetRecords();
             if (fileCabinetRecords.Count == 0)
             {
                 Console.WriteLine("There are 0 records.");

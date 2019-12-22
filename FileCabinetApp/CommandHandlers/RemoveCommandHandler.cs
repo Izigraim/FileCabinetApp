@@ -8,6 +8,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class RemoveCommandHandler : CommandHandlerBase
     {
+        private static IFIleCabinetService service;
+
+        public RemoveCommandHandler(IFIleCabinetService service1)
+        {
+            service = service1;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (request.Command.ToLower(new CultureInfo("en-US")) == "remove")
@@ -27,7 +34,7 @@ namespace FileCabinetApp.CommandHandlers
             try
             {
                 id = Convert.ToInt32(parameters, culture);
-                if (id > Program.fileCabinetService.GetStat(out int deletedCount) || id <= 0)
+                if (id > service.GetStat(out int deletedCount) || id <= 0)
                 {
                     Console.WriteLine($"#{id} record is not found.");
                     return;
@@ -39,9 +46,9 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (Program.fileCabinetService.GetRecords().Where(c => c.Id == id - 1).Any())
+            if (service.GetRecords().Where(c => c.Id == id - 1).Any())
             {
-                Program.fileCabinetService.Remove(id - 1);
+                service.Remove(id - 1);
                 Console.WriteLine($"Record #{id} is removed.");
             }
             else
