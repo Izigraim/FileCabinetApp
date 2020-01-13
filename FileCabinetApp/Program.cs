@@ -42,6 +42,14 @@ namespace FileCabinetApp
         public static string StorageType { get; set; } = "memory";
 
         /// <summary>
+        /// Gets or sets use-stopwatchsetting.
+        /// </summary>
+        /// <value>
+        /// Use stopwatch.
+        /// </value>
+        public static string UseStopwatch { get; set; } = "off";
+
+        /// <summary>
         /// Gets a validator.
         /// </summary>
         /// <value>
@@ -101,6 +109,11 @@ namespace FileCabinetApp
                         }
                     }
                 }
+
+                if (args[0].ToLower(new CultureInfo("en-US")) == "-use-stopwatch")
+                {
+                    UseStopwatch = "on";
+                }
             }
 
             var builder = new ConfigurationBuilder().AddJsonFile("validation-rules.json").Build();
@@ -130,6 +143,11 @@ namespace FileCabinetApp
                 using FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate);
                 fileStream.Close();
                 fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
+            }
+
+            if (UseStopwatch == "on")
+            {
+                fileCabinetService = new ServiceMeter(fileCabinetService);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
