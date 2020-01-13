@@ -650,10 +650,18 @@
         </member>
         <member name="P:FileCabinetApp.Program.UseStopwatch">
             <summary>
-            Gets or sets use-stopwatchsetting.
+            Gets or sets use-stopwatch setting.
             </summary>
             <value>
             Use stopwatch.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Program.UseLogger">
+            <summary>
+            Gets or sets use-logger setting.
+            </summary>
+            <value>
+            Use-logger setting.
             </value>
         </member>
         <member name="P:FileCabinetApp.Program.Validator">
@@ -669,6 +677,50 @@
             Start of execution.
             </summary>
             <param name="args">Arguments.</param>
+        </member>
+        <member name="T:FileCabinetApp.ServiceLogger">
+            <summary>
+            Service class with logging function.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.#ctor(FileCabinetApp.IFIleCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceLogger"/> class.
+            </summary>
+            <param name="fileCabinetService">File cabinet service.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.EditRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByDateOfBirth(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetStat(System.Int32@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Purge(System.Int32@,System.Int32@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.ServiceMeter">
             <summary>
