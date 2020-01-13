@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Validation;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace FileCabinetApp
 {
@@ -101,6 +103,8 @@ namespace FileCabinetApp
                 }
             }
 
+            var builder = new ConfigurationBuilder().AddJsonFile("validation-rules.json").Build();
+
             if (ValidationType != "default" && ValidationType != "custom")
             {
                 ValidationType = "default";
@@ -108,11 +112,13 @@ namespace FileCabinetApp
 
             if (ValidationType == "default")
             {
-                validator = new ValidatorBuilder().CreateDefault(2, 60, 2, 60, 1950);
+                var config = builder.GetSection("DefaultValidationRules").Get<DefaultValidationRules>();
+                validator = new ValidatorBuilder().CreateDefault(config.FirstName.Min, config.FirstName.Max, config.LastName.Min, config.LastName.Max, config.DateOfBirth.YearFrom);
             }
             else
             {
-                validator = new ValidatorBuilder().CreateCustom(0, 1000, 0, 10000, 0);
+                var config = builder.GetSection("CustomValidationRules").Get<CustomValidationRules>();
+                validator = new ValidatorBuilder().CreateCustom(config.FirstName.Min, config.FirstName.Max, config.LastName.Min, config.LastName.Max, config.DateOfBirth.YearFrom);
             }
 
             if (StorageType == "memory")

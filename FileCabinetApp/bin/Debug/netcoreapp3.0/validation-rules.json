@@ -1,0 +1,28 @@
+{
+  "DefaultValidationRules": {
+    "FirstName": {
+      "Min": 2,
+      "Max": 60
+    },
+    "LastName": {
+      "Min": 2,
+      "Max": 60
+    },
+    "DateOfBirth": {
+      "YearFrom": 1950
+    }
+  },
+  "CustomValidationRules": {
+    "FirstName": {
+      "Min": 0,
+      "Max": 60
+    },
+    "LastName": {
+      "Min": 0,
+      "Max": 60
+    },
+    "DateOfBirth": {
+      "YearFrom": 0
+    }
+  }
+}
