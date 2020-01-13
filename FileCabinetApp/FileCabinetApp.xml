@@ -648,6 +648,22 @@
             Type of storage.
             </value>
         </member>
+        <member name="P:FileCabinetApp.Program.UseStopwatch">
+            <summary>
+            Gets or sets use-stopwatch setting.
+            </summary>
+            <value>
+            Use stopwatch.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Program.UseLogger">
+            <summary>
+            Gets or sets use-logger setting.
+            </summary>
+            <value>
+            Use-logger setting.
+            </value>
+        </member>
         <member name="P:FileCabinetApp.Program.Validator">
             <summary>
             Gets a validator.
@@ -661,6 +677,94 @@
             Start of execution.
             </summary>
             <param name="args">Arguments.</param>
+        </member>
+        <member name="T:FileCabinetApp.ServiceLogger">
+            <summary>
+            Service class with logging function.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.#ctor(FileCabinetApp.IFIleCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceLogger"/> class.
+            </summary>
+            <param name="fileCabinetService">File cabinet service.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.EditRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByDateOfBirth(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetStat(System.Int32@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Purge(System.Int32@,System.Int32@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.ServiceMeter">
+            <summary>
+            Service class with time measurement.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.#ctor(FileCabinetApp.IFIleCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceMeter"/> class.
+            </summary>
+            <param name="fileCabinetService">File cabinet service.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.EditRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByDateOfBirth(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetStat(System.Int32@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Purge(System.Int32@,System.Int32@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validation.CompositeValidator">
             <summary>
@@ -712,6 +816,90 @@
         <member name="M:FileCabinetApp.Validation.CustomSexValidation.ValidateParametersProgram">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.Validation.CustomValidationRules">
+            <summary>
+            Class with custom validation setting readed from validation-rules.json.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.CustomValidationRules.FirstName">
+            <summary>
+            Gets or sets first name settings.
+            </summary>
+            <value>
+            First name settings.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.CustomValidationRules.LastName">
+            <summary>
+            Gets or sets last name settings.
+            </summary>
+            <value>
+            last name settings.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.CustomValidationRules.DateOfBirth">
+            <summary>
+            Gets or sets date of birth settings.
+            </summary>
+            <value>
+            date of birth settings.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validation.FirstNameSettingCustom">
+            <summary>
+            First name validation settings.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.FirstNameSettingCustom.Min">
+            <summary>
+            Gets or sets minimum lenght.
+            </summary>
+            <value>
+            Minimum lenght.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.FirstNameSettingCustom.Max">
+            <summary>
+            Gets or sets maximum lenght.
+            </summary>
+            <value>
+            Maximum lenght.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validation.LastNameSettingCustom">
+            <summary>
+            Last name validation settings.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.LastNameSettingCustom.Min">
+            <summary>
+            Gets or sets minimum lenght.
+            </summary>
+            <value>
+            Minimum lenght.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.LastNameSettingCustom.Max">
+            <summary>
+            Gets or sets maximum lenght.
+            </summary>
+            <value>
+            Maximum lenght.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validation.DateOfBirthSettingCustom">
+            <summary>
+            Date of birth validation settings.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.DateOfBirthSettingCustom.YearFrom">
+            <summary>
+            Gets or sets minimum year.
+            </summary>
+            <value>
+            Minimum year.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.Validation.DateOfBirthValidation">
             <summary>
             DateOfBirth validation.
@@ -761,6 +949,90 @@
         </member>
         <member name="M:FileCabinetApp.Validation.DefaultSexValidation.ValidateParametersProgram">
             <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Validation.DefaultValidationRules">
+            <summary>
+            Class with default validation setting readed from validation-rules.json.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.DefaultValidationRules.FirstName">
+            <summary>
+            Gets or sets first name settings.
+            </summary>
+            <value>
+            First name settings.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.DefaultValidationRules.LastName">
+            <summary>
+            Gets or sets last name settings.
+            </summary>
+            <value>
+            last name settings.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.DefaultValidationRules.DateOfBirth">
+            <summary>
+            Gets or sets date of birth settings.
+            </summary>
+            <value>
+            date of birth settings.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validation.FirstNameSettingDefault">
+            <summary>
+            First name validation settings.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.FirstNameSettingDefault.Min">
+            <summary>
+            Gets or sets minimum lenght.
+            </summary>
+            <value>
+            Minimum lenght.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.FirstNameSettingDefault.Max">
+            <summary>
+            Gets or sets maximum lenght.
+            </summary>
+            <value>
+            Maximum lenght.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validation.LastNameSettingDefault">
+            <summary>
+            Last name validation settings.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.LastNameSettingDefault.Min">
+            <summary>
+            Gets or sets minimum lenght.
+            </summary>
+            <value>
+            Minimum lenght.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.LastNameSettingDefault.Max">
+            <summary>
+            Gets or sets maximum lenght.
+            </summary>
+            <value>
+            Maximum lenght.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validation.DateOfBirthSettingDefault">
+            <summary>
+            Date of birth validation settings.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.DateOfBirthSettingDefault.YearFrom">
+            <summary>
+            Gets or sets minimum year.
+            </summary>
+            <value>
+            Minimum year.
+            </value>
         </member>
         <member name="T:FileCabinetApp.Validation.FirstNameValidation">
             <summary>

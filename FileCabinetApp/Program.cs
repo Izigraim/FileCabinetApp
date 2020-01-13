@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Validation;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace FileCabinetApp
 {
@@ -40,6 +42,22 @@ namespace FileCabinetApp
         public static string StorageType { get; set; } = "memory";
 
         /// <summary>
+        /// Gets or sets use-stopwatch setting.
+        /// </summary>
+        /// <value>
+        /// Use stopwatch.
+        /// </value>
+        public static string UseStopwatch { get; set; } = "off";
+
+        /// <summary>
+        /// Gets or sets use-logger setting.
+        /// </summary>
+        /// <value>
+        /// Use-logger setting.
+        /// </value>
+        public static string UseLogger { get; set; } = "off";
+
+        /// <summary>
         /// Gets a validator.
         /// </summary>
         /// <value>
@@ -59,47 +77,47 @@ namespace FileCabinetApp
         /// <param name="args">Arguments.</param>
         public static void Main(string[] args)
         {
-            string[] parametersOfCommandLineArray;
             if (args != null && args.Length != 0)
             {
-                if (args.Length > 1 && args[0].Trim(' ') == "-v")
+                for (int i = 0; i < args.Length; i++)
                 {
-                    ValidationType = args[1].ToLower(new CultureInfo("en-US")).Trim(' ');
-                }
-                else if (args.Length == 1)
-                {
-                    parametersOfCommandLineArray = args[0].Split('=');
-
-                    if (parametersOfCommandLineArray[0].ToLower(new CultureInfo("en-US")).Trim(' ') == "--validation-rules")
+                    if (args[i].ToLower(new CultureInfo("en-US")) == "-v")
                     {
-                        ValidationType = parametersOfCommandLineArray[1].ToLower(new CultureInfo("en-US")).Trim(' ');
+                        ValidationType = args[i + 1];
                     }
-                }
-                else
-                {
-                    parametersOfCommandLineArray = args;
-                }
-
-                if (args.Length == 2 && args[0].Trim(' ') == "-s")
-                {
-                    if (args[1].ToLower(new CultureInfo("en-US")).Trim(' ') == "memory" || args[1].ToLower(new CultureInfo("en-US")).Trim(' ') == "file")
+                    else if (args[i].ToLower(new CultureInfo("en-US")) == "-s")
                     {
-                        StorageType = args[1].ToLower(new CultureInfo("en-US")).Trim(' ');
+                        StorageType = args[i + 1];
                     }
-                }
-                else if (args.Length == 1)
-                {
-                    parametersOfCommandLineArray = args[0].Split('=');
-
-                    if (parametersOfCommandLineArray[0].Trim(' ') == "--storage" && parametersOfCommandLineArray.Length > 1)
+                    else if (args[i].ToLower(new CultureInfo("en-US")).Contains('=', StringComparison.Ordinal))
                     {
-                        if (parametersOfCommandLineArray[1].ToLower(new CultureInfo("en-US")).Trim(' ') == "memory" || parametersOfCommandLineArray[1].ToLower(new CultureInfo("en-US")).Trim(' ') == "file")
+                        string[] argsTemp = args[i].Split('=');
+                        if (argsTemp[0].ToLower(new CultureInfo("en-US")) == "--validation-rules")
                         {
-                            StorageType = parametersOfCommandLineArray[1].ToLower(new CultureInfo("en-US")).Trim(' ');
+                            ValidationType = argsTemp[1];
+                        }
+                        else if (argsTemp[0].ToLower(new CultureInfo("en-US")) == "--storage")
+                        {
+                            if (argsTemp[1].ToLower(new CultureInfo("en-US")) == "file" || argsTemp[1].ToLower(new CultureInfo("en-US")) == "memory")
+                            {
+                                StorageType = argsTemp[1];
+                            }
                         }
                     }
                 }
+
+                if (args.Contains<string>("-use-stopwatch"))
+                {
+                    UseStopwatch = "on";
+                }
+
+                if (args.Contains<string>("-use-logger"))
+                {
+                    UseLogger = "on";
+                }
             }
+
+            var builder = new ConfigurationBuilder().AddJsonFile("validation-rules.json").Build();
 
             if (ValidationType != "default" && ValidationType != "custom")
             {
@@ -108,11 +126,13 @@ namespace FileCabinetApp
 
             if (ValidationType == "default")
             {
-                validator = new ValidatorBuilder().CreateDefault(2, 60, 2, 60, 1950);
+                var config = builder.GetSection("DefaultValidationRules").Get<DefaultValidationRules>();
+                validator = new ValidatorBuilder().CreateDefault(config.FirstName.Min, config.FirstName.Max, config.LastName.Min, config.LastName.Max, config.DateOfBirth.YearFrom);
             }
             else
             {
-                validator = new ValidatorBuilder().CreateCustom(0, 1000, 0, 10000, 0);
+                var config = builder.GetSection("CustomValidationRules").Get<CustomValidationRules>();
+                validator = new ValidatorBuilder().CreateCustom(config.FirstName.Min, config.FirstName.Max, config.LastName.Min, config.LastName.Max, config.DateOfBirth.YearFrom);
             }
 
             if (StorageType == "memory")
@@ -124,6 +144,16 @@ namespace FileCabinetApp
                 using FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate);
                 fileStream.Close();
                 fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
+            }
+
+            if (UseStopwatch == "on")
+            {
+                fileCabinetService = new ServiceMeter(fileCabinetService);
+            }
+
+            if (UseLogger == "on")
+            {
+                fileCabinetService = new ServiceLogger(fileCabinetService);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
