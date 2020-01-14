@@ -60,18 +60,53 @@ namespace FileCabinetApp.CommandHandlers
 
             string[] findParameters = parameters.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            ReadOnlyCollection<FileCabinetRecord> findedRecords = null;
+            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+            IRecordIterator iterator;
 
             switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
             {
                 case "firstname":
-                    findedRecords = Service.FindByFirstName(findParameters[1].Trim('"'));
+                    {
+                        iterator = Service.FindByFirstName(findParameters[1].Trim('"'));
+
+                        while (iterator.HasMore())
+                        {
+                            findedRecords.Add(iterator.GetNext());
+                        }
+                    }
+
                     break;
                 case "lastname":
-                    findedRecords = Service.FindByLastName(findParameters[1].Trim('"'));
+                    {
+                        iterator = Service.FindByLastName(findParameters[1].Trim('"'));
+
+                        while (iterator.HasMore())
+                        {
+                            findedRecords.Add(iterator.GetNext());
+                        }
+                    }
+
                     break;
                 case "dateofbirth":
-                    findedRecords = Service.FindByDateOfBirth(findParameters[1].Trim('"'));
+                    {
+                        try
+                        {
+                            DateTime.Parse(findParameters[1], new CultureInfo("en-US"));
+                        }
+                        catch (FormatException e)
+                        {
+                            Console.WriteLine(e.Message);
+                            return;
+                        }
+
+                        iterator = Service.FindByDateOfBirth(findParameters[1].Trim('"'));
+
+                        while (iterator.HasMore())
+                        {
+                            findedRecords.Add(iterator.GetNext());
+                        }
+                    }
+
                     break;
             }
 

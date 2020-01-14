@@ -53,39 +53,39 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateOfBirth)
+        public IRecordIterator FindByDateOfBirth(string dateOfBirth)
         {
             this.stopwatch = Stopwatch.StartNew();
 
-            ReadOnlyCollection<FileCabinetRecord> fileCabinetRecords = this.fileCabinetService.FindByDateOfBirth(dateOfBirth);
+            IRecordIterator iterator = this.fileCabinetService.FindByDateOfBirth(dateOfBirth);
 
             this.stopwatch.Stop();
             Console.WriteLine($"Find by date of birth method execution is {this.stopwatch.ElapsedTicks} ticks.");
-            return fileCabinetRecords;
+            return iterator;
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator FindByFirstName(string firstName)
         {
             this.stopwatch = Stopwatch.StartNew();
 
-            ReadOnlyCollection<FileCabinetRecord> fileCabinetRecords = this.fileCabinetService.FindByFirstName(firstName);
+            IRecordIterator iterator = this.fileCabinetService.FindByFirstName(firstName);
 
             this.stopwatch.Stop();
             Console.WriteLine($"Find by first name method execution is {this.stopwatch.ElapsedTicks} ticks.");
-            return fileCabinetRecords;
+            return iterator;
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastname)
+        public IRecordIterator FindByLastName(string lastname)
         {
             this.stopwatch = Stopwatch.StartNew();
 
-            ReadOnlyCollection<FileCabinetRecord> fileCabinetRecords = this.fileCabinetService.FindByLastName(lastname);
+            IRecordIterator iterator = this.fileCabinetService.FindByLastName(lastname);
 
             this.stopwatch.Stop();
             Console.WriteLine($"Find by last name method execution is {this.stopwatch.ElapsedTicks} ticks.");
-            return fileCabinetRecords;
+            return iterator;
         }
 
         /// <inheritdoc/>

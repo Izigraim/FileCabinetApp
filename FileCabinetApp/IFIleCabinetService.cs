@@ -27,22 +27,22 @@ namespace FileCabinetApp
         /// Search for a record by first name.
         /// </summary>
         /// <param name="firstName">First name.</param>
-        /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName);
+        /// <returns>Iterator.</returns>
+        public IRecordIterator FindByFirstName(string firstName);
 
         /// <summary>
         /// Search for a record by last name.
         /// </summary>
         /// <param name="lastname">Last name.</param>
-        /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastname);
+        /// <returns>Iterator.</returns>
+        public IRecordIterator FindByLastName(string lastname);
 
         /// <summary>
-        /// Search for a record by last name.
+        /// Search for a record by date of birth.
         /// </summary>
         /// <param name="dateOfBirth">Date of birth.</param>
-        /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateOfBirth);
+        /// <returns>Iterator.</returns>
+        public IRecordIterator FindByDateOfBirth(string dateOfBirth);
 
         /// <summary>
         /// Gets array of all records.
