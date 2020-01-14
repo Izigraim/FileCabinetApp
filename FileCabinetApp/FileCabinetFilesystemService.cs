@@ -19,6 +19,9 @@ namespace FileCabinetApp
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
+        private readonly SortedDictionary<DateTime, List<long>> dateOfBirthDictionary = new SortedDictionary<DateTime, List<long>>();
+        private readonly SortedDictionary<string, List<long>> firstNameDictionaty = new SortedDictionary<string, List<long>>();
+        private readonly SortedDictionary<string, List<long>> lastNameDictionary = new SortedDictionary<string, List<long>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -60,6 +63,8 @@ namespace FileCabinetApp
                         record.FirstName += firstNameTmp[j];
                     }
 
+                    record.FirstName = record.FirstName.Trim(' ');
+
                     byte[] arrayLastName = new byte[120];
                     Array.Copy(recordByte, 126, arrayLastName, 0, 120);
                     string lastNameTmp = temp.GetString(arrayLastName).Trim(' ');
@@ -67,6 +72,8 @@ namespace FileCabinetApp
                     {
                         record.LastName += lastNameTmp[j];
                     }
+
+                    record.LastName = record.LastName.Trim(' ');
 
                     byte[] arrayAge = new byte[2];
                     Array.Copy(recordByte, 246, arrayAge, 0, 2);
@@ -98,6 +105,33 @@ namespace FileCabinetApp
                     if (isDeleted == 0)
                     {
                         this.list.Add(record);
+
+                        if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+                        {
+                            this.dateOfBirthDictionary[record.DateOfBirth].Add(i * RecordSize);
+                        }
+                        else
+                        {
+                            this.dateOfBirthDictionary.Add(record.DateOfBirth, new List<long> { i * RecordSize });
+                        }
+
+                        if (this.firstNameDictionaty.ContainsKey(record.FirstName))
+                        {
+                            this.firstNameDictionaty[record.FirstName].Add(i * RecordSize);
+                        }
+                        else
+                        {
+                            this.firstNameDictionaty.Add(record.FirstName, new List<long> { i * RecordSize });
+                        }
+
+                        if (this.lastNameDictionary.ContainsKey(record.LastName))
+                        {
+                            this.lastNameDictionary[record.LastName].Add(i * RecordSize);
+                        }
+                        else
+                        {
+                            this.lastNameDictionary.Add(record.LastName, new List<long> { i * RecordSize });
+                        }
                     }
                 }
             }
@@ -114,6 +148,38 @@ namespace FileCabinetApp
             if (this.validator.ValidateParameters(record) == false)
             {
                 throw new ArgumentException("Data validation is not successful.", nameof(record));
+            }
+
+            if (record.Id == 0)
+            {
+                record.Id = this.GetStat(out int a);
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.dateOfBirthDictionary[record.DateOfBirth].Add(record.Id * RecordSize);
+            }
+            else
+            {
+                this.dateOfBirthDictionary.Add(record.DateOfBirth, new List<long> { record.Id * RecordSize });
+            }
+
+            if (this.firstNameDictionaty.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionaty[record.FirstName].Add(record.Id * RecordSize);
+            }
+            else
+            {
+                this.firstNameDictionaty.Add(record.FirstName, new List<long> { record.Id * RecordSize });
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.lastNameDictionary[record.LastName].Add(record.Id * RecordSize);
+            }
+            else
+            {
+                this.lastNameDictionary.Add(record.LastName, new List<long> { record.Id * RecordSize });
             }
 
             bool rewriteFlag = false;
@@ -143,10 +209,12 @@ namespace FileCabinetApp
             arraySex = new UTF8Encoding(true).GetBytes(record.Sex.ToString(new CultureInfo("en-US")));
             arraySex.CopyTo(arrayRecord, 4);
 
+            record.FirstName = record.FirstName.Trim(' ');
             byte[] arrayFirstName = new byte[120];
             arrayFirstName = new UTF8Encoding(true).GetBytes(record.FirstName);
             arrayFirstName.CopyTo(arrayRecord, 6);
 
+            record.LastName = record.LastName.Trim(' ');
             byte[] arrayLastName = new byte[120];
             arrayLastName = new UTF8Encoding(true).GetBytes(record.LastName);
             arrayLastName.CopyTo(arrayRecord, 126);
@@ -203,6 +271,33 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(record));
             }
 
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.dateOfBirthDictionary[record.DateOfBirth].Add(record.Id * RecordSize);
+            }
+            else
+            {
+                this.dateOfBirthDictionary.Add(record.DateOfBirth, new List<long> { record.Id * RecordSize });
+            }
+
+            if (this.firstNameDictionaty.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionaty[record.FirstName].Add(record.Id * RecordSize);
+            }
+            else
+            {
+                this.firstNameDictionaty.Add(record.FirstName, new List<long> { record.Id * RecordSize });
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.lastNameDictionary[record.LastName].Add(record.Id * RecordSize);
+            }
+            else
+            {
+                this.lastNameDictionary.Add(record.LastName, new List<long> { record.Id * RecordSize });
+            }
+
             int editIndex = record.Id * RecordSize;
 
             using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.Open))
@@ -217,10 +312,12 @@ namespace FileCabinetApp
                 arraySex = new UTF8Encoding(true).GetBytes(record.Sex.ToString(new CultureInfo("en-US")));
                 arraySex.CopyTo(arrayRecord, 4);
 
+                record.FirstName = record.FirstName.Trim(' ');
                 byte[] arrayFirstName = new byte[120];
                 arrayFirstName = new UTF8Encoding(true).GetBytes(record.FirstName);
                 arrayFirstName.CopyTo(arrayRecord, 6);
 
+                record.LastName = record.LastName.Trim(' ');
                 byte[] arrayLastName = new byte[120];
                 arrayLastName = new UTF8Encoding(true).GetBytes(record.LastName);
                 arrayLastName.CopyTo(arrayRecord, 126);
@@ -245,6 +342,10 @@ namespace FileCabinetApp
                 arrayDay = new UTF8Encoding(true).GetBytes(record.DateOfBirth.Day.ToString(new CultureInfo("en-US")));
                 arrayDay.CopyTo(arrayRecord, 272);
 
+                byte[] arrayIsDeleted = new byte[2];
+                arrayIsDeleted = new UTF8Encoding(true).GetBytes(0.ToString(new CultureInfo("en-US")));
+                arrayIsDeleted.CopyTo(arrayRecord, 276);
+
                 fileStream.Seek(editIndex, SeekOrigin.Begin);
                 fileStream.Write(arrayRecord, 0, arrayRecord.Length);
             }
@@ -257,24 +358,24 @@ namespace FileCabinetApp
 
             using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
             {
-                int recordsCount = (int)fileStream.Length / RecordSize;
-                fileStream.Seek(0, SeekOrigin.Begin);
 
                 UTF8Encoding temp = new UTF8Encoding(true);
                 byte[] recordByte = new byte[RecordSize];
+                List<long> offsets = new List<long>();
 
-                for (int i = 0; i < recordsCount; i++)
+                if (this.dateOfBirthDictionary.ContainsKey(DateTime.Parse(dateOfBirth, new CultureInfo("en-US"))))
                 {
+                    offsets = this.dateOfBirthDictionary[DateTime.Parse(dateOfBirth, new CultureInfo("en-US"))];
+                }
+
+                foreach (long offset in offsets)
+                {
+                    fileStream.Seek(offset, SeekOrigin.Begin);
+
                     fileStream.Read(recordByte, 0, RecordSize);
 
                     byte[] arrayIsDeleted = new byte[2];
                     Array.Copy(recordByte, 276, arrayIsDeleted, 0, 2);
-                    short isDeleted = Convert.ToInt16(new UTF8Encoding(true).GetString(arrayIsDeleted), new CultureInfo("en-US"));
-
-                    if (isDeleted == 1)
-                    {
-                        continue;
-                    }
 
                     FileCabinetRecord record = new FileCabinetRecord();
 
@@ -294,6 +395,8 @@ namespace FileCabinetApp
                         record.FirstName += firstNameTmp[j];
                     }
 
+                    record.FirstName = record.FirstName.Trim(' ');
+
                     byte[] arrayLastName = new byte[120];
                     Array.Copy(recordByte, 126, arrayLastName, 0, 120);
                     string lastNameTmp = temp.GetString(arrayLastName).Trim(' ');
@@ -301,6 +404,8 @@ namespace FileCabinetApp
                     {
                         record.LastName += lastNameTmp[j];
                     }
+
+                    record.LastName = record.LastName.Trim(' ');
 
                     byte[] arrayAge = new byte[2];
                     Array.Copy(recordByte, 246, arrayAge, 0, 2);
@@ -342,24 +447,23 @@ namespace FileCabinetApp
 
             using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
             {
-                int recordsCount = (int)fileStream.Length / RecordSize;
-                fileStream.Seek(0, SeekOrigin.Begin);
-
                 UTF8Encoding temp = new UTF8Encoding(true);
                 byte[] recordByte = new byte[RecordSize];
 
-                for (int i = 0; i < recordsCount; i++)
+                List<long> offsets = new List<long>();
+                if (this.firstNameDictionaty.ContainsKey(firstName))
                 {
+                    offsets = this.firstNameDictionaty[firstName];
+                }
+
+                foreach (long offset in offsets)
+                {
+                    fileStream.Seek(offset, SeekOrigin.Begin);
                     fileStream.Read(recordByte, 0, RecordSize);
 
                     byte[] arrayIsDeleted = new byte[2];
                     Array.Copy(recordByte, 276, arrayIsDeleted, 0, 2);
                     short isDeleted = Convert.ToInt16(new UTF8Encoding(true).GetString(arrayIsDeleted), new CultureInfo("en-US"));
-
-                    if (isDeleted == 1)
-                    {
-                        continue;
-                    }
 
                     FileCabinetRecord record = new FileCabinetRecord();
 
@@ -379,6 +483,8 @@ namespace FileCabinetApp
                         record.FirstName += firstNameTmp[j];
                     }
 
+                    record.FirstName = record.FirstName.Trim(' ');
+
                     byte[] arrayLastName = new byte[120];
                     Array.Copy(recordByte, 126, arrayLastName, 0, 120);
                     string lastNameTmp = temp.GetString(arrayLastName).Trim(' ');
@@ -386,6 +492,8 @@ namespace FileCabinetApp
                     {
                         record.LastName += lastNameTmp[j];
                     }
+
+                    record.LastName = record.LastName.Trim(' ');
 
                     byte[] arrayAge = new byte[2];
                     Array.Copy(recordByte, 246, arrayAge, 0, 2);
@@ -427,24 +535,24 @@ namespace FileCabinetApp
 
             using (FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate))
             {
-                int recordsCount = (int)fileStream.Length / RecordSize;
-                fileStream.Seek(0, SeekOrigin.Begin);
 
                 UTF8Encoding temp = new UTF8Encoding(true);
                 byte[] recordByte = new byte[RecordSize];
 
-                for (int i = 0; i < recordsCount; i++)
+                List<long> offsets = new List<long>();
+                if (this.lastNameDictionary.ContainsKey(lastname))
                 {
+                    offsets = this.lastNameDictionary[lastname];
+                }
+
+                foreach (long offset in offsets)
+                {
+                    fileStream.Seek(offset, SeekOrigin.Begin);
                     fileStream.Read(recordByte, 0, RecordSize);
 
                     byte[] arrayIsDeleted = new byte[2];
                     Array.Copy(recordByte, 276, arrayIsDeleted, 0, 2);
                     short isDeleted = Convert.ToInt16(new UTF8Encoding(true).GetString(arrayIsDeleted), new CultureInfo("en-US"));
-
-                    if (isDeleted == 1)
-                    {
-                        continue;
-                    }
 
                     FileCabinetRecord record = new FileCabinetRecord();
 
@@ -464,6 +572,8 @@ namespace FileCabinetApp
                         record.FirstName += firstNameTmp[j];
                     }
 
+                    record.FirstName = record.FirstName.Trim(' ');
+
                     byte[] arrayLastName = new byte[120];
                     Array.Copy(recordByte, 126, arrayLastName, 0, 120);
                     string lastNameTmp = temp.GetString(arrayLastName).Trim(' ');
@@ -471,6 +581,8 @@ namespace FileCabinetApp
                     {
                         record.LastName += lastNameTmp[j];
                     }
+
+                    record.LastName = record.LastName.Trim(' ');
 
                     byte[] arrayAge = new byte[2];
                     Array.Copy(recordByte, 246, arrayAge, 0, 2);
