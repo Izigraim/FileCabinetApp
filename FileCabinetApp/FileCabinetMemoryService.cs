@@ -45,6 +45,11 @@ namespace FileCabinetApp
                 throw new ArgumentException("Data validation is not successful.", nameof(record));
             }
 
+            if (record.Id == 0)
+            {
+                record.Id = this.GetStat(out int a);
+            }
+
             if (this.list.Where(c => c.Id == record.Id).Count() == 1)
             {
                 int index = this.list.FindIndex(c => c.Id == record.Id);
@@ -77,13 +82,13 @@ namespace FileCabinetApp
                 this.lastNameDictionary.Add(recordToAdd.LastName, new List<FileCabinetRecord>() { recordToAdd });
             }
 
-            if (this.dateOfBirthDictionary.ContainsKey(recordToAdd.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))))
+            if (this.dateOfBirthDictionary.ContainsKey(recordToAdd.DateOfBirth.ToString(new CultureInfo("en-US"))))
             {
-                this.dateOfBirthDictionary[record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Add(recordToAdd);
+                this.dateOfBirthDictionary[record.DateOfBirth.ToString(new CultureInfo("en-US"))].Add(recordToAdd);
             }
             else
             {
-                this.dateOfBirthDictionary.Add(recordToAdd.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")), new List<FileCabinetRecord>() { recordToAdd });
+                this.dateOfBirthDictionary.Add(recordToAdd.DateOfBirth.ToString(new CultureInfo("en-US")), new List<FileCabinetRecord>() { recordToAdd });
             }
 
             return recordToAdd.Id;
@@ -146,19 +151,19 @@ namespace FileCabinetApp
                 this.lastNameDictionary.Add(recordEdited.LastName, new List<FileCabinetRecord>() { recordEdited });
             }
 
-            this.dateOfBirthDictionary[this.list[record.Id].DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Remove(this.list[record.Id]);
-            if (this.dateOfBirthDictionary[this.list[record.Id].DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Count == 0)
+            this.dateOfBirthDictionary[this.list[record.Id].DateOfBirth.ToString(new CultureInfo("en-US"))].Remove(this.list[record.Id]);
+            if (this.dateOfBirthDictionary[this.list[record.Id].DateOfBirth.ToString(new CultureInfo("en-US"))].Count == 0)
             {
-                this.dateOfBirthDictionary.Remove(this.list[record.Id].DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")));
+                this.dateOfBirthDictionary.Remove(this.list[record.Id].DateOfBirth.ToString(new CultureInfo("en-US")));
             }
 
-            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))))
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth.ToString(new CultureInfo("en-US"))))
             {
-                this.dateOfBirthDictionary[record.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US"))].Add(recordEdited);
+                this.dateOfBirthDictionary[record.DateOfBirth.ToString(new CultureInfo("en-US"))].Add(recordEdited);
             }
             else
             {
-                this.dateOfBirthDictionary.Add(recordEdited.DateOfBirth.ToString(CultureInfo.CreateSpecificCulture("en-US")), new List<FileCabinetRecord>() { recordEdited });
+                this.dateOfBirthDictionary.Add(recordEdited.DateOfBirth.ToString(new CultureInfo("en-US")), new List<FileCabinetRecord>() { recordEdited });
             }
 
             this.list.RemoveAt(record.Id);
@@ -170,24 +175,16 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">First name.</param>
         /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            try
+            if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                if (!this.firstNameDictionary.ContainsKey(firstName))
-                {
-                    throw new ArgumentException("There is no record(s) with this first name.");
-                }
+                return new MemoryIteratorCollection(this.firstNameDictionary[firstName]);
             }
-            catch (ArgumentException ex)
+            else
             {
-                Console.WriteLine(ex.Message);
-                return null;
+                return new MemoryIteratorCollection(new List<FileCabinetRecord> { });
             }
-
-            ReadOnlyCollection<FileCabinetRecord> findedFirstNameCollection = new ReadOnlyCollection<FileCabinetRecord>(this.firstNameDictionary[firstName]);
-
-            return findedFirstNameCollection;
         }
 
         /// <summary>
@@ -195,24 +192,16 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastname">Last name.</param>
         /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastname)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastname)
         {
-            try
+            if (this.lastNameDictionary.ContainsKey(lastname))
             {
-                if (!this.lastNameDictionary.ContainsKey(lastname))
-                {
-                    throw new ArgumentException("There is no record(s) with this first name.");
-                }
+                return new MemoryIteratorCollection(this.lastNameDictionary[lastname]);
             }
-            catch (ArgumentException ex)
+            else
             {
-                Console.WriteLine(ex.Message);
-                return null;
+                return new MemoryIteratorCollection(new List<FileCabinetRecord> { });
             }
-
-            ReadOnlyCollection<FileCabinetRecord> findedLastNameCollection = new ReadOnlyCollection<FileCabinetRecord>(this.lastNameDictionary[lastname]);
-
-            return findedLastNameCollection;
         }
 
         /// <summary>
@@ -220,23 +209,18 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date of birth.</param>
         /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string dateOfBirth)
         {
-            ReadOnlyCollection<FileCabinetRecord> findedDateOfBirthCollection = new ReadOnlyCollection<FileCabinetRecord>(this.list.FindAll(c => c.DateOfBirth == DateTime.Parse(dateOfBirth, CultureInfo.CurrentCulture)));
-            try
-            {
-                if (findedDateOfBirthCollection == null)
-                {
-                    throw new ArgumentException("There are no records with this first name.", nameof(dateOfBirth));
-                }
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
+            dateOfBirth = DateTime.Parse(dateOfBirth, new CultureInfo("en-US")).ToString(new CultureInfo("en-US"));
 
-            return findedDateOfBirthCollection;
+            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            {
+                return new MemoryIteratorCollection(this.dateOfBirthDictionary[dateOfBirth]);
+            }
+            else
+            {
+                return new MemoryIteratorCollection(new List<FileCabinetRecord> { });
+            }
         }
 
         /// <summary>

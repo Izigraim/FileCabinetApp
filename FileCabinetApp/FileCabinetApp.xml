@@ -550,6 +550,35 @@
             </summary>
             <param name="reader">StreamReader.</param>
         </member>
+        <member name="T:FileCabinetApp.FileSystemIteratorCollection">
+            <summary>
+            Iterator for working with <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileSystemIteratorCollection.#ctor(System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileSystemIteratorCollection"/> class.
+            </summary>
+            <param name="cache">List of offsets for elements on file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileSystemIteratorCollection.GetRecords">
+            <summary>
+            Gets all records.
+            </summary>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/>.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileSystemIteratorCollection.GetEnumerator">
+            <summary>
+            Get enumerator that iterates through a collection.
+            </summary>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerator`1"/> object that can be used to iterate through collection.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileSystemIteratorCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Get enumerator that iterates through a collection.
+            </summary>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerator`1"/> object that can be used to iterate through collection.</returns>
+        </member>
         <member name="T:FileCabinetApp.IFIleCabinetService">
             <summary>
             Extract interface to FileCabinetService.
@@ -573,21 +602,21 @@
             Search for a record by first name.
             </summary>
             <param name="firstName">First name.</param>
-            <returns>Finded record or <see cref="T:System.ArgumentException"/>.</returns>
+            <returns>List of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</returns>
         </member>
         <member name="M:FileCabinetApp.IFIleCabinetService.FindByLastName(System.String)">
             <summary>
             Search for a record by last name.
             </summary>
             <param name="lastname">Last name.</param>
-            <returns>Finded record or <see cref="T:System.ArgumentException"/>.</returns>
+            <returns>List of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</returns>
         </member>
         <member name="M:FileCabinetApp.IFIleCabinetService.FindByDateOfBirth(System.String)">
             <summary>
-            Search for a record by last name.
+            Search for a record by date of birth.
             </summary>
             <param name="dateOfBirth">Date of birth.</param>
-            <returns>Finded record or <see cref="T:System.ArgumentException"/>.</returns>
+            <returns>List of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</returns>
         </member>
         <member name="M:FileCabinetApp.IFIleCabinetService.GetRecords">
             <summary>
@@ -626,6 +655,35 @@
             </summary>
             <param name="count">Count of purged records.</param>
             <param name="before">Count of records before purge.</param>
+        </member>
+        <member name="T:FileCabinetApp.MemoryIteratorCollection">
+            <summary>
+            Iterator for worjing with <see cref="T:FileCabinetApp.FileCabinetMemoryService"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIteratorCollection.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.MemoryIteratorCollection"/> class.
+            </summary>
+            <param name="records">List of records.</param>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIteratorCollection.GetRecords">
+            <summary>
+            Gets all records.
+            </summary>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/>.</returns>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIteratorCollection.GetEnumerator">
+            <summary>
+            Get enumerator that iterates through a collection.
+            </summary>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerator`1"/> object that can be used to iterate through collection.</returns>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIteratorCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Get enumerator that iterates through a collection.
+            </summary>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerator`1"/> object that can be used to iterate through collection.</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

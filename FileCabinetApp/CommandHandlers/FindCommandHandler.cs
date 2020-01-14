@@ -60,22 +60,42 @@ namespace FileCabinetApp.CommandHandlers
 
             string[] findParameters = parameters.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            ReadOnlyCollection<FileCabinetRecord> findedRecords = null;
+            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> files = null;
 
             switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
             {
                 case "firstname":
-                    findedRecords = Service.FindByFirstName(findParameters[1].Trim('"'));
+                    {
+                        files = new List<FileCabinetRecord>(Service.FindByFirstName(findParameters[1].Trim('"')));
+                    }
+
                     break;
                 case "lastname":
-                    findedRecords = Service.FindByLastName(findParameters[1].Trim('"'));
+                    {
+                        files = new List<FileCabinetRecord>(Service.FindByLastName(findParameters[1].Trim('"')));
+                    }
+
                     break;
                 case "dateofbirth":
-                    findedRecords = Service.FindByDateOfBirth(findParameters[1].Trim('"'));
+                    {
+                        try
+                        {
+                            DateTime.Parse(findParameters[1], new CultureInfo("en-US"));
+                        }
+                        catch (FormatException e)
+                        {
+                            Console.WriteLine(e.Message);
+                            return;
+                        }
+
+                        files = new List<FileCabinetRecord>(Service.FindByDateOfBirth(findParameters[1].Trim('"')));
+                    }
+
                     break;
             }
 
-            this.printer(findedRecords);
+            this.printer(files);
         }
     }
 }
