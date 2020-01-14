@@ -22,12 +22,21 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Gets all records.
+        /// </summary>
+        /// <returns><see cref="IEnumerable{T}"/>.</returns>
+        public IEnumerable<FileCabinetRecord> GetRecords()
+        {
+            return this.GetRecords(this.records);
+        }
+
+        /// <summary>
         /// Get enumerator that iterates through a collection.
         /// </summary>
         /// <returns>An <see cref="IEnumerator{T}"/> object that can be used to iterate through collection.</returns>
         public IEnumerator<FileCabinetRecord> GetEnumerator()
         {
-            return new MemoryIteratorEnumerator(this.records);
+            return this.GetRecords().GetEnumerator();
         }
 
         /// <summary>
@@ -36,95 +45,14 @@ namespace FileCabinetApp
         /// <returns>An <see cref="IEnumerator{T}"/> object that can be used to iterate through collection.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new MemoryIteratorEnumerator(this.records);
+            return this.GetRecords().GetEnumerator();
         }
 
-        /// <summary>
-        /// Enumerator class.
-        /// </summary>
-        public sealed class MemoryIteratorEnumerator : IEnumerator<FileCabinetRecord>
+        private IEnumerable<FileCabinetRecord> GetRecords(List<FileCabinetRecord> list)
         {
-            private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-            private int currentIndex;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="MemoryIteratorEnumerator"/> class.
-            /// </summary>
-            /// <param name="list">List of records.</param>
-            public MemoryIteratorEnumerator(List<FileCabinetRecord> list)
+            foreach (FileCabinetRecord record in list)
             {
-                this.list = list;
-                this.currentIndex = -1;
-            }
-
-            /// <summary>
-            /// Gets current element.
-            /// </summary>
-            /// <value>
-            /// Current element.
-            /// </value>
-            public FileCabinetRecord Current
-            {
-                get
-                {
-                    if (this.currentIndex == -1 || this.currentIndex == this.list.Count)
-                    {
-                        throw new InvalidOperationException();
-                    }
-
-                    return this.list[this.currentIndex];
-                }
-            }
-
-            /// <summary>
-            /// Gets current element.
-            /// </summary>
-            /// <value>
-            /// Current element.
-            /// </value>
-            object IEnumerator.Current
-            {
-                get
-                {
-                    if (this.currentIndex == -1 || this.currentIndex == this.list.Count)
-                    {
-                        throw new InvalidOperationException();
-                    }
-
-                    return this.list[this.currentIndex];
-                }
-            }
-
-            /// <summary>
-            /// Implement IDisposable.
-            /// </summary>
-            public void Dispose()
-            {
-            }
-
-            /// <summary>
-            /// Checking whether we can go to the next item in the collection.
-            /// </summary>
-            /// <returns>True, if we can, false - if not.</returns>
-            public bool MoveNext()
-            {
-                if (this.currentIndex < this.list.Count - 1)
-                {
-                    this.currentIndex++;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            /// <summary>
-            /// Reset position in collection.
-            /// </summary>
-            public void Reset()
-            {
-                this.currentIndex = -1;
+                yield return record;
             }
         }
     }
