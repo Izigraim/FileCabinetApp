@@ -53,39 +53,39 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByDateOfBirth(string dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string dateOfBirth)
         {
             this.stopwatch = Stopwatch.StartNew();
 
-            IRecordIterator iterator = this.fileCabinetService.FindByDateOfBirth(dateOfBirth);
+            IEnumerable<FileCabinetRecord> list = this.fileCabinetService.FindByDateOfBirth(dateOfBirth);
 
             this.stopwatch.Stop();
             Console.WriteLine($"Find by date of birth method execution is {this.stopwatch.ElapsedTicks} ticks.");
-            return iterator;
+            return list;
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.stopwatch = Stopwatch.StartNew();
 
-            IRecordIterator iterator = this.fileCabinetService.FindByFirstName(firstName);
+            IEnumerable<FileCabinetRecord> list = this.fileCabinetService.FindByFirstName(firstName);
 
             this.stopwatch.Stop();
             Console.WriteLine($"Find by first name method execution is {this.stopwatch.ElapsedTicks} ticks.");
-            return iterator;
+            return list;
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByLastName(string lastname)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastname)
         {
             this.stopwatch = Stopwatch.StartNew();
 
-            IRecordIterator iterator = this.fileCabinetService.FindByLastName(lastname);
+            IEnumerable<FileCabinetRecord> list = this.fileCabinetService.FindByLastName(lastname);
 
             this.stopwatch.Stop();
             Console.WriteLine($"Find by last name method execution is {this.stopwatch.ElapsedTicks} ticks.");
-            return iterator;
+            return list;
         }
 
         /// <inheritdoc/>

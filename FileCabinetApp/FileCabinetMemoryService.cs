@@ -175,15 +175,15 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">First name.</param>
         /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                return new MemoryIterator(this.firstNameDictionary[firstName]);
+                return new MemoryIteratorCollection(this.firstNameDictionary[firstName]);
             }
             else
             {
-                return new MemoryIterator(new List<FileCabinetRecord> { });
+                return new MemoryIteratorCollection(new List<FileCabinetRecord> { });
             }
         }
 
@@ -192,15 +192,15 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastname">Last name.</param>
         /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public IRecordIterator FindByLastName(string lastname)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastname)
         {
             if (this.lastNameDictionary.ContainsKey(lastname))
             {
-                return new MemoryIterator(this.lastNameDictionary[lastname]);
+                return new MemoryIteratorCollection(this.lastNameDictionary[lastname]);
             }
             else
             {
-                return new MemoryIterator(new List<FileCabinetRecord> { });
+                return new MemoryIteratorCollection(new List<FileCabinetRecord> { });
             }
         }
 
@@ -209,17 +209,17 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date of birth.</param>
         /// <returns>Finded record or <see cref="ArgumentException"/>.</returns>
-        public IRecordIterator FindByDateOfBirth(string dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string dateOfBirth)
         {
             dateOfBirth = DateTime.Parse(dateOfBirth, new CultureInfo("en-US")).ToString(new CultureInfo("en-US"));
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                return new MemoryIterator(this.dateOfBirthDictionary[dateOfBirth]);
+                return new MemoryIteratorCollection(this.dateOfBirthDictionary[dateOfBirth]);
             }
             else
             {
-                return new MemoryIterator(new List<FileCabinetRecord> { });
+                return new MemoryIteratorCollection(new List<FileCabinetRecord> { });
             }
         }
 

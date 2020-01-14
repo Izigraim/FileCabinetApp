@@ -61,29 +61,19 @@ namespace FileCabinetApp.CommandHandlers
             string[] findParameters = parameters.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
-            IRecordIterator iterator;
+            List<FileCabinetRecord> files = null;
 
             switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
             {
                 case "firstname":
                     {
-                        iterator = Service.FindByFirstName(findParameters[1].Trim('"'));
-
-                        while (iterator.HasMore())
-                        {
-                            findedRecords.Add(iterator.GetNext());
-                        }
+                        files = new List<FileCabinetRecord>(Service.FindByFirstName(findParameters[1].Trim('"')));
                     }
 
                     break;
                 case "lastname":
                     {
-                        iterator = Service.FindByLastName(findParameters[1].Trim('"'));
-
-                        while (iterator.HasMore())
-                        {
-                            findedRecords.Add(iterator.GetNext());
-                        }
+                        files = new List<FileCabinetRecord>(Service.FindByLastName(findParameters[1].Trim('"')));
                     }
 
                     break;
@@ -99,18 +89,13 @@ namespace FileCabinetApp.CommandHandlers
                             return;
                         }
 
-                        iterator = Service.FindByDateOfBirth(findParameters[1].Trim('"'));
-
-                        while (iterator.HasMore())
-                        {
-                            findedRecords.Add(iterator.GetNext());
-                        }
+                        files = new List<FileCabinetRecord>(Service.FindByDateOfBirth(findParameters[1].Trim('"')));
                     }
 
                     break;
             }
 
-            this.printer(findedRecords);
+            this.printer(files);
         }
     }
 }

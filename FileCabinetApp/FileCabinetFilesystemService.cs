@@ -352,41 +352,41 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByDateOfBirth(string dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string dateOfBirth)
         {
             if (this.dateOfBirthDictionary.ContainsKey(DateTime.Parse(dateOfBirth, new CultureInfo("en-US"))))
             {
-                return new FileSystemIterator(this.dateOfBirthDictionary[DateTime.Parse(dateOfBirth, new CultureInfo("en-US"))]);
+                return new FileSystemIteratorCollection(this.dateOfBirthDictionary[DateTime.Parse(dateOfBirth, new CultureInfo("en-US"))]);
             }
             else
             {
-                return new FileSystemIterator(new List<long> { });
+                return new FileSystemIteratorCollection(new List<long> { });
             }
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameDictionaty.ContainsKey(firstName))
             {
-                return new FileSystemIterator(this.firstNameDictionaty[firstName]);
+                return new FileSystemIteratorCollection(this.firstNameDictionaty[firstName]);
             }
             else
             {
-                return new FileSystemIterator(new List<long> { });
+                return new FileSystemIteratorCollection(new List<long> { });
             }
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByLastName(string lastname)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastname)
         {
             if (this.lastNameDictionary.ContainsKey(lastname))
             {
-                return new FileSystemIterator(this.firstNameDictionaty[lastname]);
+                return new FileSystemIteratorCollection(this.lastNameDictionary[lastname]);
             }
             else
             {
-                return new FileSystemIterator(new List<long> { });
+                return new FileSystemIteratorCollection(new List<long> { });
             }
         }
 
