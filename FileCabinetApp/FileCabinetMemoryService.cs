@@ -48,6 +48,7 @@ namespace FileCabinetApp
             if (record.Id == 0)
             {
                 record.Id = this.GetStat(out int a);
+                record.Id--;
             }
 
             if (this.list.Where(c => c.Id == record.Id).Count() == 1)
