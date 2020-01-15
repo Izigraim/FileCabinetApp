@@ -116,10 +116,12 @@ namespace FileCabinetApp
                 DateOfBirth = record.DateOfBirth,
             };
 
-            this.firstNameDictionary[this.list[record.Id].FirstName].Remove(this.list[record.Id]);
-            if (this.firstNameDictionary[this.list[record.Id].FirstName].Count == 0)
+            foreach (var key in this.firstNameDictionary.Keys)
             {
-                this.firstNameDictionary.Remove(this.list[record.Id].FirstName);
+                if (this.firstNameDictionary[key].Contains(record))
+                {
+                    this.firstNameDictionary[key].Remove(record);
+                }
             }
 
             if (this.firstNameDictionary.ContainsKey(recordEdited.FirstName))
@@ -131,10 +133,13 @@ namespace FileCabinetApp
                 this.firstNameDictionary.Add(recordEdited.FirstName, new List<FileCabinetRecord>() { recordEdited });
             }
 
-            this.lastNameDictionary[this.list[record.Id].LastName].Remove(this.list[record.Id]);
-            if (this.lastNameDictionary[this.list[record.Id].LastName].Count == 0)
+
+            foreach (var key in this.lastNameDictionary.Keys)
             {
-                this.lastNameDictionary.Remove(this.list[record.Id].LastName);
+                if (this.lastNameDictionary[key].Contains(record))
+                {
+                    this.lastNameDictionary[key].Remove(record);
+                }
             }
 
             if (this.lastNameDictionary.ContainsKey(recordEdited.LastName))
@@ -146,10 +151,12 @@ namespace FileCabinetApp
                 this.lastNameDictionary.Add(recordEdited.LastName, new List<FileCabinetRecord>() { recordEdited });
             }
 
-            this.dateOfBirthDictionary[this.list[record.Id].DateOfBirth.ToString(new CultureInfo("en-US"))].Remove(this.list[record.Id]);
-            if (this.dateOfBirthDictionary[this.list[record.Id].DateOfBirth.ToString(new CultureInfo("en-US"))].Count == 0)
+            foreach (var key in this.dateOfBirthDictionary.Keys)
             {
-                this.dateOfBirthDictionary.Remove(this.list[record.Id].DateOfBirth.ToString(new CultureInfo("en-US")));
+                if (this.dateOfBirthDictionary[key].Contains(record))
+                {
+                    this.dateOfBirthDictionary[key].Remove(record);
+                }
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth.ToString(new CultureInfo("en-US"))))

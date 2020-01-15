@@ -25,6 +25,7 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "purge", "purge a file with records", "The 'purge' command remove records marked as deleted from file." },
             new string[] { "insert", "create or edit a record", "The 'insert' command create or edit a record." },
             new string[] { "delete", "delete record(s) using the specified criteria", "The 'delete' command delete record(s) using the specified criteria." },
+            new string[] { "update set", "update a record(s) that matches the search criteria with the specified fields", "The 'update set' command update a record(s) that matches the search criteria with the specified fields." },
         };
 
         /// <inheritdoc/>
