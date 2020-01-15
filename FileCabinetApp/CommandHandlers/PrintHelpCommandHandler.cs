@@ -23,6 +23,8 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "import", "import data from file", "The 'import' command import records from file" },
             new string[] { "remove", "remove a record", "The 'remove' command remove a record with selected ID." },
             new string[] { "purge", "purge a file with records", "The 'purge' command remove records marked as deleted from file." },
+            new string[] { "insert", "create or edit a record", "The 'insert' command create or edit a record." },
+            new string[] { "delete", "delete record(s) using the specified criteria", "The 'delete' command delete record(s) using the specified criteria." },
         };
 
         /// <inheritdoc/>

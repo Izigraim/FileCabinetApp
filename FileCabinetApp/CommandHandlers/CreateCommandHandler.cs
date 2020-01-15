@@ -53,6 +53,7 @@ namespace FileCabinetApp.CommandHandlers
         private static void Create()
         {
             FileCabinetRecord record = Program.Validator.ValidateParametersProgram();
+            record.Id = Service.GetStat(out int deletedCount);
 
             if (Service.CreateRecord(record) == -1)
             {
@@ -60,7 +61,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             else
             {
-                var recordsCount = Service.GetStat(out int deletedCount);
+                var recordsCount = Service.GetStat(out deletedCount);
                 Console.WriteLine($"Record #{recordsCount} created.");
             }
         }
@@ -73,7 +74,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            string[] parametersString = parameters.Split(' ');
+            string[] parametersString = parameters.ToLower(new CultureInfo("en-US")).Split(' ');
 
             if (!parametersString.Contains<string>("values"))
             {
@@ -105,6 +106,12 @@ namespace FileCabinetApp.CommandHandlers
                             else
                             {
                                 record.Id = Convert.ToInt32(values[i].Trim(' '), new CultureInfo("en-US"));
+                            }
+
+                            record.Id--;
+                            if (record.Id == -1)
+                            {
+                                record.Id = 0;
                             }
                         }
 

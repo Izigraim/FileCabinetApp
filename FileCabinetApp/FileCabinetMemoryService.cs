@@ -45,12 +45,6 @@ namespace FileCabinetApp
                 throw new ArgumentException("Data validation is not successful.", nameof(record));
             }
 
-            if (record.Id == 0)
-            {
-                record.Id = this.GetStat(out int a);
-                record.Id--;
-            }
-
             if (this.list.Where(c => c.Id == record.Id).Count() == 1)
             {
                 int index = this.list.FindIndex(c => c.Id == record.Id);
