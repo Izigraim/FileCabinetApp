@@ -11,8 +11,6 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
-        private static string[] commands = new string[] { "help", "exit", "stat", "create", "list", "edit", "find", "export", "import", "remove", "purge" };
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PurgeCommandHandler"/> class.
         /// </summary>
@@ -28,12 +26,6 @@ namespace FileCabinetApp.CommandHandlers
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
-            }
-
-            if (!commands.Contains(request.Command.ToLower(new CultureInfo("en-US"))))
-            {
-                Console.WriteLine($"There is no '{request.Command}' command.");
-                Console.WriteLine();
             }
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "purge")
