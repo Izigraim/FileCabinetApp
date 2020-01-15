@@ -199,7 +199,7 @@ namespace FileCabinetApp
             var remove = new RemoveCommandHandler(fileCabinetService);
             var purge = new PurgeCommandHandler(fileCabinetService);
 
-            create.SetNext(exit).SetNext(stat).SetNext(help).SetNext(list).SetNext(edit).SetNext(find).SetNext(export).SetNext(import).SetNext(remove).SetNext(purge);
+            create.SetNext(exit).SetNext(stat).SetNext(list).SetNext(edit).SetNext(find).SetNext(export).SetNext(import).SetNext(remove).SetNext(purge).SetNext(help);
 
             return create;
         }
