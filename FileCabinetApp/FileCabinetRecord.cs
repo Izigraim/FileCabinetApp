@@ -56,7 +56,7 @@ namespace FileCabinetApp
         /// <value>
         /// Salary.
         /// </value>
-        public decimal? Salary { get; set; }
+        public decimal Salary { get; set; }
 
         /// <summary>
         /// Gets or sets DateOfBirth.

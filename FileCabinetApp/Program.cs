@@ -191,7 +191,6 @@ namespace FileCabinetApp
             var exit = new ExitCommandHandler(Exit);
             var stat = new StatCommanHandler(fileCabinetService);
             var help = new PrintHelpCommandHandler();
-            var list = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
             var edit = new EditCommandHandler(fileCabinetService);
             var find = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
             var export = new ExportCommandHandler(fileCabinetService);
@@ -199,7 +198,7 @@ namespace FileCabinetApp
             var remove = new RemoveCommandHandler(fileCabinetService);
             var purge = new PurgeCommandHandler(fileCabinetService);
 
-            create.SetNext(exit).SetNext(stat).SetNext(list).SetNext(edit).SetNext(find).SetNext(export).SetNext(import).SetNext(remove).SetNext(purge).SetNext(help);
+            create.SetNext(exit).SetNext(stat).SetNext(edit).SetNext(find).SetNext(export).SetNext(import).SetNext(remove).SetNext(purge).SetNext(help);
 
             return create;
         }

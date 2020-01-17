@@ -40,7 +40,6 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-
         private static void Update(string parameters)
         {
             parameters = parameters.ToLower(new CultureInfo("en-US"));
@@ -54,7 +53,6 @@ namespace FileCabinetApp.CommandHandlers
             List<FileCabinetRecord> recordsToEdit = new List<FileCabinetRecord>();
             List<FileCabinetRecord> records = Service.GetRecords().ToList<FileCabinetRecord>();
 
-            string[] parametersArray = parameters.Split(' ');
             string criteria = parameters.Substring(parameters.IndexOf("where", StringComparison.Ordinal) + 5, parameters.Length - parameters.IndexOf("where", StringComparison.Ordinal) - 5);
             string[] criteriaArray = criteria.Split("and");
 
@@ -70,12 +68,10 @@ namespace FileCabinetApp.CommandHandlers
                                 if (recordsToEdit.Count == 0)
                                 {
                                     recordsToEdit = records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
-
                                 }
                                 else
                                 {
                                     recordsToEdit = recordsToEdit.Intersect<FileCabinetRecord>(records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
-
                                 }
                             }
                             else
@@ -83,12 +79,10 @@ namespace FileCabinetApp.CommandHandlers
                                 if (recordsToEdit.Count == 0)
                                 {
                                     recordsToEdit = records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
-
                                 }
                                 else
                                 {
                                     recordsToEdit = recordsToEdit.Intersect<FileCabinetRecord>(records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
-
                                 }
                             }
                         }
@@ -402,7 +396,7 @@ namespace FileCabinetApp.CommandHandlers
                 foreach (var record in recordsToEdit.OrderBy(c => c.Id))
                 {
                     Console.Write($"#{record.Id + 1}");
-                    if (recordsToEdit.Last() != record)
+                    if (recordsToEdit.OrderBy(c => c.Id).Last() != record)
                     {
                         Console.Write($", ");
                     }

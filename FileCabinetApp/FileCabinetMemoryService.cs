@@ -17,6 +17,7 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> selectResultsDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly IRecordValidator validator;
 
         /// <summary>
@@ -86,6 +87,7 @@ namespace FileCabinetApp
                 this.dateOfBirthDictionary.Add(recordToAdd.DateOfBirth.ToString(new CultureInfo("en-US")), new List<FileCabinetRecord>() { recordToAdd });
             }
 
+            this.selectResultsDictionary.Clear();
             return recordToAdd.Id;
         }
 
@@ -133,7 +135,6 @@ namespace FileCabinetApp
                 this.firstNameDictionary.Add(recordEdited.FirstName, new List<FileCabinetRecord>() { recordEdited });
             }
 
-
             foreach (var key in this.lastNameDictionary.Keys)
             {
                 if (this.lastNameDictionary[key].Contains(record))
@@ -168,6 +169,7 @@ namespace FileCabinetApp
                 this.dateOfBirthDictionary.Add(recordEdited.DateOfBirth.ToString(new CultureInfo("en-US")), new List<FileCabinetRecord>() { recordEdited });
             }
 
+            this.selectResultsDictionary.Clear();
             this.list.RemoveAt(record.Id);
             this.list.Insert(record.Id, recordEdited);
         }
@@ -271,6 +273,7 @@ namespace FileCabinetApp
             FileCabinetRecord record = this.list[id];
             this.list.RemoveAt(id);
 
+            this.selectResultsDictionary.Clear();
             this.firstNameDictionary[record.FirstName].Remove(record);
             this.lastNameDictionary[record.LastName].Remove(record);
             this.dateOfBirthDictionary[record.DateOfBirth.ToString(new CultureInfo("en-US"))].Remove(record);
@@ -280,6 +283,23 @@ namespace FileCabinetApp
         public void Purge(out int count, out int before)
         {
             throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public List<FileCabinetRecord> Memoization(string parameters)
+        {
+            if (this.selectResultsDictionary.ContainsKey(parameters))
+            {
+                return this.selectResultsDictionary[parameters];
+            }
+
+            return new List<FileCabinetRecord>();
+        }
+
+        /// <inheritdoc/>
+        public void Memoization(string parameters, List<FileCabinetRecord> selectedRecords)
+        {
+            this.selectResultsDictionary.Add(parameters, selectedRecords);
         }
     }
 }

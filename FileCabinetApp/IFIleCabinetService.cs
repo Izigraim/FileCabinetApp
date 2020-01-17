@@ -81,5 +81,19 @@ namespace FileCabinetApp
         /// <param name="count">Count of purged records.</param>
         /// <param name="before">Count of records before purge.</param>
         public void Purge(out int count, out int before);
+
+        /// <summary>
+        /// Read data that has already been saved with the current set of parameters.
+        /// </summary>
+        /// <param name="parameters">Set of parameters.</param>
+        /// <returns>List of records or empty list.</returns>
+        public List<FileCabinetRecord> Memoization(string parameters);
+
+        /// <summary>
+        /// Write data to a dictionary with a key as search parameters.
+        /// </summary>
+        /// <param name="parameters">Set of parameters.</param>
+        /// <param name="selectedRecords">List of records.</param>
+        public void Memoization(string parameters, List<FileCabinetRecord> selectedRecords);
     }
 }
