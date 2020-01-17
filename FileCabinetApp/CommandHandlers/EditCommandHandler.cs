@@ -54,7 +54,6 @@ namespace FileCabinetApp.CommandHandlers
             List<FileCabinetRecord> recordsToEdit = new List<FileCabinetRecord>();
             List<FileCabinetRecord> records = Service.GetRecords().ToList<FileCabinetRecord>();
 
-            string[] parametersArray = parameters.Split(' ');
             string criteria = parameters.Substring(parameters.IndexOf("where", StringComparison.Ordinal) + 5, parameters.Length - parameters.IndexOf("where", StringComparison.Ordinal) - 5);
             string[] criteriaArray = criteria.Split("and");
 

@@ -224,7 +224,7 @@ namespace FileCabinetApp
             arrayAge.CopyTo(arrayRecord, 246);
 
             byte[] arraySalary = new byte[16];
-            arraySalary = new UTF8Encoding(true).GetBytes(record.Salary?.ToString(new CultureInfo("en-US")));
+            arraySalary = new UTF8Encoding(true).GetBytes(record.Salary.ToString(new CultureInfo("en-US")));
             arraySalary.CopyTo(arrayRecord, 248);
 
             byte[] arrayYear = new byte[4];
@@ -327,7 +327,7 @@ namespace FileCabinetApp
                 arrayAge.CopyTo(arrayRecord, 246);
 
                 byte[] arraySalary = new byte[16];
-                arraySalary = new UTF8Encoding(true).GetBytes(record.Salary?.ToString(new CultureInfo("en-US")));
+                arraySalary = new UTF8Encoding(true).GetBytes(record.Salary.ToString(new CultureInfo("en-US")));
                 arraySalary.CopyTo(arrayRecord, 248);
 
                 byte[] arrayYear = new byte[4];
@@ -541,7 +541,7 @@ namespace FileCabinetApp
                 arrayAge.CopyTo(arrayRecord, 246);
 
                 byte[] arraySalary = new byte[16];
-                arraySalary = new UTF8Encoding(true).GetBytes(record.Salary?.ToString(new CultureInfo("en-US")));
+                arraySalary = new UTF8Encoding(true).GetBytes(record.Salary.ToString(new CultureInfo("en-US")));
                 arraySalary.CopyTo(arrayRecord, 248);
 
                 byte[] arrayYear = new byte[4];
@@ -689,7 +689,7 @@ namespace FileCabinetApp
                     arrayAge.CopyTo(arrayRecord, 246);
 
                     byte[] arraySalary = new byte[16];
-                    arraySalary = new UTF8Encoding(true).GetBytes(record.Salary?.ToString(new CultureInfo("en-US")));
+                    arraySalary = new UTF8Encoding(true).GetBytes(record.Salary.ToString(new CultureInfo("en-US")));
                     arraySalary.CopyTo(arrayRecord, 248);
 
                     byte[] arrayYear = new byte[4];
