@@ -720,5 +720,17 @@ namespace FileCabinetApp
             count = beforePurge - afterPurge;
             before = beforePurge;
         }
+
+        /// <inheritdoc/>
+        public List<FileCabinetRecord> Memoization(string parameters)
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public void Memoization(string parameters, List<FileCabinetRecord> selectedRecords)
+        {
+            return;
+        }
     }
 }

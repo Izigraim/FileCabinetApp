@@ -396,7 +396,7 @@ namespace FileCabinetApp.CommandHandlers
                 foreach (var record in recordsToEdit.OrderBy(c => c.Id))
                 {
                     Console.Write($"#{record.Id + 1}");
-                    if (recordsToEdit.Last() != record)
+                    if (recordsToEdit.OrderBy(c => c.Id).Last() != record)
                     {
                         Console.Write($", ");
                     }

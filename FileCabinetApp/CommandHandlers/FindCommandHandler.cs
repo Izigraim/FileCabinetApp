@@ -659,7 +659,23 @@ namespace FileCabinetApp.CommandHandlers
         {
             parameters = parameters.ToLower(new CultureInfo("en-US"));
 
-            List<FileCabinetRecord> selectedRecords = new List<FileCabinetRecord>();
+            bool flagMemoization = false;
+
+            List<FileCabinetRecord> selectedRecords;
+
+            if (Service is FileCabinetMemoryService)
+            {
+                selectedRecords = Service.Memoization(parameters);
+                if (selectedRecords.Count > 0)
+                {
+                    flagMemoization = true;
+                }
+            }
+            else
+            {
+                selectedRecords = new List<FileCabinetRecord>();
+            }
+
             List<FileCabinetRecord> records = Service.GetRecords().ToList();
 
             string criteria = string.Empty;
@@ -669,21 +685,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 criteria = parameters.Substring(parameters.IndexOf("where", StringComparison.Ordinal) + 5, parameters.Length - parameters.IndexOf("where", StringComparison.Ordinal) - 5);
                 criteriaArray = criteria.Split(new string[] { "and", "or" }, StringSplitOptions.None);
-            }
-
-            if (string.IsNullOrEmpty(criteria))
-            {
-                selectedRecords = records;
-            }
-            else
-            {
-                selectedRecords = CriteriaReader(criteriaArray, criteria, records, selectedRecords);
-            }
-
-            if (selectedRecords.Count == 0)
-            {
-                Console.WriteLine("Records with the specified parameters were not found.");
-                return;
             }
 
             string[] fields = new string[] { string.Empty };
@@ -739,6 +740,32 @@ namespace FileCabinetApp.CommandHandlers
                     Console.WriteLine("Incorrect field name.");
                     return;
                 }
+            }
+
+            if (flagMemoization)
+            {
+                PrintTable(fields, selectedRecords);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(criteria))
+            {
+                selectedRecords = records;
+            }
+            else
+            {
+                selectedRecords = CriteriaReader(criteriaArray, criteria, records, selectedRecords);
+            }
+
+            if (selectedRecords.Count == 0)
+            {
+                Console.WriteLine("Records with the specified parameters were not found.");
+                return;
+            }
+
+            if (Service is FileCabinetMemoryService)
+            {
+                Service.Memoization(parameters, selectedRecords);
             }
 
             PrintTable(fields, selectedRecords);

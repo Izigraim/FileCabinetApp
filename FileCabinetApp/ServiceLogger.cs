@@ -120,6 +120,18 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public List<FileCabinetRecord> Memoization(string parameters)
+        {
+            return this.fileCabinetService.Memoization(parameters);
+        }
+
+        /// <inheritdoc/>
+        public void Memoization(string parameters, List<FileCabinetRecord> selectedRecords)
+        {
+            this.fileCabinetService.Memoization(parameters, selectedRecords);
+        }
+
+        /// <inheritdoc/>
         public void Purge(out int count, out int before)
         {
             using (StreamWriter sw = new StreamWriter("logs.txt", true))

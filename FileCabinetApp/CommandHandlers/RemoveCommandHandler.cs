@@ -291,7 +291,7 @@ namespace FileCabinetApp.CommandHandlers
                 foreach (var record in recordsToDelete.OrderBy(c => c.Id))
                 {
                     Console.Write($"#{record.Id + 1}");
-                    if (recordsToDelete.Last() == record)
+                    if (recordsToDelete.OrderBy(c => c.Id).Last() != record)
                     {
                         Console.Write($", ");
                     }

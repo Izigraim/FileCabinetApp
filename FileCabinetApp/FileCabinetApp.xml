@@ -294,6 +294,12 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Purge(System.Int32@,System.Int32@)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Memoization(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Memoization(System.String,System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Memory service class.
@@ -361,6 +367,12 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Purge(System.Int32@,System.Int32@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Memoization(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Memoization(System.String,System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
@@ -641,6 +653,20 @@
             <param name="count">Count of purged records.</param>
             <param name="before">Count of records before purge.</param>
         </member>
+        <member name="M:FileCabinetApp.IFIleCabinetService.Memoization(System.String)">
+            <summary>
+            Read data that has already been saved with the current set of parameters.
+            </summary>
+            <param name="parameters">Set of parameters.</param>
+            <returns>List of records or empty list.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFIleCabinetService.Memoization(System.String,System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Write data to a dictionary with a key as search parameters.
+            </summary>
+            <param name="parameters">Set of parameters.</param>
+            <param name="selectedRecords">List of records.</param>
+        </member>
         <member name="T:FileCabinetApp.MemoryIteratorCollection">
             <summary>
             Iterator for worjing with <see cref="T:FileCabinetApp.FileCabinetMemoryService"/>.
@@ -756,6 +782,12 @@
         <member name="M:FileCabinetApp.ServiceLogger.MakeSnapshot">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Memoization(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Memoization(System.String,System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.ServiceLogger.Purge(System.Int32@,System.Int32@)">
             <inheritdoc/>
         </member>
@@ -798,6 +830,12 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Memoization(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Memoization(System.String,System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.Purge(System.Int32@,System.Int32@)">
