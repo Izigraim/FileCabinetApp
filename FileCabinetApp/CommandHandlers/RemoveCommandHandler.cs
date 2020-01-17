@@ -73,12 +73,10 @@ namespace FileCabinetApp.CommandHandlers
                                 if (recordsToDelete.Count == 0)
                                 {
                                     recordsToDelete = records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
-
                                 }
                                 else
                                 {
                                     recordsToDelete = recordsToDelete.Intersect<FileCabinetRecord>(records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
-
                                 }
                             }
                             else
@@ -86,12 +84,10 @@ namespace FileCabinetApp.CommandHandlers
                                 if (recordsToDelete.Count == 0)
                                 {
                                     recordsToDelete = records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
-
                                 }
                                 else
                                 {
                                     recordsToDelete = recordsToDelete.Intersect<FileCabinetRecord>(records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
-
                                 }
                             }
                         }

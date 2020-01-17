@@ -133,7 +133,6 @@ namespace FileCabinetApp
                 this.firstNameDictionary.Add(recordEdited.FirstName, new List<FileCabinetRecord>() { recordEdited });
             }
 
-
             foreach (var key in this.lastNameDictionary.Keys)
             {
                 if (this.lastNameDictionary[key].Contains(record))

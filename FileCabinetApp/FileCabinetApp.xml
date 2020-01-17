@@ -180,21 +180,6 @@
             </summary>
             <param name="records">Records to print.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
-            <summary>
-            List command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.IFIleCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ListCommandHandler"/> class.
-            </summary>
-            <param name="service">Type of services.</param>
-            <param name="printer">Type of printing.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <inheritdoc/>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.PrintHelpCommandHandler">
             <summary>
             Print command.

@@ -11,21 +11,20 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class PrintHelpCommandHandler : CommandHandlerBase
     {
-        private static string[] commands = new string[] { "help", "exit", "stat", "create", "list", "find", "export", "import", "purge", "insert", "delete", "update" };
+        private static string[] commands = new string[] { "help", "exit", "stat", "create", "export", "import", "purge", "insert", "delete", "update", "select" };
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints the count of records", "The 'stat' command prints the count of records." },
             new string[] { "create", "create a record", "The 'create' command create a record." },
-            new string[] { "list", "returns list of records", "The 'list' command returns list of records." },
-            new string[] { "find", "find a record or records by property", "The 'find' command find a record or records by property." },
             new string[] { "export", "export data to file", "The 'export' command export a records to file" },
             new string[] { "import", "import data from file", "The 'import' command import records from file" },
             new string[] { "purge", "purge a file with records", "The 'purge' command remove records marked as deleted from file." },
             new string[] { "insert", "create or edit a record", "The 'insert' command create or edit a record." },
             new string[] { "delete", "delete record(s) using the specified criteria", "The 'delete' command delete record(s) using the specified criteria." },
             new string[] { "update", "update a record(s) that matches the search criteria with the specified fields", "The 'update' command update a record(s) that matches the search criteria with the specified fields." },
+            new string[] { "select", "output a record(s) that matches the search criteria with the specified fields", "The 'select' command output a record(s) that matches the search criteria with the specified fields." },
         };
 
         /// <inheritdoc/>

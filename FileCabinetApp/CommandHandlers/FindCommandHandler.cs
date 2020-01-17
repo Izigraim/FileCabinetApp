@@ -33,11 +33,7 @@ namespace FileCabinetApp.CommandHandlers
                 throw new ArgumentNullException(nameof(request));
             }
 
-            if (request.Command.ToLower(new CultureInfo("en-US")) == "find")
-            {
-                this.Find(request.Parameters);
-            }
-            else if (request.Command.ToLower(new CultureInfo("en-US")) == "select")
+            if (request.Command.ToLower(new CultureInfo("en-US")) == "select")
             {
                 try
                 {
@@ -54,22 +50,8 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private void Select(string parameters)
+        private static List<FileCabinetRecord> CriteriaReader(string[] criteriaArray, string criteria, List<FileCabinetRecord> records, List<FileCabinetRecord> selectedRecords)
         {
-            parameters = parameters.ToLower(new CultureInfo("en-US"));
-
-            List<FileCabinetRecord> selectedRecords = new List<FileCabinetRecord>();
-            List<FileCabinetRecord> records = Service.GetRecords().ToList();
-
-            string criteria = string.Empty;
-            string[] criteriaArray = new string[] { string.Empty };
-
-            if (parameters.Contains("where", StringComparison.Ordinal))
-            {
-                criteria = parameters.Substring(parameters.IndexOf("where", StringComparison.Ordinal) + 5, parameters.Length - parameters.IndexOf("where", StringComparison.Ordinal) - 5);
-                criteriaArray = criteria.Split(new string[] { "and", "or" }, StringSplitOptions.None);
-            }
-
             List<string> operators = new List<string>();
             foreach (string s in criteria.Split(' '))
             {
@@ -92,13 +74,11 @@ namespace FileCabinetApp.CommandHandlers
                                 if (selectedRecords.Count == 0)
                                 {
                                     selectedRecords = records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
-
                                 }
                                 else if (operators[operatorNumber - 1] == "and")
                                 {
                                     selectedRecords = selectedRecords.Intersect<FileCabinetRecord>(records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
                                     operatorNumber++;
-
                                 }
                                 else if (operators[operatorNumber - 1] == "or")
                                 {
@@ -108,7 +88,7 @@ namespace FileCabinetApp.CommandHandlers
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                             else
@@ -116,13 +96,11 @@ namespace FileCabinetApp.CommandHandlers
                                 if (selectedRecords.Count == 0)
                                 {
                                     selectedRecords = records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
-
                                 }
                                 else if (operators[operatorNumber - 1] == "and")
                                 {
                                     selectedRecords = selectedRecords.Intersect<FileCabinetRecord>(records.Where(c => c.Id + 1 == Convert.ToInt32(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
                                     operatorNumber++;
-
                                 }
                                 else if (operators[operatorNumber - 1] == "or")
                                 {
@@ -132,7 +110,7 @@ namespace FileCabinetApp.CommandHandlers
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                         }
@@ -160,7 +138,7 @@ namespace FileCabinetApp.CommandHandlers
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                             else
@@ -182,7 +160,7 @@ namespace FileCabinetApp.CommandHandlers
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                         }
@@ -210,7 +188,7 @@ namespace FileCabinetApp.CommandHandlers
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                             else
@@ -232,7 +210,7 @@ namespace FileCabinetApp.CommandHandlers
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                         }
@@ -260,7 +238,7 @@ namespace FileCabinetApp.CommandHandlers
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                             else
@@ -282,7 +260,7 @@ namespace FileCabinetApp.CommandHandlers
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                         }
@@ -310,7 +288,7 @@ namespace FileCabinetApp.CommandHandlers
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                             else
@@ -319,18 +297,20 @@ namespace FileCabinetApp.CommandHandlers
                                 {
                                     selectedRecords = records.Where(c => c.Age == Convert.ToInt16(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
                                 }
-                                else if (operators[operatorNumber++ - 1] == "and")
+                                else if (operators[operatorNumber - 1] == "and")
                                 {
                                     selectedRecords = selectedRecords.Intersect<FileCabinetRecord>(records.Where(c => c.Age == Convert.ToInt16(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
+                                    operatorNumber++;
                                 }
-                                else if (operators[operatorNumber++ - 1] == "or")
+                                else if (operators[operatorNumber - 1] == "or")
                                 {
                                     selectedRecords = selectedRecords.Union<FileCabinetRecord>(records.Where(c => c.Age == Convert.ToInt16(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
+                                    operatorNumber++;
                                 }
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                         }
@@ -345,18 +325,20 @@ namespace FileCabinetApp.CommandHandlers
                                 {
                                     selectedRecords = records.Where(c => c.Salary == Convert.ToDecimal(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
                                 }
-                                else if (operators[operatorNumber++ - 1] == "and")
+                                else if (operators[operatorNumber - 1] == "and")
                                 {
                                     selectedRecords = selectedRecords.Intersect<FileCabinetRecord>(records.Where(c => c.Salary == Convert.ToDecimal(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
+                                    operatorNumber++;
                                 }
-                                else if (operators[operatorNumber++ - 1] == "or")
+                                else if (operators[operatorNumber - 1] == "or")
                                 {
                                     selectedRecords = selectedRecords.Union<FileCabinetRecord>(records.Where(c => c.Salary == Convert.ToDecimal(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
+                                    operatorNumber++;
                                 }
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                             else
@@ -365,18 +347,20 @@ namespace FileCabinetApp.CommandHandlers
                                 {
                                     selectedRecords = records.Where(c => c.Salary == Convert.ToDecimal(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
                                 }
-                                else if (operators[operatorNumber++ - 1] == "and")
+                                else if (operators[operatorNumber - 1] == "and")
                                 {
                                     selectedRecords = selectedRecords.Intersect<FileCabinetRecord>(records.Where(c => c.Salary == Convert.ToDecimal(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
+                                    operatorNumber++;
                                 }
-                                else if (operators[operatorNumber++ - 1] == "or")
+                                else if (operators[operatorNumber - 1] == "or")
                                 {
                                     selectedRecords = selectedRecords.Union<FileCabinetRecord>(records.Where(c => c.Salary == Convert.ToDecimal(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
+                                    operatorNumber++;
                                 }
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                         }
@@ -391,18 +375,20 @@ namespace FileCabinetApp.CommandHandlers
                                 {
                                     selectedRecords = records.Where(c => c.Sex == Convert.ToChar(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
                                 }
-                                else if (operators[operatorNumber++ - 1] == "and")
+                                else if (operators[operatorNumber - 1] == "and")
                                 {
                                     selectedRecords = selectedRecords.Intersect<FileCabinetRecord>(records.Where(c => c.Sex == Convert.ToChar(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
+                                    operatorNumber++;
                                 }
-                                else if (operators[operatorNumber++ - 1] == "or")
+                                else if (operators[operatorNumber - 1] == "or")
                                 {
                                     selectedRecords = selectedRecords.Union<FileCabinetRecord>(records.Where(c => c.Sex == Convert.ToChar(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
+                                    operatorNumber++;
                                 }
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                             else
@@ -411,18 +397,20 @@ namespace FileCabinetApp.CommandHandlers
                                 {
                                     selectedRecords = records.Where(c => c.Sex == Convert.ToChar(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US"))).ToList();
                                 }
-                                else if (operators[operatorNumber++ - 1] == "and")
+                                else if (operators[operatorNumber - 1] == "and")
                                 {
                                     selectedRecords = selectedRecords.Intersect<FileCabinetRecord>(records.Where(c => c.Sex == Convert.ToChar(parameterArray[1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
+                                    operatorNumber++;
                                 }
-                                else if (operators[operatorNumber++ - 1] == "or")
+                                else if (operators[operatorNumber - 1] == "or")
                                 {
                                     selectedRecords = selectedRecords.Union<FileCabinetRecord>(records.Where(c => c.Sex == Convert.ToChar(parameterArray[1].Trim(' ')[1..^1].ToLower(new CultureInfo("en-US")).Trim(' '), new CultureInfo("en-US")))).ToList();
+                                    operatorNumber++;
                                 }
                                 else
                                 {
                                     Console.WriteLine("Incorrect command format");
-                                    return;
+                                    return null;
                                 }
                             }
                         }
@@ -439,72 +427,16 @@ namespace FileCabinetApp.CommandHandlers
                     default:
                         {
                             Console.WriteLine("Incorrect command format");
-                            return;
+                            return null;
                         }
                 }
             }
 
-            if (selectedRecords.Count == 0)
-            {
-                Console.WriteLine("Records with the specified parameters were not found.");
-                return;
-            }
+            return selectedRecords;
+        }
 
-            string[] fields = new string[] { string.Empty };
-            if (parameters.Contains("where", StringComparison.Ordinal))
-            {
-                fields = parameters.Substring(0, parameters.IndexOf("where", StringComparison.Ordinal)).Split(',');
-            }
-            else
-            {
-                fields = parameters.Split(',');
-            }
-
-            string allFields = "id sex firstname lastname age salary dateofbirth";
-            if (string.IsNullOrEmpty(fields[0]))
-            {
-                fields = allFields.Split(' ');
-            }
-
-            for (int i = 0; i < fields.Length; i++)
-            {
-                fields[i] = fields[i].ToLower(new CultureInfo("en-US")).Trim(' ');
-
-                if (fields[i] == "id")
-                {
-                    fields[i] = "Id";
-                }
-                else if (fields[i] == "firstname")
-                {
-                    fields[i] = "FirstName";
-                }
-                else if (fields[i] == "lastname")
-                {
-                    fields[i] = "LastName";
-                }
-                else if (fields[i] == "sex")
-                {
-                    fields[i] = "Sex";
-                }
-                else if (fields[i] == "salary")
-                {
-                    fields[i] = "Salary";
-                }
-                else if (fields[i] == "age")
-                {
-                    fields[i] = "Age";
-                }
-                else if (fields[i] == "dateofbirth")
-                {
-                    fields[i] = "DateOfBirth";
-                }
-                else
-                {
-                    Console.WriteLine("Incorrect field name.");
-                    return;
-                }
-            }
-
+        private static void PrintTable(string[] fields, List<FileCabinetRecord> selectedRecords)
+        {
             StringBuilder sb = new StringBuilder();
 
             foreach (string field in fields)
@@ -621,7 +553,6 @@ namespace FileCabinetApp.CommandHandlers
             sb.Append("+");
 
             Console.WriteLine(sb);
-
         }
 
         private static int MaxColumnWidth(List<FileCabinetRecord> list, string field)
@@ -700,7 +631,7 @@ namespace FileCabinetApp.CommandHandlers
                         {
                             if (record.DateOfBirth.ToString("MM/dd/yyyy", new CultureInfo("en-US")).Length > maxWidth)
                             {
-                                maxWidth = record.DateOfBirth.ToString("MM/dd/yyyy" ,new CultureInfo("en-US")).Length;
+                                maxWidth = record.DateOfBirth.ToString("MM/dd/yyyy", new CultureInfo("en-US")).Length;
                             }
                         }
                     }
@@ -719,65 +650,98 @@ namespace FileCabinetApp.CommandHandlers
                     }
 
                     break;
-
             }
 
             return maxWidth;
         }
 
-        private void Find(string parameters)
+        private void Select(string parameters)
         {
-            try
+            parameters = parameters.ToLower(new CultureInfo("en-US"));
+
+            List<FileCabinetRecord> selectedRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> records = Service.GetRecords().ToList();
+
+            string criteria = string.Empty;
+            string[] criteriaArray = new string[] { string.Empty };
+
+            if (parameters.Contains("where", StringComparison.Ordinal))
             {
-                if (parameters.Where(c => c == ' ').Count() > 1 || !parameters.Where(c => c == ' ').Any() || parameters[0] == ' ')
-                {
-                    throw new ArgumentException("Incorrect command format.");
-                }
+                criteria = parameters.Substring(parameters.IndexOf("where", StringComparison.Ordinal) + 5, parameters.Length - parameters.IndexOf("where", StringComparison.Ordinal) - 5);
+                criteriaArray = criteria.Split(new string[] { "and", "or" }, StringSplitOptions.None);
             }
-            catch (ArgumentException ex)
+
+            if (string.IsNullOrEmpty(criteria))
             {
-                Console.WriteLine(ex.Message);
+                selectedRecords = records;
+            }
+            else
+            {
+                selectedRecords = CriteriaReader(criteriaArray, criteria, records, selectedRecords);
+            }
+
+            if (selectedRecords.Count == 0)
+            {
+                Console.WriteLine("Records with the specified parameters were not found.");
                 return;
             }
 
-            string[] findParameters = parameters.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
-            List<FileCabinetRecord> files = null;
-
-            switch (findParameters[0].ToLower(CultureInfo.CreateSpecificCulture("en-US")))
+            string[] fields = new string[] { string.Empty };
+            if (parameters.Contains("where", StringComparison.Ordinal))
             {
-                case "firstname":
-                    {
-                        files = new List<FileCabinetRecord>(Service.FindByFirstName(findParameters[1].Trim('"')));
-                    }
-
-                    break;
-                case "lastname":
-                    {
-                        files = new List<FileCabinetRecord>(Service.FindByLastName(findParameters[1].Trim('"')));
-                    }
-
-                    break;
-                case "dateofbirth":
-                    {
-                        try
-                        {
-                            DateTime.Parse(findParameters[1], new CultureInfo("en-US"));
-                        }
-                        catch (FormatException e)
-                        {
-                            Console.WriteLine(e.Message);
-                            return;
-                        }
-
-                        files = new List<FileCabinetRecord>(Service.FindByDateOfBirth(findParameters[1].Trim('"')));
-                    }
-
-                    break;
+                fields = parameters.Substring(0, parameters.IndexOf("where", StringComparison.Ordinal)).Split(',');
+            }
+            else
+            {
+                fields = parameters.Split(',');
             }
 
-            this.printer(files);
+            string allFields = "id sex firstname lastname age salary dateofbirth";
+            if (string.IsNullOrEmpty(fields[0]))
+            {
+                fields = allFields.Split(' ');
+            }
+
+            for (int i = 0; i < fields.Length; i++)
+            {
+                fields[i] = fields[i].ToLower(new CultureInfo("en-US")).Trim(' ');
+
+                if (fields[i] == "id")
+                {
+                    fields[i] = "Id";
+                }
+                else if (fields[i] == "firstname")
+                {
+                    fields[i] = "FirstName";
+                }
+                else if (fields[i] == "lastname")
+                {
+                    fields[i] = "LastName";
+                }
+                else if (fields[i] == "sex")
+                {
+                    fields[i] = "Sex";
+                }
+                else if (fields[i] == "salary")
+                {
+                    fields[i] = "Salary";
+                }
+                else if (fields[i] == "age")
+                {
+                    fields[i] = "Age";
+                }
+                else if (fields[i] == "dateofbirth")
+                {
+                    fields[i] = "DateOfBirth";
+                }
+                else
+                {
+                    Console.WriteLine("Incorrect field name.");
+                    return;
+                }
+            }
+
+            PrintTable(fields, selectedRecords);
         }
     }
 }
