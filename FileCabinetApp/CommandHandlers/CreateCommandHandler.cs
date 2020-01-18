@@ -31,17 +31,35 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "create")
             {
-                Create();
+                if (request.Parameters == "-h" || request.Parameters == "--help")
+                {
+                    Console.WriteLine("\t'create' - creates a new record with the values entered from the keybord.\n\tDoes not require any additional parameters.");
+                }
+                else if (string.IsNullOrEmpty(request.Parameters))
+                {
+                    Create();
+                }
+                else
+                {
+                    Console.WriteLine("This command does not accept parameters.");
+                }
             }
             else if (request.Command.ToLower(new CultureInfo("en-US")) == "insert")
             {
-                try
+                if (request.Parameters == "-h" || request.Parameters == "--help")
                 {
-                    Insert(request.Parameters);
+                    Console.WriteLine("\t'insert' - create a record with fields and values in one line.\n\tCommand format: insert ([field1],[field2]...[fieldN]) values ([value1],[value2]...[valueN]).\n\tIf a recod with the specified ID exists, it can be overwritten.");
                 }
-                catch (FormatException)
+                else
                 {
-                    Console.WriteLine("Incorrect command format.");
+                    try
+                    {
+                        Insert(request.Parameters);
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Incorrect command format.");
+                    }
                 }
             }
             else

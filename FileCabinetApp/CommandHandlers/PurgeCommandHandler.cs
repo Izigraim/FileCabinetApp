@@ -30,7 +30,18 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "purge")
             {
-                Purge();
+                if (request.Parameters == "-h" || request.Parameters == "--help")
+                {
+                    Console.WriteLine("\t'purge' - remove records marked as deleted from file.\n\tDoes not require any additional parameters.");
+                }
+                else if (string.IsNullOrEmpty(request.Parameters))
+                {
+                    Purge();
+                }
+                else
+                {
+                    Console.WriteLine("This command does not accept parameters.");
+                }
             }
             else
             {

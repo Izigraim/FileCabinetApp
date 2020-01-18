@@ -88,7 +88,14 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "help")
             {
-                PrintHelp(request.Parameters);
+                if (string.IsNullOrEmpty(request.Parameters))
+                {
+                    PrintHelp(request.Parameters);
+                }
+                else
+                {
+                    Console.WriteLine("This command does not accept parameters.");
+                }
             }
             else
             {
@@ -162,7 +169,7 @@ namespace FileCabinetApp.CommandHandlers
                 }
             }
 
-            Console.WriteLine();
+            Console.WriteLine("Each command contains the '-h' and '--help' parameter for a more detailed description of the command.\n");
         }
     }
 }

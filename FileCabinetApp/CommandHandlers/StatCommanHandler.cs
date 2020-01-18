@@ -29,7 +29,18 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "stat")
             {
-                Stat();
+                if (request.Parameters == "-h" || request.Parameters == "--help")
+                {
+                    Console.WriteLine("\t'stat' - prints the count of records.\n\tDoes not require any additional parameters.");
+                }
+                else if (string.IsNullOrEmpty(request.Parameters))
+                {
+                    Stat();
+                }
+                else
+                {
+                    Console.WriteLine("This command does not accept parameters.");
+                }
             }
             else
             {

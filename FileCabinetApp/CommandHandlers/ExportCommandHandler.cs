@@ -31,7 +31,14 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "export")
             {
-                Export(request.Parameters);
+                if (request.Parameters == "-h" || request.Parameters == "--help")
+                {
+                    Console.WriteLine("\t'export' - exports data to a file with the specified format.\n\tCommand format: export [csv/xml] [filePath].[csv/xml]");
+                }
+                else
+                {
+                    Export(request.Parameters);
+                }
             }
             else
             {
