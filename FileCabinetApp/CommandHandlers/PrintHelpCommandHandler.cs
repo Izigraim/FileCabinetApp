@@ -40,33 +40,21 @@ namespace FileCabinetApp.CommandHandlers
                 List<string> similarCommands = new List<string>();
                 Console.WriteLine($"There is no '{request.Command}' command.");
 
-                foreach (string command in commands)
+                for (int i = 0; i < 4; i++)
                 {
-                    if (FindDifference(command, request.Command) < 1)
+                    if (similarCommands.Count == 0)
                     {
-                        similarCommands.Add(command);
-                    }
-                }
-
-                if (similarCommands.Count == 0)
-                {
-                    foreach (string command in commands)
-                    {
-                        if (FindDifference(command, request.Command) < 2)
+                        foreach (string command in commands)
                         {
-                            similarCommands.Add(command);
+                            if (FindDifference(command, request.Command) < i)
+                            {
+                                similarCommands.Add(command);
+                            }
                         }
                     }
-                }
-
-                if (similarCommands.Count == 0)
-                {
-                    foreach (string command in commands)
+                    else
                     {
-                        if (FindDifference(command, request.Command) < 3)
-                        {
-                            similarCommands.Add(command);
-                        }
+                        break;
                     }
                 }
 
@@ -112,7 +100,12 @@ namespace FileCabinetApp.CommandHandlers
         {
             int n = first.Length;
             int m = second.Length;
-            int[,] array = new int[n + 1, m + 1];
+            int[][] array = new int[n + 1][];
+
+            for (int i = 0; i <= n; i++)
+            {
+                array[i] = new int[m + 1];
+            }
 
             if (n == 0)
             {
@@ -124,11 +117,11 @@ namespace FileCabinetApp.CommandHandlers
                 return n;
             }
 
-            for (int i = 0; i <= n; array[i, 0] = i++)
+            for (int i = 0; i <= n; array[i][0] = i++)
             {
             }
 
-            for (int j = 0; j <= m; array[0, j] = j++)
+            for (int j = 0; j <= m; array[0][j] = j++)
             {
             }
 
@@ -138,11 +131,11 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     int cost = (second[j - 1] == first[i - 1]) ? 0 : 1;
 
-                    array[i, j] = Math.Min(Math.Min(array[i - 1, j] + 1, array[i, j - 1] + 1), array[i - 1, j - 1] + cost);
+                    array[i][j] = Math.Min(Math.Min(array[i - 1][j] + 1, array[i][j - 1] + 1), array[i - 1][j - 1] + cost);
                 }
             }
 
-            return array[n, m];
+            return array[n][m];
         }
 
         private static void PrintHelp(string parameters)
