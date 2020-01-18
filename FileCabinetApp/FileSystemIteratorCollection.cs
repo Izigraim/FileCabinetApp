@@ -13,7 +13,7 @@ namespace FileCabinetApp
     public class FileSystemIteratorCollection : IEnumerable<FileCabinetRecord>
     {
         private const int RecordSize = 278;
-        private List<long> cache = new List<long>();
+        private readonly List<long> cache = new List<long>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileSystemIteratorCollection"/> class.
