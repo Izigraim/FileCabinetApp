@@ -926,54 +926,25 @@
             date of birth settings.
             </value>
         </member>
-        <member name="T:FileCabinetApp.Validation.FirstNameSettingCustom">
-            <summary>
-            First name validation settings.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.Validation.FirstNameSettingCustom.Min">
-            <summary>
-            Gets or sets minimum lenght.
-            </summary>
-            <value>
-            Minimum lenght.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.Validation.FirstNameSettingCustom.Max">
-            <summary>
-            Gets or sets maximum lenght.
-            </summary>
-            <value>
-            Maximum lenght.
-            </value>
-        </member>
-        <member name="T:FileCabinetApp.Validation.LastNameSettingCustom">
-            <summary>
-            Last name validation settings.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.Validation.LastNameSettingCustom.Min">
-            <summary>
-            Gets or sets minimum lenght.
-            </summary>
-            <value>
-            Minimum lenght.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.Validation.LastNameSettingCustom.Max">
-            <summary>
-            Gets or sets maximum lenght.
-            </summary>
-            <value>
-            Maximum lenght.
-            </value>
-        </member>
         <member name="T:FileCabinetApp.Validation.DateOfBirthSettingCustom">
             <summary>
             Date of birth validation settings.
             </summary>
         </member>
         <member name="P:FileCabinetApp.Validation.DateOfBirthSettingCustom.YearFrom">
+            <summary>
+            Gets or sets minimum year.
+            </summary>
+            <value>
+            Minimum year.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validation.DateOfBirthSettingDefault">
+            <summary>
+            Date of birth validation settings.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.DateOfBirthSettingDefault.YearFrom">
             <summary>
             Gets or sets minimum year.
             </summary>
@@ -1060,6 +1031,27 @@
             date of birth settings.
             </value>
         </member>
+        <member name="T:FileCabinetApp.Validation.FirstNameSettingCustom">
+            <summary>
+            First name validation settings.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.FirstNameSettingCustom.Min">
+            <summary>
+            Gets or sets minimum lenght.
+            </summary>
+            <value>
+            Minimum lenght.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.FirstNameSettingCustom.Max">
+            <summary>
+            Gets or sets maximum lenght.
+            </summary>
+            <value>
+            Maximum lenght.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.Validation.FirstNameSettingDefault">
             <summary>
             First name validation settings.
@@ -1079,40 +1071,6 @@
             </summary>
             <value>
             Maximum lenght.
-            </value>
-        </member>
-        <member name="T:FileCabinetApp.Validation.LastNameSettingDefault">
-            <summary>
-            Last name validation settings.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.Validation.LastNameSettingDefault.Min">
-            <summary>
-            Gets or sets minimum lenght.
-            </summary>
-            <value>
-            Minimum lenght.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.Validation.LastNameSettingDefault.Max">
-            <summary>
-            Gets or sets maximum lenght.
-            </summary>
-            <value>
-            Maximum lenght.
-            </value>
-        </member>
-        <member name="T:FileCabinetApp.Validation.DateOfBirthSettingDefault">
-            <summary>
-            Date of birth validation settings.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.Validation.DateOfBirthSettingDefault.YearFrom">
-            <summary>
-            Gets or sets minimum year.
-            </summary>
-            <value>
-            Minimum year.
             </value>
         </member>
         <member name="T:FileCabinetApp.Validation.FirstNameValidation">
@@ -1150,6 +1108,48 @@
             Validation for User's input.
             </summary>
             <returns>Record.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validation.LastNameSettingCustom">
+            <summary>
+            Last name validation settings.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.LastNameSettingCustom.Min">
+            <summary>
+            Gets or sets minimum lenght.
+            </summary>
+            <value>
+            Minimum lenght.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.LastNameSettingCustom.Max">
+            <summary>
+            Gets or sets maximum lenght.
+            </summary>
+            <value>
+            Maximum lenght.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validation.LastNameSettingDefault">
+            <summary>
+            Last name validation settings.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validation.LastNameSettingDefault.Min">
+            <summary>
+            Gets or sets minimum lenght.
+            </summary>
+            <value>
+            Minimum lenght.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validation.LastNameSettingDefault.Max">
+            <summary>
+            Gets or sets maximum lenght.
+            </summary>
+            <value>
+            Maximum lenght.
+            </value>
         </member>
         <member name="T:FileCabinetApp.Validation.LastNameValidation">
             <summary>

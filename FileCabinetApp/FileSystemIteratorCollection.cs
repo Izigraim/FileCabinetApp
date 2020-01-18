@@ -30,7 +30,7 @@ namespace FileCabinetApp
         /// <returns><see cref="IEnumerable{T}"/>.</returns>
         public IEnumerable<FileCabinetRecord> GetRecords()
         {
-            return this.GetRecords(this.cache);
+            return GetRecords(this.cache);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace FileCabinetApp
             return this.GetRecords().GetEnumerator();
         }
 
-        private IEnumerable<FileCabinetRecord> GetRecords(List<long> list)
+        private static IEnumerable<FileCabinetRecord> GetRecords(List<long> list)
         {
             foreach (long offset in list)
             {
