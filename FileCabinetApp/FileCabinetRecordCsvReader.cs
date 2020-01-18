@@ -30,9 +30,12 @@ namespace FileCabinetApp
         {
             string line;
             List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+            int counter = 0;
             while ((line = this.reader.ReadLine()) != null)
             {
                 FileCabinetRecord record = new FileCabinetRecord();
+
+                counter++;
 
                 string[] lineArray = line.Split(',');
                 record.Id = Convert.ToInt32(lineArray[0], new CultureInfo("en-US"));
@@ -43,8 +46,15 @@ namespace FileCabinetApp
                 record.Salary = Convert.ToDecimal(lineArray[5] + "." + lineArray[6], new CultureInfo("en-US"));
                 record.DateOfBirth = DateTime.Parse(lineArray[7], new CultureInfo("en-US"));
 
+                if (!Program.Validator.ValidateParameters(record))
+                {
+                    continue;
+                }
+
                 list.Add(record);
             }
+
+            Console.WriteLine($"File contains {counter} record(s).");
 
             return list;
         }

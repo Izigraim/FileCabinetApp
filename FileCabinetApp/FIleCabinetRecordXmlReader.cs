@@ -31,7 +31,23 @@ namespace FileCabinetApp
         {
             XmlSerializer serializer = new XmlSerializer(typeof(FileCabinetRecord[]));
             FileCabinetRecord[] records = (FileCabinetRecord[])serializer.Deserialize(this.reader);
-            return records.ToList();
+            List<FileCabinetRecord> readedRecords = new List<FileCabinetRecord>();
+
+            foreach (var record in records)
+            {
+                if (!Program.Validator.ValidateParameters(record))
+                {
+                    continue;
+                }
+                else
+                {
+                    readedRecords.Add(record);
+                }
+            }
+
+            Console.WriteLine($"File contains {records.Length} record(s).");
+
+            return readedRecords;
         }
     }
 }
