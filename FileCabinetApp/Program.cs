@@ -79,42 +79,7 @@ namespace FileCabinetApp
         {
             if (args != null && args.Length != 0)
             {
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (args[i].ToLower(new CultureInfo("en-US")) == "-v")
-                    {
-                        ValidationType = args[i + 1];
-                    }
-                    else if (args[i].ToLower(new CultureInfo("en-US")) == "-s")
-                    {
-                        StorageType = args[i + 1];
-                    }
-                    else if (args[i].ToLower(new CultureInfo("en-US")).Contains('=', StringComparison.Ordinal))
-                    {
-                        string[] argsTemp = args[i].Split('=');
-                        if (argsTemp[0].ToLower(new CultureInfo("en-US")) == "--validation-rules")
-                        {
-                            ValidationType = argsTemp[1];
-                        }
-                        else if (argsTemp[0].ToLower(new CultureInfo("en-US")) == "--storage")
-                        {
-                            if (argsTemp[1].ToLower(new CultureInfo("en-US")) == "file" || argsTemp[1].ToLower(new CultureInfo("en-US")) == "memory")
-                            {
-                                StorageType = argsTemp[1];
-                            }
-                        }
-                    }
-                }
-
-                if (args.Contains<string>("-use-stopwatch"))
-                {
-                    UseStopwatch = "on";
-                }
-
-                if (args.Contains<string>("-use-logger"))
-                {
-                    UseLogger = "on";
-                }
+                ArgsProcessing(args);
             }
 
             var builder = new ConfigurationBuilder().AddJsonFile("validation-rules.json").Build();
@@ -215,5 +180,46 @@ namespace FileCabinetApp
                 Console.WriteLine($"#{record.Id + 1}, {record.Sex}, {record.FirstName}, {record.LastName}, {record.Age}, {record.Salary}, {record.DateOfBirth:yyyy-MMM-dd}");
             }
         }
+
+        private static void ArgsProcessing(string[] args)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].ToLower(new CultureInfo("en-US")) == "-v")
+                {
+                    ValidationType = args[i + 1];
+                }
+                else if (args[i].ToLower(new CultureInfo("en-US")) == "-s")
+                {
+                    StorageType = args[i + 1];
+                }
+                else if (args[i].ToLower(new CultureInfo("en-US")).Contains('=', StringComparison.Ordinal))
+                {
+                    string[] argsTemp = args[i].Split('=');
+                    if (argsTemp[0].ToLower(new CultureInfo("en-US")) == "--validation-rules")
+                    {
+                        ValidationType = argsTemp[1];
+                    }
+                    else if (argsTemp[0].ToLower(new CultureInfo("en-US")) == "--storage")
+                    {
+                        if (argsTemp[1].ToLower(new CultureInfo("en-US")) == "file" || argsTemp[1].ToLower(new CultureInfo("en-US")) == "memory")
+                        {
+                            StorageType = argsTemp[1];
+                        }
+                    }
+                }
+            }
+
+            if (args.Contains<string>("-use-stopwatch"))
+            {
+                UseStopwatch = "on";
+            }
+
+            if (args.Contains<string>("-use-logger"))
+            {
+                UseLogger = "on";
+            }
+        }
+
     }
 }
