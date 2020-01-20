@@ -35,13 +35,20 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "select")
             {
-                try
+                if (request.Parameters == "-h" || request.Parameters == "--help")
                 {
-                    this.Select(request.Parameters);
+                    Console.WriteLine("\t'select' - outputs a table of selected record fields found with the specified search criteria.\n\tCommand format: select [field1],[field2]...[fieldN] where [fieldName]=[value] and [fieldName]=[value] or [fieldName]=[value]\n\tIf no specific fields are specified for output, it outputs the entire record.\n\tIf no output fields and search criteria, it outputs all records.\n\tSearch criteria support the use of the 'and' and 'or' operators.");
                 }
-                catch (FormatException)
+                else
                 {
-                    Console.WriteLine("Incorrect parameter(s) format.");
+                    try
+                    {
+                        this.Select(request.Parameters);
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Incorrect parameter(s) format.");
+                    }
                 }
             }
             else

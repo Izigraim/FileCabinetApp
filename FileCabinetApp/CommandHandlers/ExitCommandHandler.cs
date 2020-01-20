@@ -31,7 +31,18 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "exit")
             {
-                Exit();
+                if (request.Parameters == "-h" || request.Parameters == "--help")
+                {
+                    Console.WriteLine("\t'exit' - stops the application.\n\tDoes not require any additional parameters.");
+                }
+                else if (string.IsNullOrEmpty(request.Parameters))
+                {
+                    Exit();
+                }
+                else
+                {
+                    Console.WriteLine("This command does not accept parameters.");
+                }
             }
             else
             {

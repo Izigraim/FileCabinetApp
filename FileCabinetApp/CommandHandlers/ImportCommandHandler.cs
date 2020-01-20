@@ -31,7 +31,14 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "import")
             {
-                Import(request.Parameters);
+                if (request.Parameters == "-h" || request.Parameters == "--help")
+                {
+                    Console.WriteLine("\t'import' - imports data from a file with specified format.\n\tCommand format: import [csv/xml] [filePath].[csv/xml]");
+                }
+                else
+                {
+                    Import(request.Parameters);
+                }
             }
             else
             {

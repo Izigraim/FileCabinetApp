@@ -152,7 +152,14 @@ namespace FileCabinetApp
 
             if (record.Id == 0)
             {
-                record.Id = this.GetStat(out int a);
+                if (this.list.Count > 0)
+                {
+                    record.Id = this.list[this.list.Count - 1].Id + 1;
+                }
+                else
+                {
+                    record.Id = this.GetStat(out int a);
+                }
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))

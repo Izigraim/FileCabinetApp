@@ -30,13 +30,20 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "delete")
             {
-                try
+                if (request.Parameters == "-h" || request.Parameters == "--help")
                 {
-                    Delete(request.Parameters);
+                    Console.WriteLine("\t'delete' - deletes record(s) that match the search criteria.\n\tCommand format: delete where [fieldName]=[value] and [fieldName]=[value]\n\tSearch criteria support the 'and' operator for more accurate record search.");
                 }
-                catch (ArgumentOutOfRangeException)
+                else
                 {
-                    Console.WriteLine("No records with this ID");
+                    try
+                    {
+                        Delete(request.Parameters);
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        Console.WriteLine("No records with this ID");
+                    }
                 }
             }
             else

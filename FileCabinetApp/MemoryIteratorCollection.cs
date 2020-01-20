@@ -10,7 +10,7 @@ namespace FileCabinetApp
     /// </summary>
     public class MemoryIteratorCollection : IEnumerable<FileCabinetRecord>
     {
-        private List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+        private readonly List<FileCabinetRecord> records = new List<FileCabinetRecord>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryIteratorCollection"/> class.
@@ -27,7 +27,7 @@ namespace FileCabinetApp
         /// <returns><see cref="IEnumerable{T}"/>.</returns>
         public IEnumerable<FileCabinetRecord> GetRecords()
         {
-            return this.GetRecords(this.records);
+            return GetRecords(this.records);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace FileCabinetApp
             return this.GetRecords().GetEnumerator();
         }
 
-        private IEnumerable<FileCabinetRecord> GetRecords(List<FileCabinetRecord> list)
+        private static IEnumerable<FileCabinetRecord> GetRecords(List<FileCabinetRecord> list)
         {
             foreach (FileCabinetRecord record in list)
             {

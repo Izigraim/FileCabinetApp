@@ -32,7 +32,14 @@ namespace FileCabinetApp.CommandHandlers
 
             if (request.Command.ToLower(new CultureInfo("en-US")) == "update")
             {
-                Update(request.Parameters);
+                if (request.Parameters == "-h" || request.Parameters == "--help")
+                {
+                    Console.WriteLine("\t'update' - edits the specified data set in records that match the criteria.\n\tCommand format: update set [fieldName]=[value],[fieldName]=[value]...[fieldName]=[value] where [fieldName]=[value].\n\tSearch criteria support the 'and' operator for more accurate record search.");
+                }
+                else
+                {
+                    Update(request.Parameters);
+                }
             }
             else
             {

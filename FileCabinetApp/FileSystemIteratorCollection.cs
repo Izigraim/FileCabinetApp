@@ -13,7 +13,7 @@ namespace FileCabinetApp
     public class FileSystemIteratorCollection : IEnumerable<FileCabinetRecord>
     {
         private const int RecordSize = 278;
-        private List<long> cache = new List<long>();
+        private readonly List<long> cache = new List<long>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileSystemIteratorCollection"/> class.
@@ -30,7 +30,7 @@ namespace FileCabinetApp
         /// <returns><see cref="IEnumerable{T}"/>.</returns>
         public IEnumerable<FileCabinetRecord> GetRecords()
         {
-            return this.GetRecords(this.cache);
+            return GetRecords(this.cache);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace FileCabinetApp
             return this.GetRecords().GetEnumerator();
         }
 
-        private IEnumerable<FileCabinetRecord> GetRecords(List<long> list)
+        private static IEnumerable<FileCabinetRecord> GetRecords(List<long> list)
         {
             foreach (long offset in list)
             {
